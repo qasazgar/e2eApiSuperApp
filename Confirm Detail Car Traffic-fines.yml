@@ -1,0 +1,46 @@
+info:
+  name: Confirm Detail Car Traffic-fines
+  type: http
+  seq: 27
+
+http:
+  method: POST
+  url: "{{Url-Dev}}services/financial/inquiry/vehicle/traffic-fines/detail/confirm/"
+  headers:
+    - name: accept
+      value: application/json
+    - name: Authorization
+      value: Bearer {{access_token}}
+      disabled: true
+    - name: Content-Type
+      value: application/json
+    - name: X-CSRFTOKEN
+      value: 7nyFcD5IIsdHmMN6uL8oSTWnxvxaTuN6
+  body:
+    type: json
+    data: |-
+      {
+        "inquiry_fee": "{{inquiry_fee}}",
+        "trace_number": "{{trace_number}}",
+        "payment_method": "string"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 5000ms", () => {
+          expect(res.responseTime).to.be.below(5000);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

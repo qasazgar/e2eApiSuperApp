@@ -1,0 +1,76 @@
+info:
+  name: Edit a vehicle license plate
+  type: http
+  seq: 22
+
+http:
+  method: POST
+  url: "{{Url-Dev}}services/financial/vehicles/{{id_plate_number_car}}/"
+  body:
+    type: json
+    data: |-
+      {
+        "title": "شخصی",
+        "plate_number": "{{edit_plate_number_car}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        const editPlates = [
+          "14/الف/246/31",
+          "25/ب/583/42",
+          "36/ج/714/53",
+          "47/د/325/64",
+          "58/س/496/75",
+          "69/ص/827/86",
+          "71/ط/138/97",
+          "82/ظ/569/18",
+          "93/ع/241/29",
+          "15/ف/672/30",
+          "26/ق/813/41",
+          "37/ک/354/52",
+          "48/گ/685/63",
+          "59/ل/926/74",
+          "61/م/147/85",
+          "72/ن/538/96",
+          "83/و/269/17",
+          "94/ه/781/28",
+          "16/ی/432/39",
+          "27/پ/693/40",
+          "38/ت/824/51",
+          "49/ث/165/62",
+          "51/ز/476/73",
+          "62/ژ/817/84",
+          "73/ش/248/95",
+          "84/ع/579/16",
+          "95/غ/320/27",
+          "17/ک/651/38",
+          "28/م/782/49",
+          "39/ن/413/50"
+        ];
+
+        let index = Number(bru.getVar("edit_plate_index") || 0);
+
+        if (index >= editPlates.length) {
+          throw new Error("تمام پلاک‌ها استفاده شده‌اند.");
+        }
+
+        const selectedPlate = editPlates[index];
+
+        // ذخیره
+        bru.setVar("edit_plate_number_car", selectedPlate);
+
+        // افزایش index
+        bru.setVar("edit_plate_index", String(index + 1));
+
+        console.log("Selected edit plate:", selectedPlate);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
