@@ -31,7 +31,7 @@ pipeline {
             steps {
                 sh '''
                     bru run . \
-                        --env MyDote \
+                        --env SuperApp-dev \
                         --reporter-junit reports/junit.xml \
                         --reporter-html reports/report.html
                 '''
