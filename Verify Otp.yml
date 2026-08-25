@@ -27,8 +27,8 @@ runtime:
   scripts:
     - type: after-response
       code: |-
-        test("Status code is 202", () => {
-          expect(res.status).to.equal(202);
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
         });
 
         test("Response time is less than 1000ms", () => {

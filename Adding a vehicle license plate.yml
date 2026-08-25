@@ -21,56 +21,61 @@ runtime:
     - type: before-request
       code: |-
         const plates = [
-          "12/الف/123/11",
-          "23/ب/456/22",
-          "34/ج/789/33",
-          "45/د/234/44",
-          "56/س/567/55",
-          "67/ص/890/66",
-          "78/ط/345/77",
-          "89/ظ/678/88",
-          "91/ع/901/99",
-          "12/ف/234/12",
-          "23/ق/567/23",
-          "34/ک/890/34",
-          "45/گ/123/45",
-          "56/ل/456/56",
-          "67/م/789/67",
-          "78/ن/234/78",
-          "89/و/567/89",
-          "91/ه/890/91",
-          "12/ی/345/12",
-          "23/پ/678/23",
-          "34/ت/901/34",
-          "45/ث/234/45",
-          "56/ز/567/56",
-          "67/ژ/890/67",
-          "78/ش/123/78",
-          "89/ع/456/89",
-          "91/غ/789/91",
-          "12/ک/234/12",
-          "23/م/567/23"
+          "11/الف/347/21",
+          "22/ب/581/32",
+          "33/ج/764/43",
+          "44/د/219/54",
+          "55/س/638/65",
+          "66/ص/472/76",
+          "77/ط/895/87",
+          "88/ظ/326/98",
+          "99/ع/751/19",
+          "11/ف/483/20",
+          "22/ق/917/31",
+          "33/ک/245/42",
+          "44/گ/683/53",
+          "55/ل/129/64",
+          "66/م/574/75",
+          "77/ن/836/86",
+          "88/و/291/97",
+          "99/ه/645/18",
+          "11/ی/782/29",
+          "22/پ/416/30",
+          "33/ت/953/41",
+          "44/ث/287/52",
+          "55/ز/619/63",
+          "66/ژ/345/74",
+          "77/ش/728/85",
+          "88/ع/154/96",
+          "99/غ/563/17",
+          "11/ک/894/28",
+          "22/م/237/39",
+          "33/ن/681/40"
         ];
 
-        // index فعلی
+        // دریافت index قبلی
         let index = Number(bru.getVar("plate_index") || 0);
 
-        // اگر تمام پلاک‌ها استفاده شده باشند
+        // بررسی اینکه پلاک باقی مانده باشد
         if (index >= plates.length) {
-          throw new Error("تمام 30 پلاک استفاده شده‌اند. پلاک تکراری ارسال نمی‌شود.");
+          throw new Error(
+            "تمام 30 پلاک استفاده شده‌اند. پلاک تکراری ارسال نمی‌شود."
+          );
         }
 
         // انتخاب پلاک
         const selectedPlate = plates[index];
 
-        // ذخیره پلاک برای Request
+        // ذخیره پلاک برای Body
         bru.setVar("plate_number_car", selectedPlate);
 
-        // افزایش index برای اجرای بعدی
+        // افزایش index برای Request بعدی
         bru.setVar("plate_index", String(index + 1));
 
+        // Log
         console.log("Selected plate:", selectedPlate);
         console.log("Plate index:", index + 1);
+        console.log("Remaining plates:", plates.length - (index + 1));
     - type: after-response
       code: |-
         test("Status code is 201", () => {
@@ -81,13 +86,33 @@ runtime:
           expect(res.responseTime).to.be.below(200);
         });
 
-        const data = res.body;
+        let data = res.body;
 
-        const responseData = typeof data === "string"
-          ? JSON.parse(data)
-          : data;
+        if (typeof data === "string") {
+          try {
+            data = JSON.parse(data);
+          } catch (error) {
+            throw new Error(
+              "Response is not JSON. Response body: " + data.substring(0, 300)
+            );
+          }
+        }
 
-        bru.setVar("id_plate_number_car", String(responseData.data.id));
+        if (!data.data || data.data.id === undefined) {
+          throw new Error(
+            "id not found in response: " + JSON.stringify(data)
+          );
+        }
+
+        bru.setVar(
+          "id_plate_number_car",
+          String(data.data.id)
+        );
+
+        console.log(
+          "id_plate_number_car:",
+          data.data.id
+        );
 
 settings:
   encodeUrl: true
