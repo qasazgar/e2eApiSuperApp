@@ -1,7 +1,7 @@
 info:
   name: Financial Inquiry OTP Verify Motor traffic-fines Detail
   type: http
-  seq: 15
+  seq: 17
 
 http:
   method: POST

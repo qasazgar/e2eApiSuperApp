@@ -1,7 +1,7 @@
 info:
   name: Motor traffic-fines
   type: http
-  seq: 17
+  seq: 19
 
 http:
   method: GET

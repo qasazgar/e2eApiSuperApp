@@ -1,7 +1,7 @@
 info:
   name: Bill Water Inquiry
   type: http
-  seq: 5
+  seq: 7
 
 http:
   method: POST
@@ -38,3 +38,4 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+  forwardAuthorizationHeader: true

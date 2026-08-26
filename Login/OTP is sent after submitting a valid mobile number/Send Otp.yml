@@ -1,0 +1,38 @@
+info:
+  name: Send Otp
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{Url-Dev-mydot}}auth/superapp/login/"
+  body:
+    type: json
+    data: |-
+      {
+        "phone_number": "{{phone_number}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 202", () => {
+          expect(res.status).to.equal(202);
+
+          if (res.status === 202) {
+            console.log("✅ کد OTP با موفقیت ارسال شد");
+          }
+        });
+
+        test("Response time is less than 1000ms", () => {
+          expect(res.responseTime).to.be.below(1000);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

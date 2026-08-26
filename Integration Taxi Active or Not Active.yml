@@ -1,7 +1,7 @@
 info:
   name: Integration Taxi Active or Not Active
   type: http
-  seq: 12
+  seq: 14
 
 http:
   method: POST

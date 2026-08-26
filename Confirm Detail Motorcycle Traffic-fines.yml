@@ -1,7 +1,7 @@
 info:
   name: Confirm Detail Motorcycle Traffic-fines
   type: http
-  seq: 16
+  seq: 18
 
 http:
   method: POST

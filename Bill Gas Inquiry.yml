@@ -1,7 +1,7 @@
 info:
   name: Bill Gas Inquiry
   type: http
-  seq: 4
+  seq: 6
 
 http:
   method: POST
@@ -39,3 +39,4 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+  forwardAuthorizationHeader: true

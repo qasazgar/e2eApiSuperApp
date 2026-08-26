@@ -1,0 +1,18 @@
+info:
+  name: OTP is sent after submitting a valid mobile number
+  type: folder
+  seq: 4
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # **OTP is sent after submitting a valid mobile number**
+
+    **Given** the user is on the Login page \
+    **And** the user has entered a valid mobile number \
+    **When** the user submits the mobile number \
+    **Then** the system should send an OTP to the provided mobile number \
+    **And** the user should be navigated to the OTP verification step
+  type: text/markdown
