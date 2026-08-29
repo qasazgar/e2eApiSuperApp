@@ -1,7 +1,7 @@
 info:
   name: Confirm Detail Car Traffic-fines
   type: http
-  seq: 29
+  seq: 28
 
 http:
   method: POST

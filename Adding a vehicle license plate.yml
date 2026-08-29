@@ -1,7 +1,7 @@
 info:
   name: Adding a vehicle license plate
   type: http
-  seq: 23
+  seq: 22
 
 http:
   method: POST

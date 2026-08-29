@@ -1,7 +1,7 @@
 info:
   name: Bill Gas Inquiry
   type: http
-  seq: 6
+  seq: 5
 
 http:
   method: POST

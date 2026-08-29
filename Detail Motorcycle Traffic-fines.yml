@@ -1,7 +1,7 @@
 info:
   name: Detail Motorcycle Traffic-fines
   type: http
-  seq: 16
+  seq: 15
 
 http:
   method: POST

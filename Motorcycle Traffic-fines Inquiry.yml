@@ -1,7 +1,7 @@
 info:
   name: Motorcycle Traffic-fines Inquiry
   type: http
-  seq: 20
+  seq: 19
 
 http:
   method: POST
