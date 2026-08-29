@@ -1,11 +1,17 @@
 info:
-  name: vehicle traffic-fines detail
+  name: 30- Financial Inquiry OTP Verify Vehicle traffic-fines Detail
   type: http
-  seq: 2
+  seq: 30
 
 http:
-  method: GET
-  url: "{{Url-Dev}}services/financial/inquiry/vehicle/traffic-fines/detail/"
+  method: POST
+  url: "{{Url-Dev}}services/financial/inquiry/otp/verify/"
+  body:
+    type: json
+    data: |-
+      { 
+      "otp": "{{otp}}" 
+      }
   auth: inherit
 
 runtime:

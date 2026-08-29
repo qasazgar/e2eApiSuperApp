@@ -1,17 +1,16 @@
 info:
-  name: Financial Inquiry OTP Verify Motor traffic-fines Detail
+  name: 11- Notifications Read-all
   type: http
-  seq: 2
+  seq: 11
 
 http:
   method: POST
-  url: "{{Url-Dev}}services/financial/inquiry/otp/verify/"
-  body:
-    type: json
-    data: |-
-      { 
-      "otp": "{{otp}}" 
-      }
+  url: "{{Url-Dev}}notifications/inapp/read-all/"
+  headers:
+    - name: accept
+      value: application/json
+    - name: Authorization
+      value: Bearer {{access_token}}
   auth: inherit
 
 runtime:

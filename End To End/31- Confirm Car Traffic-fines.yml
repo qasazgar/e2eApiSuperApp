@@ -1,24 +1,28 @@
 info:
-  name: Bill Electricity Inquiry Detail
+  name: 31- Confirm Car Traffic-fines
   type: http
-  seq: 2
+  seq: 31
 
 http:
   method: POST
-  url: "{{Url-Dev}}services/financial/inquiry/bill/electricity/"
+  url: "{{Url-Dev}}services/financial/inquiry/vehicle/traffic-fines/confirm/"
   headers:
     - name: accept
       value: application/json
-    - name: Content-Type
-      value: application/json
     - name: Authorization
       value: Bearer {{access_token}}
+      disabled: true
+    - name: Content-Type
+      value: application/json
+    - name: X-CSRFTOKEN
+      value: 7nyFcD5IIsdHmMN6uL8oSTWnxvxaTuN6
   body:
     type: json
     data: |-
       {
-        "electricity_bill_id": "{{Electricity-id}}",
-        "mobile_number": "{{Electricity_phone_number}}"
+        "inquiry_fee": "{{inquiry_fee}}",
+        "trace_number": "{{trace_number}}",
+        "payment_method": "string"
       }
   auth: inherit
 

@@ -1,5 +1,5 @@
 info:
-  name: Send Otp
+  name: 1- Send Otp
   type: http
   seq: 1
 
@@ -37,3 +37,4 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+  forwardAuthorizationHeader: true

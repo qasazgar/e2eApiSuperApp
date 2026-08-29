@@ -1,11 +1,11 @@
 info:
-  name: Motor traffic-fines
+  name: 13- motor traffic-fines detail
   type: http
-  seq: 2
+  seq: 13
 
 http:
   method: GET
-  url: "{{Url-Dev}}services/financial/inquiry/vehicle/motor-traffic-fines/"
+  url: "{{Url-Dev}}services/financial/inquiry/vehicle/traffic-fines/detail/"
   auth: inherit
 
 runtime:

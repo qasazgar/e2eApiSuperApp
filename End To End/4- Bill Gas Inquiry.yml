@@ -1,28 +1,24 @@
 info:
-  name: Confirm Detail Car Traffic-fines
+  name: 4- Bill Gas Inquiry
   type: http
-  seq: 2
+  seq: 4
 
 http:
   method: POST
-  url: "{{Url-Dev}}services/financial/inquiry/vehicle/traffic-fines/detail/confirm/"
+  url: "{{Url-Dev}}services/financial/inquiry/bill/gas/"
   headers:
     - name: accept
       value: application/json
-    - name: Authorization
-      value: Bearer {{access_token}}
-      disabled: true
     - name: Content-Type
       value: application/json
-    - name: X-CSRFTOKEN
-      value: 7nyFcD5IIsdHmMN6uL8oSTWnxvxaTuN6
+    - name: Authorization
+      value: Bearer {{access_token}}
   body:
     type: json
     data: |-
       {
-        "inquiry_fee": "{{inquiry_fee}}",
-        "trace_number": "{{trace_number}}",
-        "payment_method": "string"
+        "participate_code": "",
+        "gas_bill_id": "{{Gas-id}}"
       }
   auth: inherit
 

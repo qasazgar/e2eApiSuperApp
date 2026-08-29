@@ -1,22 +1,25 @@
 info:
-  name: Motorcycle Traffic-fines Inquiry
+  name: 14-Detail Motorcycle Traffic-fines
   type: http
-  seq: 2
+  seq: 14
 
 http:
   method: POST
-  url: "{{Url-Dev}}services/financial/inquiry/vehicle/motor-traffic-fines/"
+  url: "{{Url-Dev}}services/financial/inquiry/vehicle/motor-traffic-fines/detail/"
   body:
     type: json
     data: |-
       {
         "plate_number": "{{plate_number_motor}}",
-        "mobile_number": "{{phone_number}}",
-        "national_id": "{{national_id}}"
+        "mobile_number": "{{phone_number_motor}}",
+        "national_id": "{{national_id_motor}}"
       }
   auth: inherit
 
 runtime:
+  variables:
+    - name: mobile_number
+      value: "09127988405"
   scripts:
     - type: after-response
       code: |-

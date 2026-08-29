@@ -1,11 +1,11 @@
 info:
-  name: Bill Gas Inquiry
+  name: 3- Bill Electricity Inquiry Detail
   type: http
-  seq: 2
+  seq: 3
 
 http:
   method: POST
-  url: "{{Url-Dev}}services/financial/inquiry/bill/gas/"
+  url: "{{Url-Dev}}services/financial/inquiry/bill/electricity/"
   headers:
     - name: accept
       value: application/json
@@ -17,8 +17,8 @@ http:
     type: json
     data: |-
       {
-        "participate_code": "",
-        "gas_bill_id": "{{Gas-id}}"
+        "electricity_bill_id": "{{Electricity-id}}",
+        "mobile_number": "{{Electricity_phone_number}}"
       }
   auth: inherit
 

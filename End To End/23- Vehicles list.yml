@@ -1,16 +1,11 @@
 info:
-  name: Integration Taxi Active or Not Active
+  name: 23- Vehicles list
   type: http
-  seq: 2
+  seq: 23
 
 http:
-  method: POST
-  url: "{{Url-Dev}}integration/active/"
-  headers:
-    - name: accept
-      value: application/json
-    - name: Authorization
-      value: Bearer {{access_token}}
+  method: GET
+  url: "{{Url-Dev}}services/financial/vehicles/list/"
   auth: inherit
 
 runtime:
@@ -30,4 +25,4 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
-  forwardAuthorizationHeader: true
+  forwardAuthorizationHeader: false

@@ -1,29 +1,24 @@
 info:
-  name: Bills History
+  name: 7- Bill Mci SIM Inquiry
   type: http
-  seq: 2
+  seq: 7
 
 http:
-  method: GET
-  url: "{{Url-Dev}}services/financial/bills/history/"
+  method: POST
+  url: "{{Url-Dev}}services/financial/inquiry/bill/mci/"
   headers:
     - name: accept
       value: application/json
+    - name: Content-Type
+      value: application/json
     - name: Authorization
       value: Bearer {{access_token}}
-  params:
-    - name: type
-      value: midterm_phone_bill
-      type: query
-      disabled: true
-    - name: page
-      value: "1"
-      type: query
-      disabled: true
-    - name: page_size
-      value: "2"
-      type: query
-      disabled: true
+  body:
+    type: json
+    data: |-
+      {
+        "mobile_number": "{{Mci-sim}}"
+      }
   auth: inherit
 
 runtime:
@@ -34,8 +29,8 @@ runtime:
           expect(res.status).to.equal(200);
         });
 
-        test("Response time is less than 200ms", () => {
-          expect(res.responseTime).to.be.below(200);
+        test("Response time is less than 5000ms", () => {
+          expect(res.responseTime).to.be.below(5000);
         });
 
 settings:
