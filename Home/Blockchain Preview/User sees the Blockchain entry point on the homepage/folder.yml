@@ -1,0 +1,19 @@
+info:
+  name: User sees the Blockchain entry point on the homepage
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # <span>**User sees the Blockchain entry point on the homepage**</span>
+
+    **Given** the user is authenticated \
+    **And** the user is on the Super App homepage \
+    **When** the homepage is displayed \
+    **Then** the Blockchain icon should be displayed \
+    **And** the Blockchain icon should be clearly identifiable \
+    **And** the Blockchain entry point should follow the approved Super App design
+  type: text/markdown

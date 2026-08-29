@@ -1,0 +1,81 @@
+info:
+  name: Verify Otp
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{Url-Dev-mydot}}auth/superapp/login/"
+  headers:
+    - name: accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+
+        "phone_number": "{{phone_number}}",
+        "pre_auth_token": "{{pre_auth_token}}",
+        "mfa_method": "sms",
+        "otp": "{{otp}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 1000ms", () => {
+          expect(res.responseTime).to.be.below(1000);
+        });
+
+        const headers = res.headers;
+
+        // گرفتن Set-Cookie
+        const setCookies = headers["set-cookie"];
+
+        if (!setCookies) {
+          throw new Error("Set-Cookie header not found");
+        }
+
+        // پیدا کردن Access Token
+        const accessCookie = setCookies.find(cookie =>
+          cookie.startsWith("access_token=")
+        );
+
+        // پیدا کردن Refresh Token
+        const refreshCookie = setCookies.find(cookie =>
+          cookie.startsWith("refresh_token=")
+        );
+
+        // استخراج Access Token
+        if (accessCookie) {
+          const accessToken = accessCookie.split(";")[0].split("=")[1];
+          bru.setVar("access_token", accessToken);
+        } else {
+          throw new Error("access_token not found");
+        }
+
+        // استخراج Refresh Token
+        if (refreshCookie) {
+          const refreshToken = refreshCookie.split(";")[0].split("=")[1];
+          bru.setVar("refresh_token", refreshToken);
+        } else {
+          throw new Error("refresh_token not found");
+        }
+
+        console.log("Access Token saved");
+        console.log("Refresh Token saved");
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

@@ -1,0 +1,42 @@
+info:
+  name: Bill Gas Inquiry
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{Url-Dev}}services/financial/inquiry/bill/gas/"
+  headers:
+    - name: accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+    - name: Authorization
+      value: Bearer {{access_token}}
+  body:
+    type: json
+    data: |-
+      {
+        "participate_code": "",
+        "gas_bill_id": "{{Gas-id}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 5000ms", () => {
+          expect(res.responseTime).to.be.below(5000);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

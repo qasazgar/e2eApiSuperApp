@@ -1,0 +1,46 @@
+info:
+  name: Car Traffic-fines Inquiry
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{Url-Dev}}services/financial/inquiry/vehicle/traffic-fines/"
+  body:
+    type: json
+    data: |-
+      {
+        "plate_number": "{{plate_number_car}}",
+        "mobile_number": "{{phone_number}}",
+        "national_id": "{{national_id}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 200ms", () => {
+          expect(res.responseTime).to.be.below(200);
+        });
+
+        let data = res.body;
+
+        if (typeof data === "string") {
+          data = JSON.parse(data);
+        }
+
+        bru.setVar("trace_number", data.data.trace_number);
+        bru.setVar("inquiry_fee", data.data.inquiry_fee);
+        bru.setVar("otp", data.otp);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

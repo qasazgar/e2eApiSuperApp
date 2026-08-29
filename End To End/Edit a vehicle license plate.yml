@@ -1,0 +1,91 @@
+info:
+  name: Edit a vehicle license plate
+  type: http
+  seq: 2
+
+http:
+  method: PATCH
+  url: "{{Url-Dev}}services/financial/vehicles/{{id_plate_number_car}}/"
+  body:
+    type: json
+    data: |-
+      {
+        "title": "شخصی",
+        "plate_number": "{{edit_plate_number_car}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: before-request
+      code: |-
+        const editPlates = [
+          "13/الف/418/52",
+          "24/ب/672/63",
+          "35/ج/195/74",
+          "46/د/843/85",
+          "57/س/261/96",
+          "68/ص/734/17",
+          "79/ط/526/28",
+          "81/ظ/389/49",
+          "92/ع/615/30",
+          "13/ف/927/41",
+          "24/ق/354/52",
+          "35/ک/781/63",
+          "46/گ/236/74",
+          "57/ل/594/85",
+          "68/م/817/96",
+          "79/ن/463/17",
+          "81/و/725/28",
+          "92/ه/148/39",
+          "13/ی/536/40",
+          "24/پ/892/51",
+          "35/ت/417/62",
+          "46/ث/653/73",
+          "57/ز/284/84",
+          "68/ژ/769/95",
+          "79/ش/321/16",
+          "81/ع/548/27",
+          "92/غ/876/38",
+          "13/ک/243/49",
+          "24/م/615/50",
+          "35/ن/982/61"
+        ];
+
+        let index = Number(bru.getVar("edit_plate_index") || 0);
+
+        // جلوگیری از استفاده مجدد
+        if (index >= editPlates.length) {
+          throw new Error(
+            "تمام 30 پلاک ویرایش استفاده شده‌اند. پلاک تکراری ارسال نمی‌شود."
+          );
+        }
+
+        // انتخاب پلاک جدید
+        const selectedPlate = editPlates[index];
+
+        // ذخیره پلاک برای Body
+        bru.setVar("edit_plate_number_car", selectedPlate);
+
+        // افزایش index برای اجرای بعدی
+        bru.setVar("edit_plate_index", String(index + 1));
+
+        console.log("Selected edit plate:", selectedPlate);
+        console.log("Edit plate index:", index + 1);
+        console.log("Remaining plates:", editPlates.length - (index + 1));
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 200ms", () => {
+          expect(res.responseTime).to.be.below(200);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

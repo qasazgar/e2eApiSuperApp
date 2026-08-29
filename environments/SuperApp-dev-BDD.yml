@@ -1,4 +1,4 @@
-name: SuperApp-dev
+name: SuperApp-dev-BDD
 variables:
   - name: phone_number
     value: "09120233186"
@@ -62,4 +62,10 @@ variables:
     description: ""
   - name: Invalid_otp
     value: "222222"
+    description: ""
+  - name: Url_dotscan
+    value: https://dotscan.one/
+    description: ""
+  - name: Url_rpc_dotone
+    value: https://rpc.dotone.online/
     description: ""

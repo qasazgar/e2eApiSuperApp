@@ -1,0 +1,71 @@
+info:
+  name: Network Status
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: "{{Url_rpc_dotone}}"
+  headers:
+    - name: accept
+      value: application/json
+    - name: accept-language
+      value: en-US,en;q=0.9,fa-IR;q=0.8,fa;q=0.7
+    - name: origin
+      value: https://superapp-dev.dpsb.ir
+    - name: priority
+      value: u=1, i
+    - name: referer
+      value: https://superapp-dev.dpsb.ir/
+    - name: sec-ch-ua
+      value: '"Not=A?Brand";v="99", "Google Chrome";v="151", "Chromium";v="151"'
+    - name: sec-ch-ua-mobile
+      value: ?0
+    - name: sec-ch-ua-platform
+      value: '"macOS"'
+    - name: sec-fetch-dest
+      value: empty
+    - name: sec-fetch-mode
+      value: cors
+    - name: sec-fetch-site
+      value: cross-site
+    - name: user-agent
+      value: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 1000ms", () => {
+          expect(res.responseTime).to.be.below(1000);
+        });
+
+        test("Network state", () => {
+          let data = res.body;
+
+          if (typeof data === "string") {
+            data = JSON.parse(data);
+          }
+
+          const state = data.main?.[0]?.state;
+
+          if (state === "OK") {
+            console.log("✅ شبکه فعال است");
+          } else {
+            console.log("❌ شبکه غیرفعال است");
+          }
+
+          expect(state).to.equal("OK");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

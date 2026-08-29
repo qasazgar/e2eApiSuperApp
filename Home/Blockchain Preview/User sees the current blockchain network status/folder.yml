@@ -1,0 +1,18 @@
+info:
+  name: User sees the current blockchain network status
+  type: folder
+  seq: 3
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # <span>**User sees the current blockchain network status**</span>
+
+    **Given** the user has opened the Blockchain Explorer \
+    **And** the blockchain API is available \
+    **When** the network information is loaded \
+    **Then** the current network status should be displayed \
+    **And** the displayed status should be retrieved dynamically from the blockchain API
+  type: text/markdown
