@@ -1,5 +1,5 @@
 info:
-  name: 2- Verify Otp
+  name: 02- Verify Otp
   type: http
   seq: 2
 
