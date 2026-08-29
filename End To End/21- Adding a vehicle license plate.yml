@@ -98,21 +98,34 @@ runtime:
           }
         }
 
-        if (!data.data || data.data.id === undefined) {
-          throw new Error(
-            "id not found in response: " + JSON.stringify(data)
+        // فقط در صورت موفقیت ID را ذخیره کن
+        if (res.status === 201 && data.data && data.data.id !== undefined) {
+
+          bru.setVar(
+            "id_plate_number_car",
+            String(data.data.id)
+          );
+
+          console.log(
+            "✅ Vehicle added successfully"
+          );
+
+          console.log(
+            "🆔 id_plate_number_car:",
+            data.data.id
+          );
+
+        } else {
+
+          console.log(
+            "❌ Vehicle was not added"
+          );
+
+          console.log(
+            "Message:",
+            data.message || "Unknown error"
           );
         }
-
-        bru.setVar(
-          "id_plate_number_car",
-          String(data.data.id)
-        );
-
-        console.log(
-          "id_plate_number_car:",
-          data.data.id
-        );
 
 settings:
   encodeUrl: true

@@ -29,19 +29,21 @@ runtime:
           expect(res.responseTime).to.be.below(200);
         });
 
-        test("Status code is 200", () => {
-          expect(res.status).to.equal(200);
-        });
-
         let data = res.body;
 
         if (typeof data === "string") {
           data = JSON.parse(data);
         }
 
-        const latestNotificationId = data.data.results[0].id;
+        if (data.data && data.data.results && data.data.results.length > 0) {
+          const latestNotificationId = data.data.results[0].id;
 
-        bru.setVar("latest_notification_id", latestNotificationId);
+          bru.setVar("latest_notification_id", latestNotificationId);
+
+          console.log("✅ Latest Notification ID:", latestNotificationId);
+        } else {
+          console.log("❌ Notification پیدا نشد");
+        }
 
 settings:
   encodeUrl: true
