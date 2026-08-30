@@ -1,0 +1,18 @@
+info:
+  name: 05- User sees the blockchain transaction activity trend
+  type: folder
+  seq: 5
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # <span>**User sees the blockchain transaction activity trend**</span>
+
+    **Given** the user has opened the Blockchain Explorer \
+    **And** transaction activity data is available \
+    **When** the transaction trend data is loaded \
+    **Then** the transaction activity trend should be displayed \
+    **And** the configured time period should be displayed according to the approved design
+  type: text/markdown

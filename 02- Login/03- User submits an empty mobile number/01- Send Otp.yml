@@ -1,0 +1,35 @@
+info:
+  name: 01- Send Otp
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{Url-Dev-mydot}}auth/superapp/login/"
+  body:
+    type: json
+    data: |-
+      {
+        "phone_number": ""
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 400", () => {
+          expect(res.status).to.equal(400);
+          console.log("❌ فیلد شماره موبایل خالی می‌باشد");
+        });
+
+        test("Response time is less than 1000ms", () => {
+          expect(res.responseTime).to.be.below(1000);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

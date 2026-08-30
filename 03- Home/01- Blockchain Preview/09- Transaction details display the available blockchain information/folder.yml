@@ -1,0 +1,24 @@
+info:
+  name: 09- Transaction details display the available blockchain information
+  type: folder
+  seq: 9
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # <span>**Transaction details display the available blockchain information**</span>
+
+    **Given** the user has selected a transaction \
+    **And** transaction details are available from the API \
+    **When** the transaction details are displayed \
+    **Then** the transaction hash should be displayed when available \
+    **And** the transaction status should be displayed when available \
+    **And** the block number should be displayed when available \
+    **And** the timestamp should be displayed when available \
+    **And** the sender should be displayed when available \
+    **And** the receiver should be displayed when available \
+    **And** the amount should be displayed when available \
+    **And** the transaction type should be displayed when available
+  type: text/markdown

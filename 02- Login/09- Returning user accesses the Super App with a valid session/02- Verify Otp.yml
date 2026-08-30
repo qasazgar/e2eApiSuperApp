@@ -1,0 +1,79 @@
+info:
+  name: 02- Verify Otp
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{Url-Dev-mydot}}auth/superapp/login/"
+  headers:
+    - name: accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+
+        "phone_number": "{{phone_number}}",
+        "pre_auth_token": "{{pre_auth_token}}",
+        "mfa_method": "sms",
+        "otp": "{{otp}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+        test("Response time is less than 1000ms", () => {
+          expect(res.responseTime).to.be.below(1000);
+        });
+
+        test("Token validity", () => {
+          const setCookie = res.headers["set-cookie"];
+
+          expect(setCookie).to.exist;
+
+          const cookies = Array.isArray(setCookie)
+            ? setCookie
+            : [setCookie];
+
+          const accessCookie = cookies.find(cookie =>
+            cookie.includes("access_token=")
+          );
+
+          const refreshCookie = cookies.find(cookie =>
+            cookie.includes("refresh_token=")
+          );
+
+          expect(accessCookie).to.exist;
+          expect(refreshCookie).to.exist;
+
+          const accessMaxAge = Number(
+            accessCookie.match(/Max-Age=(\d+)/i)[1]
+          );
+
+          const refreshMaxAge = Number(
+            refreshCookie.match(/Max-Age=(\d+)/i)[1]
+          );
+
+          console.log(
+            `✅ access_token به مدت ${Math.floor(accessMaxAge / 60)} دقیقه فعال شد`
+          );
+
+          console.log(
+            `✅ refresh_token به مدت ${Math.floor(refreshMaxAge / 86400)} روز اعتبار دارد`
+          );
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

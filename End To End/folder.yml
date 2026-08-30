@@ -1,7 +1,0 @@
-info:
-  name: End To End
-  type: folder
-  seq: 1
-
-request:
-  auth: inherit

@@ -1,0 +1,20 @@
+info:
+  name: 06- User enters an invalid OTP
+  type: folder
+  seq: 6
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # **User enters an invalid OTP**
+
+    **Given** the user has requested an OTP \
+    **And** the user is on the OTP verification step \
+    **When** the user enters an invalid OTP \
+    **And** the user submits the OTP \
+    **Then** the OTP verification should fail \
+    **And** an appropriate error message should be displayed \
+    **And** the user should not be authenticated
+  type: text/markdown

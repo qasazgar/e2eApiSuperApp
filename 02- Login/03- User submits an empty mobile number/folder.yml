@@ -1,0 +1,18 @@
+info:
+  name: 03- User submits an empty mobile number
+  type: folder
+  seq: 3
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # **User submits an empty mobile number**
+
+    **Given** the user is on the Login page \
+    **When** the user submits the login form without entering a mobile number \
+    **Then** the system should display a validation error \
+    **And** the user should remain on the Login page \
+    **And** the OTP verification step should not be started
+  type: text/markdown

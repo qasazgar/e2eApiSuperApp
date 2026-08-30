@@ -1,0 +1,18 @@
+info:
+  name: 04- User sees the latest available blockchain statistics
+  type: folder
+  seq: 4
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # <span>**User sees the latest available blockchain statistics**</span>
+
+    **Given** the user has opened the Blockchain Explorer \
+    **And** the blockchain API returns blockchain statistics \
+    **When** the statistics are loaded \
+    **Then** the latest available blockchain statistics should be displayed \
+    **And** all displayed statistics should be retrieved dynamically from the API
+  type: text/markdown

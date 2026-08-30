@@ -1,0 +1,18 @@
+info:
+  name: 06- Transaction trend handles a period with no transaction data
+  type: folder
+  seq: 6
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # <span>**Transaction trend handles a period with no transaction data**</span>
+
+    **Given** the user has opened the Blockchain Explorer \
+    **And** no transaction data is available for the configured time period \
+    **When** the transaction trend is loaded \
+    **Then** an appropriate empty state should be displayed \
+    **And** the user should understand that no transaction data is currently available
+  type: text/markdown

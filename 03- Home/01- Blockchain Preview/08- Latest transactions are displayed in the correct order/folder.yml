@@ -1,0 +1,17 @@
+info:
+  name: 08- Latest transactions are displayed in the correct order
+  type: folder
+  seq: 8
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # <span>**Latest transactions are displayed in the correct order**</span>
+
+    **Given** the blockchain API returns multiple transactions \
+    **When** the latest transactions are displayed \
+    **Then** transactions should be ordered from the most recent to the oldest \
+    **And** the ordering should be based on the available timestamp or block order
+  type: text/markdown

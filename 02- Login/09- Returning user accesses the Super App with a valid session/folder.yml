@@ -1,0 +1,19 @@
+info:
+  name: 09- Returning user accesses the Super App with a valid session
+  type: folder
+  seq: 9
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # **Returning user accesses the Super App with a valid session**
+
+    **Given** the user has previously authenticated \
+    **And** the user's session is valid \
+    **When** the user opens the DotOne Super App \
+    **Then** the system should validate the user's session \
+    **And** the user should be granted access to the Super App \
+    **And** the user should be redirected to the personalized homepage
+  type: text/markdown

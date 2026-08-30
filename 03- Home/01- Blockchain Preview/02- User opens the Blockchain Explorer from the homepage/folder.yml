@@ -1,0 +1,17 @@
+info:
+  name: 02- User opens the Blockchain Explorer from the homepage
+  type: folder
+  seq: 2
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # <span>**User opens the Blockchain Explorer from the homepage**</span>
+
+    **Given** the user is on the Super App homepage \
+    **And** the Blockchain entry point is displayed \
+    **When** the user selects the Blockchain icon \
+    **Then** the Blockchain Explorer page should be opened
+  type: text/markdown

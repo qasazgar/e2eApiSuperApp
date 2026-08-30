@@ -1,0 +1,18 @@
+info:
+  name: 07- User sees the latest blockchain transactions
+  type: folder
+  seq: 7
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # <span>**User sees the latest blockchain transactions**</span>
+
+    **Given** the user has opened the Blockchain Explorer \
+    **And** blockchain transactions are available \
+    **When** the latest transactions are loaded \
+    **Then** the latest blockchain transactions should be displayed \
+    **And** each transaction should display the available information defined by the API and approved design
+  type: text/markdown
