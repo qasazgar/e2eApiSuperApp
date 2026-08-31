@@ -52,27 +52,28 @@ runtime:
           "35/ن/982/61"
         ];
 
+        // دریافت index فعلی
         let index = Number(bru.getVar("edit_plate_index") || 0);
 
-        // جلوگیری از استفاده مجدد
+        // بررسی تمام شدن پلاک‌ها
         if (index >= editPlates.length) {
           throw new Error(
-            "تمام 30 پلاک ویرایش استفاده شده‌اند. پلاک تکراری ارسال نمی‌شود."
+            "❌ تمام 30 پلاک ویرایش استفاده شده‌اند. پلاک تکراری ارسال نمی‌شود."
           );
         }
 
-        // انتخاب پلاک جدید
+        // انتخاب پلاک
         const selectedPlate = editPlates[index];
 
-        // ذخیره پلاک برای Body
+        // ذخیره برای Body
         bru.setVar("edit_plate_number_car", selectedPlate);
 
-        // افزایش index برای اجرای بعدی
-        bru.setVar("edit_plate_index", String(index + 1));
-
-        console.log("Selected edit plate:", selectedPlate);
-        console.log("Edit plate index:", index + 1);
-        console.log("Remaining plates:", editPlates.length - (index + 1));
+        console.log("🚗 Selected edit plate:", selectedPlate);
+        console.log("🔢 Current index:", index);
+        console.log(
+          "📋 Remaining plates:",
+          editPlates.length - index
+        );
     - type: after-response
       code: |-
         test("Status code is 200", () => {
@@ -82,6 +83,24 @@ runtime:
         test("Response time is less than 200ms", () => {
           expect(res.responseTime).to.be.below(200);
         });
+
+        // فقط بعد از موفقیت، index را افزایش بده
+        if (res.status === 200) {
+          let index = Number(bru.getVar("edit_plate_index") || 0);
+
+          bru.setVar(
+            "edit_plate_index",
+            String(index + 1)
+          );
+
+          console.log("✅ Edit successful");
+          console.log("➡️ Next edit plate index:", index + 1);
+        } else {
+          console.log("❌ Edit failed");
+          console.log(
+            "⚠️ Same plate will NOT be counted as used."
+          );
+        }
 
 settings:
   encodeUrl: true

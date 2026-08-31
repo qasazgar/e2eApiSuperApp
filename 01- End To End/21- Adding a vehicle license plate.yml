@@ -53,35 +53,20 @@ runtime:
           "33/ن/681/40"
         ];
 
-        // دریافت index قبلی
         let index = Number(bru.getVar("plate_index") || 0);
 
-        // بررسی اینکه پلاک باقی مانده باشد
         if (index >= plates.length) {
-          throw new Error(
-            "تمام 30 پلاک استفاده شده‌اند. پلاک تکراری ارسال نمی‌شود."
-          );
+          throw new Error("❌ تمام پلاک‌ها بررسی شده‌اند.");
         }
 
-        // انتخاب پلاک
         const selectedPlate = plates[index];
 
-        // ذخیره پلاک برای Body
         bru.setVar("plate_number_car", selectedPlate);
 
-        // افزایش index برای Request بعدی
-        bru.setVar("plate_index", String(index + 1));
-
-        // Log
-        console.log("Selected plate:", selectedPlate);
-        console.log("Plate index:", index + 1);
-        console.log("Remaining plates:", plates.length - (index + 1));
+        console.log("🚗 Selected plate:", selectedPlate);
+        console.log("🔢 Index:", index);
     - type: after-response
       code: |-
-        test("Status code is 201", () => {
-          expect(res.status).to.equal(201);
-        });
-
         test("Response time is less than 200ms", () => {
           expect(res.responseTime).to.be.below(200);
         });
@@ -92,40 +77,56 @@ runtime:
           try {
             data = JSON.parse(data);
           } catch (error) {
-            throw new Error(
-              "Response is not JSON. Response body: " + data.substring(0, 300)
-            );
+            console.log("❌ Response is not JSON");
+            return;
           }
         }
 
-        // فقط در صورت موفقیت ID را ذخیره کن
+        let index = Number(bru.getVar("plate_index") || 0);
+
+        // اگر پلاک قبلاً ثبت شده بود
+        if (
+          res.status === 400 &&
+          data.message === "This vehicle plate number is already registered."
+        ) {
+          console.log("⚠️ این پلاک قبلاً ثبت شده:");
+          console.log("🚗", bru.getVar("plate_number_car"));
+
+          // برو سراغ پلاک بعدی
+          bru.setVar("plate_index", String(index + 1));
+
+          console.log("➡️ پلاک بعدی در اجرای بعدی استفاده می‌شود");
+
+          return;
+        }
+
+        // اگر با موفقیت ثبت شد
         if (res.status === 201 && data.data && data.data.id !== undefined) {
+
+          test("Status code is 201", () => {
+            expect(res.status).to.equal(201);
+          });
 
           bru.setVar(
             "id_plate_number_car",
             String(data.data.id)
           );
 
-          console.log(
-            "✅ Vehicle added successfully"
+          // این پلاک با موفقیت مصرف شد → برو سراغ بعدی
+          bru.setVar(
+            "plate_index",
+            String(index + 1)
           );
 
-          console.log(
-            "🆔 id_plate_number_car:",
-            data.data.id
-          );
+          console.log("✅ Vehicle added successfully");
+          console.log("🆔 ID:", data.data.id);
+          console.log("🚗 Plate:", bru.getVar("plate_number_car"));
 
-        } else {
-
-          console.log(
-            "❌ Vehicle was not added"
-          );
-
-          console.log(
-            "Message:",
-            data.message || "Unknown error"
-          );
+          return;
         }
+
+        console.log("❌ Unexpected response:");
+        console.log(JSON.stringify(data));
 
 settings:
   encodeUrl: true

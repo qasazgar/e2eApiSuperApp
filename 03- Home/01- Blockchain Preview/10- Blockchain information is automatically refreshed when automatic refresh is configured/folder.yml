@@ -1,0 +1,7 @@
+info:
+  name: 10- Blockchain information is automatically refreshed when automatic refresh is configured
+  type: folder
+  seq: 10
+
+request:
+  auth: inherit

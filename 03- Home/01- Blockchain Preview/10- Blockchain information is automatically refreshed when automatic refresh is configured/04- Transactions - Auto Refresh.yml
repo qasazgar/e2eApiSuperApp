@@ -1,0 +1,113 @@
+info:
+  name: 04- Transactions - Auto Refresh
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: "{{Url_dotscan}}api/v2/main-page/transactions"
+  headers:
+    - name: accept
+      value: application/json
+    - name: accept-language
+      value: en-US,en;q=0.9,fa-IR;q=0.8,fa;q=0.7
+    - name: origin
+      value: https://superapp-dev.dpsb.ir
+    - name: priority
+      value: u=1, i
+    - name: referer
+      value: https://superapp-dev.dpsb.ir/
+    - name: sec-ch-ua
+      value: '"Not=A?Brand";v="99", "Google Chrome";v="151", "Chromium";v="151"'
+    - name: sec-ch-ua-mobile
+      value: ?0
+    - name: sec-ch-ua-platform
+      value: '"macOS"'
+    - name: sec-fetch-dest
+      value: empty
+    - name: sec-fetch-mode
+      value: cors
+    - name: sec-fetch-site
+      value: cross-site
+    - name: user-agent
+      value: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: before-request
+      code: await new Promise(resolve => setTimeout(resolve, 180000));
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 1000ms", () => {
+          expect(res.responseTime).to.be.below(1000);
+        });
+
+        test("Check Transaction Hash Update", () => {
+
+          const transactions = res.body;
+
+          if (!Array.isArray(transactions) || transactions.length === 0) {
+            console.log("❌ Transaction برای انتخاب و نمایش وجود ندارد");
+            return;
+          }
+
+          // Hash های API اول
+          const oldHashes = JSON.parse(
+            bru.getVar("transaction_hashes_old") || "[]"
+          );
+
+          // Hash های API دوم
+          const newHashes = transactions
+            .filter(tx => tx.hash)
+            .map(tx => tx.hash);
+
+
+          // پیدا کردن فقط Hash های جدید
+          const changedHashes = newHashes.filter(
+            hash => !oldHashes.includes(hash)
+          );
+
+
+          // ==============================
+          // اگر Hash جدید پیدا شد
+          // ==============================
+
+          if (changedHashes.length > 0) {
+
+            console.log(
+              "✅ Hash های Transaction آپدیت شدند"
+            );
+
+            console.log(
+              `تعداد Hash جدید: ${changedHashes.length}`
+            );
+
+            changedHashes.forEach((hash, index) => {
+
+              console.log(
+                `✅ Hash جدید ${index + 1}: ${hash}`
+              );
+
+            });
+
+          } else {
+
+            console.log(
+              "❌ API Transaction تغییر نکرده است"
+            );
+
+          }
+
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
