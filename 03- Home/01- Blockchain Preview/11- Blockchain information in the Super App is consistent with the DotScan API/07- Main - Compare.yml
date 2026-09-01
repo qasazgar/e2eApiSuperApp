@@ -1,0 +1,151 @@
+info:
+  name: 07- Main - Compare
+  type: http
+  seq: 7
+
+http:
+  method: GET
+  url: "{{Url_dotscan}}api/v1/pages/main"
+  headers:
+    - name: accept
+      value: application/json
+    - name: accept-language
+      value: en-US,en;q=0.9,fa-IR;q=0.8,fa;q=0.7
+    - name: origin
+      value: https://apps.mydot.one
+    - name: priority
+      value: u=1, i
+    - name: referer
+      value: https://apps.mydot.one/
+    - name: sec-ch-ua
+      value: '"Not=A?Brand";v="99", "Google Chrome";v="151", "Chromium";v="151"'
+    - name: sec-ch-ua-mobile
+      value: ?1
+    - name: sec-ch-ua-platform
+      value: '"iOS"'
+    - name: sec-fetch-dest
+      value: empty
+    - name: sec-fetch-mode
+      value: cors
+    - name: sec-fetch-site
+      value: cross-site
+    - name: user-agent
+      value: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 1000ms", () => {
+          expect(res.responseTime).to.be.below(1000);
+        });
+
+        const initialData = JSON.parse(bru.getVar("api2_initial"));
+        const currentData = res.body;
+
+        // مقایسه اطلاعات API دوم و API پنجم
+        if (JSON.stringify(initialData) === JSON.stringify(currentData)) {
+
+          console.log("✅ اطلاعات api main در dotscan با dotchain یکسان میباشد");
+
+        } else {
+
+          console.log("❌ اطلاعات api main در dotscan با dotchain یکسان نمیباشد");
+
+          // بررسی فیلدهای اصلی
+          if (
+            JSON.stringify(initialData.average_block_time) !==
+            JSON.stringify(currentData.average_block_time)
+          ) {
+            console.log("❌ average_block_time تغییر کرده است");
+          }
+
+          if (
+            JSON.stringify(initialData.total_addresses) !==
+            JSON.stringify(currentData.total_addresses)
+          ) {
+            console.log("❌ total_addresses تغییر کرده است");
+          }
+
+          if (
+            JSON.stringify(initialData.total_blocks) !==
+            JSON.stringify(currentData.total_blocks)
+          ) {
+            console.log("❌ total_blocks تغییر کرده است");
+          }
+
+          if (
+            JSON.stringify(initialData.total_transactions) !==
+            JSON.stringify(currentData.total_transactions)
+          ) {
+            console.log("❌ total_transactions تغییر کرده است");
+          }
+
+          if (
+            JSON.stringify(initialData.yesterday_transactions) !==
+            JSON.stringify(currentData.yesterday_transactions)
+          ) {
+            console.log("❌ yesterday_transactions تغییر کرده است");
+          }
+
+          if (
+            JSON.stringify(initialData.daily_new_transactions) !==
+            JSON.stringify(currentData.daily_new_transactions)
+          ) {
+            console.log("❌ daily_new_transactions تغییر کرده است");
+          }
+
+          if (
+            JSON.stringify(initialData.total_operational_transactions) !==
+            JSON.stringify(currentData.total_operational_transactions)
+          ) {
+            console.log("❌ total_operational_transactions تغییر کرده است");
+          }
+
+          if (
+            JSON.stringify(initialData.yesterday_operational_transactions) !==
+            JSON.stringify(currentData.yesterday_operational_transactions)
+          ) {
+            console.log("❌ yesterday_operational_transactions تغییر کرده است");
+          }
+
+          if (
+            JSON.stringify(initialData.op_stack_total_operational_transactions) !==
+            JSON.stringify(currentData.op_stack_total_operational_transactions)
+          ) {
+            console.log("❌ op_stack_total_operational_transactions تغییر کرده است");
+          }
+
+          if (
+            JSON.stringify(initialData.op_stack_yesterday_operational_transactions) !==
+            JSON.stringify(currentData.op_stack_yesterday_operational_transactions)
+          ) {
+            console.log("❌ op_stack_yesterday_operational_transactions تغییر کرده است");
+          }
+
+          if (
+            JSON.stringify(initialData.daily_new_operational_transactions) !==
+            JSON.stringify(currentData.daily_new_operational_transactions)
+          ) {
+            console.log("❌ daily_new_operational_transactions تغییر کرده است");
+          }
+
+          if (
+            JSON.stringify(initialData.op_stack_daily_new_operational_transactions) !==
+            JSON.stringify(currentData.op_stack_daily_new_operational_transactions)
+          ) {
+            console.log("❌ op_stack_daily_new_operational_transactions تغییر کرده است");
+          }
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

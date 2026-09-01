@@ -1,0 +1,92 @@
+info:
+  name: 06- Stats - Compare
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: "{{Url_dotscan}}api/v2/stats"
+  headers:
+    - name: accept
+      value: application/json
+    - name: accept-language
+      value: en-US,en;q=0.9,fa-IR;q=0.8,fa;q=0.7
+    - name: origin
+      value: https://apps.mydot.one
+    - name: priority
+      value: u=1, i
+    - name: referer
+      value: https://apps.mydot.one/
+    - name: sec-ch-ua
+      value: '"Not=A?Brand";v="99", "Google Chrome";v="151", "Chromium";v="151"'
+    - name: sec-ch-ua-mobile
+      value: ?1
+    - name: sec-ch-ua-platform
+      value: '"iOS"'
+    - name: sec-fetch-dest
+      value: empty
+    - name: sec-fetch-mode
+      value: cors
+    - name: sec-fetch-site
+      value: cross-site
+    - name: user-agent
+      value: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 1000ms", () => {
+          expect(res.responseTime).to.be.below(1000);
+        });
+
+        const initialData = JSON.parse(bru.getVar("api1_initial"));
+        const data = res.body;
+
+        const currentData = {
+          average_block_time: data.average_block_time,
+          coin_image: data.coin_image,
+          coin_price: data.coin_price,
+          coin_price_change_percentage: data.coin_price_change_percentage,
+          gas_price_updated_at: data.gas_price_updated_at,
+          gas_used_today: data.gas_used_today,
+          market_cap: data.market_cap,
+          secondary_coin_image: data.secondary_coin_image,
+          secondary_coin_price: data.secondary_coin_price,
+          static_gas_price: data.static_gas_price,
+          total_addresses: data.total_addresses,
+          total_blocks: data.total_blocks,
+          total_gas_used: data.total_gas_used,
+          total_transactions: data.total_transactions,
+          transactions_today: data.transactions_today,
+          tvl: data.tvl
+        };
+
+        const initialJson = JSON.stringify(initialData);
+        const currentJson = JSON.stringify(currentData);
+
+        if (initialJson === currentJson) {
+
+          console.log(
+            "✅ اطلاعات api stats در dotscan با dotchain یکسان میباشد"
+          );
+
+        } else {
+
+          console.log(
+            "❌ اطلاعات api stats در dotscan با dotchain یکسان نمیباشد"
+          );
+
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

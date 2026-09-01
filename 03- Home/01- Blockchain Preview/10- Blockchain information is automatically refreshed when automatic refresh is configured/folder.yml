@@ -5,3 +5,14 @@ info:
 
 request:
   auth: inherit
+
+docs:
+  content: |-
+    # <span>**Blockchain information is automatically refreshed when automatic refresh is configured**</span>
+
+    **Given** automatic blockchain data refresh is configured \
+    **And** the user is viewing the Blockchain Explorer \
+    **When** the configured refresh interval is reached \
+    **Then** the application should request the latest blockchain information \
+    **And** the displayed blockchain data should be updated
+  type: text/markdown

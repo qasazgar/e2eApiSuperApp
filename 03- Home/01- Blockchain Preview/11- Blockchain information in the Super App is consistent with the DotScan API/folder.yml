@@ -1,0 +1,16 @@
+info:
+  name: 11- Blockchain information in the Super App is consistent with the DotScan API
+  type: folder
+  seq: 11
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # <span>**Blockchain information in the Super App is consistent with the DotScan API**</span></span>
+
+    **Given** the DotScan API returns the latest blockchain information \
+    **When** the Blockchain Explorer displays the blockchain data \
+    **Then** the displayed information should be consistent with the corresponding DotScan API response
+  type: text/markdown

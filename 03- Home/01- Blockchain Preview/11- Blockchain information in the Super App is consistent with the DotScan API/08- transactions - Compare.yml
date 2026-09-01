@@ -1,0 +1,154 @@
+info:
+  name: 08- transactions - Compare
+  type: http
+  seq: 8
+
+http:
+  method: GET
+  url: "{{Url_dotscan}}api/v2/main-page/transactions"
+  headers:
+    - name: accept
+      value: application/json
+    - name: accept-language
+      value: en-US,en;q=0.9,fa-IR;q=0.8,fa;q=0.7
+    - name: origin
+      value: https://apps.mydot.one
+    - name: priority
+      value: u=1, i
+    - name: referer
+      value: https://apps.mydot.one/
+    - name: sec-ch-ua
+      value: '"Not=A?Brand";v="99", "Google Chrome";v="151", "Chromium";v="151"'
+    - name: sec-ch-ua-mobile
+      value: ?1
+    - name: sec-ch-ua-platform
+      value: '"iOS"'
+    - name: sec-fetch-dest
+      value: empty
+    - name: sec-fetch-mode
+      value: cors
+    - name: sec-fetch-site
+      value: cross-site
+    - name: user-agent
+      value: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 1000ms", () => {
+          expect(res.responseTime).to.be.below(1000);
+        });
+
+        const api3Transactions = JSON.parse(bru.getVar("api3_initial"));
+        const api6Transactions = res.body;
+
+        let isSame = true;
+
+        // بررسی اینکه Responseها آرایه باشند
+        if (
+          !Array.isArray(api3Transactions) ||
+          !Array.isArray(api6Transactions)
+        ) {
+          isSame = false;
+        }
+
+        // مقایسه Transactionها بر اساس hash
+        if (isSame) {
+
+          api3Transactions.forEach((tx3) => {
+
+            const hash3 = tx3.hash?.toLowerCase();
+
+            if (!hash3) {
+              isSame = false;
+              return;
+            }
+
+            // پیدا کردن همان Transaction در API 6
+            const tx6 = api6Transactions.find(
+              (tx) => tx.hash?.toLowerCase() === hash3
+            );
+
+            // اگر Transaction در API 6 وجود نداشت
+            if (!tx6) {
+              isSame = false;
+              return;
+            }
+
+            // فیلدهای مشترک
+            const fields = [
+              "hash",
+              "value",
+              "gas_used",
+              "nonce",
+              "method",
+              "status",
+              "type",
+              "result",
+              "raw_input",
+              "gas_limit",
+              "gas_price",
+              "base_fee_per_gas"
+            ];
+
+            // مقایسه فیلدها
+            fields.forEach((field) => {
+
+              if (String(tx3[field]) !== String(tx6[field])) {
+                isSame = false;
+              }
+
+            });
+
+            // مقایسه from
+            if (
+              tx3.from?.hash?.toLowerCase() !==
+              tx6.from?.hash?.toLowerCase()
+            ) {
+              isSame = false;
+            }
+
+            // مقایسه to
+            if (
+              tx3.to?.hash?.toLowerCase() !==
+              tx6.to?.hash?.toLowerCase()
+            ) {
+              isSame = false;
+            }
+
+            // مقایسه fee
+            if (
+              String(tx3.fee?.value) !==
+              String(tx6.fee?.value)
+            ) {
+              isSame = false;
+            }
+
+          });
+        }
+
+        // نتیجه نهایی
+        if (isSame) {
+
+        console.log("✅ اطلاعات api transactions در dotscan با dotchain یکسان میباشد");
+
+        } else {
+
+        console.log(
+          "❌ اطلاعات api transactions در dotscan با dotchain یکسان نمیباشد"
+        );
+
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

@@ -1,0 +1,47 @@
+info:
+  name: 05- Verify Otp
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{Url-Dev-mydot}}auth/superapp/login/"
+  headers:
+    - name: accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+
+        "phone_number": "{{phone_number}}",
+        "pre_auth_token": "{{pre_auth_token}}",
+        "mfa_method": "sms",
+        "otp": "{{otp}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+
+          if (res.status === 200) {
+            console.log("✅ ورود با موفقیت انجام شد");
+          }
+        });
+
+        test("Response time is less than 1000ms", () => {
+          expect(res.responseTime).to.be.below(1000);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true
