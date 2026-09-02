@@ -1,0 +1,55 @@
+info:
+  name: 03- Get Vod Products
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: "{{Url_dotnama}}menu/"
+  headers:
+    - name: sec-ch-ua-platform
+      value: '"iOS"'
+    - name: Authorization
+      value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNTdlOGE0YmMtZmQ2OS00YWVjLTgyZmMtYjMzOTQ3NmE2MThjIiwicGhvbmUiOiI5OTMwNTEzNTc0Iiwic3VicHJvZmlsZV9pZCI6bnVsbCwic3VicHJvZmlsZV9uYW1lIjoiTWFpbiBQcm9maWxlIiwiYWdlX2dyb3VwIjoiQUxMIiwibWF4X2NvbnRlbnRfcmF0aW5nIjoxOCwiaXNfZGVmYXVsdCI6dHJ1ZSwiaWF0IjoxNzY2OTk0NDUyLCJleHAiOjE3NjY5OTgwNTIsImp0aSI6Ijk0NWUwYzM3LTNlOGMtNGFiYS04N2NlLTVhZGY3NTJjZDM1NiIsInRva2VuX3R5cGUiOiJhY2Nlc3MifQ.6STP1NT9L0P6zq1Igzz8dIL4vjUdkaZjtn9Txg_I_7E
+    - name: Referer
+      value: https://dotnama.ir/
+    - name: User-Agent
+      value: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
+    - name: Accept
+      value: application/json, text/plain, */*
+    - name: sec-ch-ua
+      value: '"Not=A?Brand";v="99", "Google Chrome";v="151", "Chromium";v="151"'
+    - name: sec-ch-ua-mobile
+      value: ?1
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 1000ms", () => {
+          expect(res.responseTime).to.be.below(1000);
+        });
+
+        const data = res.body;
+
+        if (Array.isArray(data.results) && data.results.length > 0) {
+          console.log(
+            "✅ کاربر با موفقیت به https://dotnama.ir/ منتقل شد"
+          );
+        } else {
+          console.log(
+            "❌ کاربر به https://dotnama.ir/ منتقل نشد"
+          );
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

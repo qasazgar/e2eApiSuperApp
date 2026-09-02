@@ -1,0 +1,7 @@
+info:
+  name: 02- Selecting Taxi navigates the user to the Taxi experience
+  type: folder
+  seq: 2
+
+request:
+  auth: inherit

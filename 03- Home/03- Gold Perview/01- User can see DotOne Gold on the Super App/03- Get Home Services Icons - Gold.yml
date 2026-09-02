@@ -1,7 +1,7 @@
 info:
-  name: 03- Get Home Services Icons - Cell Perview
+  name: 03- Get Home Services Icons - Gold
   type: http
-  seq: 3
+  seq: 1
 
 http:
   method: GET
@@ -56,15 +56,15 @@ runtime:
         const results = data.data.results;
 
         const blockchainExists = results.some(item =>
-          item.title === "دات‌وان سل" &&
-          item.title_en === "dotone"
+          item.title === "بازار طلا" &&
+          item.title_en === "gold"
         );
 
         test("Blockchain icon exists on Home", () => {
           if (blockchainExists) {
-            console.log("✅ آیکون Cell در صفحه Home وجود دارد");
+            console.log("✅ آیکون Gold در صفحه Home وجود دارد");
           } else {
-            console.log("❌ آیکون Cell در صفحه Home یافت نشد");
+            console.log("❌ آیکون Gold در صفحه Home یافت نشد");
           }
 
           expect(blockchainExists).to.equal(true);

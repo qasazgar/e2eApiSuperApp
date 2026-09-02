@@ -1,0 +1,40 @@
+info:
+  name: 03- Get Taxi Products
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: "{{Url_Taxi}}"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 1000ms", () => {
+          expect(res.responseTime).to.be.below(1000);
+        });
+
+        const data = res.body;
+
+        if (data) {
+          console.log(
+            "✅ کاربر با موفقیت به https://app.trip.dotone.ir/ منتقل شد"
+          );
+        } else {
+          console.log(
+            "❌ کاربر به https://app.trip.dotone.ir/ منتقل نشد"
+          );
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

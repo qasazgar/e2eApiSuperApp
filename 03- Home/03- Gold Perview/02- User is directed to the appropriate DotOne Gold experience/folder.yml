@@ -5,3 +5,13 @@ info:
 
 request:
   auth: inherit
+
+docs:
+  content: |-
+    # <span>**User is directed to the appropriate DotOne Gold experience**</span>
+
+    **Given** DotOne Gold is displayed in the Super App \
+    **When** the user selects DotOne Gold \
+    **Then** the user should be directed to the appropriate DotOne Gold experience \
+    **And** the DotOne Gold experience should open successfully
+  type: text/markdown

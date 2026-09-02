@@ -1,0 +1,17 @@
+info:
+  name: 02- User is redirected to the VOD website
+  type: folder
+  seq: 2
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # <span>**User is redirected to the VOD website**</span>
+
+    **Given** the VOD entry point is displayed in the Super App \
+    **When** the user selects VOD \
+    **Then** the user should be redirected to the VOD website \
+    **And** the VOD website should open successfully
+  type: text/markdown

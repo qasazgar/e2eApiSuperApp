@@ -1,0 +1,16 @@
+info:
+  name: 01- VOD is presented as a preview entry point
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # <span>**VOD is presented as a preview entry point**</span></span></span>
+
+    **Given** the VOD entry point is displayed in the Super App \
+    **Then** VOD should be presented as a Preview/Entry Point \
+    **And** VOD should not be presented as an internal Super App feature
+  type: text/markdown
