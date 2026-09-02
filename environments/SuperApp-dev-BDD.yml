@@ -69,3 +69,6 @@ variables:
   - name: Url_rpc_dotone
     value: https://rpc.dotone.online/
     description: ""
+  - name: Url_dotone_gold
+    value: https://api.dotone.gold/
+    description: ""

@@ -1,0 +1,7 @@
+info:
+  name: 02- User is directed to the appropriate DotOne Gold experience
+  type: folder
+  seq: 2
+
+request:
+  auth: inherit

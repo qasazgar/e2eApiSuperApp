@@ -1,0 +1,17 @@
+info:
+  name: 01- User can see DotOne Cell on the Super App
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # <span>**User can see DotOne Cell on the Super App**</span>
+
+    **Given** the user is on the Super App Home Page \
+    **When** the Home Page is loaded \
+    **Then** DotOne Cell should be displayed in the service list or Home Page \
+    **And** DotOne Cell should follow the approved Super App UI/UX design<br/>
+  type: text/markdown

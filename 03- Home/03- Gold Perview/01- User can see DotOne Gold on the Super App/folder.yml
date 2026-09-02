@@ -1,0 +1,17 @@
+info:
+  name: 01- User can see DotOne Gold on the Super App
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # <span>**User can see DotOne Gold on the Super App**</span></span>
+
+    **Given** the user is on the Super App Home Page \
+    **When** the Home Page is loaded \
+    **Then** DotOne Gold should be displayed in the service list or Home Page \
+    **And** DotOne Gold should be presented as an available service
+  type: text/markdown
