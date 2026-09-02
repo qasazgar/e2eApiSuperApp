@@ -1,53 +1,95 @@
 pipeline {
-    agent any
+agent any
 
-    stages {
+```
+stages {
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
+    stage('Checkout') {
+        steps {
+            checkout scm
         }
+    }
 
-        stage('Check Environment') {
-            steps {
-                sh '''
-                    node --version
-                    npm --version
-                    bru --version
-                '''
-            }
+    stage('Check Environment') {
+        steps {
+            sh '''
+                echo "Node version:"
+                node --version
+
+                echo "NPM version:"
+                npm --version
+
+                echo "Bruno version:"
+                bru --version
+            '''
         }
+    }
 
-        stage('Prepare Reports') {
-            steps {
-                sh '''
-                    mkdir -p reports
-                '''
-            }
+    stage('Prepare Reports') {
+        steps {
+            sh '''
+                rm -rf reports
+                mkdir -p reports
+            '''
         }
+    }
 
-        stage('Run Bruno') {
-            steps {
-                sh '''
-                    bru run . \
+    stage('Run End To End') {
+        steps {
+            sh '''
+                if [ -d "01- End To End" ]; then
+                    echo "Running End To End tests..."
+
+                    bru run "01- End To End" \
                         --env SuperApp-dev \
-                        --reporter-junit reports/junit.xml \
-                        --reporter-html reports/report.html
-                '''
-            }
+                        --reporter-junit "reports/e2e-junit.xml" \
+                        --reporter-html "reports/e2e-report.html"
+                else
+                    echo "01- End To End folder not found. Skipping..."
+                fi
+            '''
         }
     }
 
-    post {
+    stage('Run Login Tests') {
+        steps {
+            sh '''
+                echo "Running Login tests..."
 
-        always {
-
-            junit 'reports/junit.xml'
-
-            archiveArtifacts artifacts: 'reports/report.html',
-                             allowEmptyArchive: true
-
+                bru run "02- Login" \
+                    --env SuperApp-dev \
+                    --reporter-junit "reports/login-junit.xml" \
+                    --reporter-html "reports/login-report.html"
+            '''
         }
     }
+
+    stage('Run Home Tests') {
+        steps {
+            sh '''
+                echo "Running Home tests..."
+
+                bru run "03- Home" \
+                    --env SuperApp-dev \
+                    --reporter-junit "reports/home-junit.xml" \
+                    --reporter-html "reports/home-report.html"
+            '''
+        }
+    }
+}
+
+post {
+
+    always {
+
+        junit testResults: 'reports/*-junit.xml',
+              allowEmptyResults: true
+
+        archiveArtifacts artifacts: 'reports/*.html',
+                         allowEmptyArchive: true
+
+    }
+}
+```
+
 }
