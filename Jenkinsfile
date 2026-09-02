@@ -56,7 +56,7 @@ stages {
                 echo "Running Login tests..."
 
                 bru run "02- Login" \
-                    --env SuperApp-dev \
+                    --env SuperApp-dev-BDD \
                     --reporter-junit "reports/login-junit.xml" \
                     --reporter-html "reports/login-report.html"
             '''
@@ -69,7 +69,7 @@ stages {
                 echo "Running Home tests..."
 
                 bru run "03- Home" \
-                    --env SuperApp-dev \
+                    --env SuperApp-dev-BDD \
                     --reporter-junit "reports/home-junit.xml" \
                     --reporter-html "reports/home-report.html"
             '''
