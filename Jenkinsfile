@@ -1,214 +1,251 @@
 pipeline {
-agent any
+    agent any
 
-stages {
+    stages {
 
-    stage('Checkout') {
-        steps {
-            checkout scm
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
         }
-    }
 
-    stage('Check Environment') {
-        steps {
-            sh '''
-                node --version
-                npm --version
-                bru --version
-            '''
+        stage('Check Environment') {
+            steps {
+                sh '''
+                    echo "===== Node ====="
+                    node --version
+
+                    echo "===== NPM ====="
+                    npm --version
+
+                    echo "===== Bruno ====="
+                    bru --version
+                '''
+            }
         }
-    }
 
-    stage('Prepare Reports') {
-        steps {
-            sh '''
-                rm -rf reports
-                mkdir -p reports
-                mkdir -p temp-reports
-            '''
+        stage('Prepare Reports') {
+            steps {
+                sh '''
+                    rm -rf reports
+                    rm -rf temp-reports
+                    mkdir -p reports
+                    mkdir -p temp-reports
+                '''
+            }
         }
-    }
 
-    stage('Run All Scenarios') {
-        steps {
-            script {
+        stage('Run All Scenarios') {
+            steps {
+                script {
 
-                def scenarios = [
+                    def scenarios = [
 
-                    // ==============================
-                    // End To End
-                    // ==============================
+                        // =========================
+                        // End To End
+                        // =========================
+                        "01- End To End",
 
-                    '01- End To End',
+                        // =========================
+                        // Login
+                        // =========================
+                        "02- Login/01- User successfully logs in using mobile number and OTP",
+                        "02- Login/02- User attempts to log in with an invalid mobile number",
+                        "02- Login/03- User submits an empty mobile number",
+                        "02- Login/04- OTP is sent after submitting a valid mobile number",
+                        "02- Login/05- User enters a valid OTP",
+                        "02- Login/06- User enters an invalid OTP",
+                        "02- Login/07- User submits an empty OTP",
+                        "02- Login/08- User enters an expired OTP after 2 minutes",
+                        "02- Login/09- Returning user accesses the Super App with a valid session",
 
-                    // ==============================
-                    // Login
-                    // ==============================
+                        // =========================
+                        // Home - Blockchain
+                        // =========================
+                        "03- Home/01- Blockchain Preview/01- User sees the Blockchain entry point on the homepage",
+                        "03- Home/01- Blockchain Preview/02- User opens the Blockchain Explorer from the homepage",
+                        "03- Home/01- Blockchain Preview/03- User sees the current blockchain network status",
+                        "03- Home/01- Blockchain Preview/04- User sees the latest available blockchain statistics",
+                        "03- Home/01- Blockchain Preview/05- User sees the blockchain transaction activity trend",
+                        "03- Home/01- Blockchain Preview/06- Transaction trend handles a period with no transaction data",
+                        "03- Home/01- Blockchain Preview/07- User sees the latest blockchain transactions",
+                        "03- Home/01- Blockchain Preview/08- Latest transactions are displayed in the correct order",
+                        "03- Home/01- Blockchain Preview/09- User refreshes blockchain information",
+                        "03- Home/01- Blockchain Preview/10- Blockchain information is automatically refreshed when automatic refresh is configured",
+                        "03- Home/01- Blockchain Preview/11- Blockchain information in the Super App is consistent with the DotScan API",
 
-                    '02- Login/01- User successfully logs in using mobile number and OTP',
-                    '02- Login/02- User attempts to log in with an invalid mobile number',
-                    '02- Login/03- User submits an empty mobile number',
-                    '02- Login/04- OTP is sent after submitting a valid mobile number',
-                    '02- Login/05- User enters a valid OTP',
-                    '02- Login/06- User enters an invalid OTP',
-                    '02- Login/07- User submits an empty OTP',
-                    '02- Login/08- User enters an expired OTP after 2 minutes',
-                    '02- Login/09- Returning user accesses the Super App with a valid session',
+                        // =========================
+                        // Home - Cell
+                        // =========================
+                        "03- Home/02- Cell Perview/01- User can see DotOne Cell on the Super App",
 
-                    // ==============================
-                    // Home - Blockchain Preview
-                    // ==============================
+                        // =========================
+                        // Home - Gold
+                        // =========================
+                        "03- Home/03- Gold Perview/01- User can see DotOne Gold on the Super App",
+                        "03- Home/03- Gold Perview/02- User is directed to the appropriate DotOne Gold experience"
+                    ]
 
-                    '03- Home/01- Blockchain Preview/01- User sees the Blockchain entry point on the homepage',
-                    '03- Home/01- Blockchain Preview/02- User opens the Blockchain Explorer from the homepage',
-                    '03- Home/01- Blockchain Preview/03- User sees the current blockchain network status',
-                    '03- Home/01- Blockchain Preview/04- User sees the latest available blockchain statistics',
-                    '03- Home/01- Blockchain Preview/05- User sees the blockchain transaction activity trend',
-                    '03- Home/01- Blockchain Preview/06- Transaction trend handles a period with no transaction data',
-                    '03- Home/01- Blockchain Preview/07- User sees the latest blockchain transactions',
-                    '03- Home/01- Blockchain Preview/08- Latest transactions are displayed in the correct order',
-                    '03- Home/01- Blockchain Preview/09- User refreshes blockchain information',
-                    '03- Home/01- Blockchain Preview/10- Blockchain information is automatically refreshed when automatic refresh is configured',
-                    '03- Home/01- Blockchain Preview/11- Blockchain information in the Super App is consistent with the DotScan API',
+                    def failedScenarios = []
 
-                    // ==============================
-                    // Home - Cell Preview
-                    // ==============================
+                    scenarios.eachWithIndex { scenario, index ->
 
-                    '03- Home/02- Cell Perview/01- User can see DotOne Cell on the Super App',
+                        echo ""
+                        echo "=============================================="
+                        echo "Running Scenario ${index + 1}/${scenarios.size()}"
+                        echo scenario
+                        echo "=============================================="
 
-                    // ==============================
-                    // Home - Gold Preview
-                    // ==============================
+                        def reportName = "scenario-${index + 1}"
 
-                    '03- Home/03- Gold Perview/01- User can see DotOne Gold on the Super App',
-                    '03- Home/03- Gold Perview/02- User is directed to the appropriate DotOne Gold experience'
-                ]
+                        def exitCode = sh(
+                            script: """
+                                set +e
 
-                def failedScenarios = []
+                                bru run '${scenario}' \\
+                                    --env SuperApp-dev-BDD \\
+                                    --reporter-junit 'temp-reports/${reportName}-junit.xml' \\
+                                    --reporter-html 'temp-reports/${reportName}-report.html'
 
-                scenarios.eachWithIndex { scenario, index ->
+                                EXIT_CODE=\\$?
 
-                    def reportId = String.format('%02d', index + 1)
+                                echo "Bruno Exit Code: \\$EXIT_CODE"
 
+                                exit 0
+                            """,
+                            returnStatus: true
+                        )
+
+                        /*
+                         * We intentionally DO NOT stop the pipeline.
+                         * Every scenario must run.
+                         */
+
+                        if (exitCode != 0) {
+                            failedScenarios.add(scenario)
+                            echo "❌ FAILED: ${scenario}"
+                        } else {
+                            echo "✅ PASSED: ${scenario}"
+                        }
+                    }
+
+                    echo ""
                     echo "=============================================="
-                    echo "Running Scenario ${reportId}"
-                    echo "${scenario}"
+                    echo "ALL SCENARIOS FINISHED"
                     echo "=============================================="
 
-                    def exitCode = sh(
-                        script: """
-                            bru run "${scenario}" \
-                                --env SuperApp-dev-BDD \
-                                --reporter-junit "temp-reports/${reportId}-junit.xml"
-                        """,
-                        returnStatus: true
-                    )
+                    echo "Total scenarios: ${scenarios.size()}"
+                    echo "Failed scenarios: ${failedScenarios.size()}"
 
-                    if (exitCode != 0) {
-                        failedScenarios.add(scenario)
-                        echo "❌ FAILED: ${scenario}"
+                    if (failedScenarios.size() > 0) {
+
+                        echo ""
+                        echo "========== FAILED SCENARIOS =========="
+
+                        failedScenarios.each {
+                            echo "❌ ${it}"
+                        }
+
+                        echo "======================================="
+                    }
+                }
+            }
+        }
+
+        stage('Collect Reports') {
+            steps {
+                sh '''
+                    echo "===== Generated JUnit files ====="
+
+                    find temp-reports \
+                        -type f \
+                        -name "*.xml" \
+                        -print
+
+                    echo ""
+                    echo "===== Generated HTML files ====="
+
+                    find temp-reports \
+                        -type f \
+                        -name "*.html" \
+                        -print
+
+                    echo ""
+                    echo "===== Copying reports ====="
+
+                    cp temp-reports/*.xml reports/ 2>/dev/null || true
+                    cp temp-reports/*.html reports/ 2>/dev/null || true
+
+                    echo ""
+                    echo "===== Final reports ====="
+
+                    ls -lah reports || true
+                '''
+            }
+        }
+
+        stage('Publish Test Report') {
+            steps {
+                script {
+
+                    def junitFiles = sh(
+                        script: "find reports -type f -name '*-junit.xml' | wc -l",
+                        returnStdout: true
+                    ).trim().toInteger()
+
+                    echo "JUnit files found: ${junitFiles}"
+
+                    if (junitFiles > 0) {
+
+                        /*
+                         * Jenkins combines ALL JUnit XML files
+                         * into ONE Test Report.
+                         */
+                        junit(
+                            allowEmptyResults: false,
+                            testResults: 'reports/*-junit.xml'
+                        )
+
                     } else {
-                        echo "✅ PASSED: ${scenario}"
+
+                        echo "❌ No JUnit report was generated."
+                        currentBuild.result = 'UNSTABLE'
                     }
                 }
-
-                echo ""
-                echo "=============================================="
-                echo "Execution Summary"
-                echo "=============================================="
-                echo "Total Scenarios: ${scenarios.size()}"
-                echo "Failed Scenarios: ${failedScenarios.size()}"
-                echo "=============================================="
-
-                if (failedScenarios.size() > 0) {
-                    echo "Failed Scenarios:"
-
-                    failedScenarios.each {
-                        echo "❌ ${it}"
-                    }
-                }
-
-                // Keep all scenarios executed.
-                // Final result will be determined by JUnit.
             }
         }
     }
 
-    stage('Merge Reports') {
-        steps {
-            sh '''
-                echo "===== Merging JUnit Reports ====="
+    post {
 
-                python3 - <<'PY'
-                import glob
-                import xml.etree.ElementTree as ET
+        always {
 
-                files = sorted(glob.glob("temp-reports/*-junit.xml"))
+            echo "===== Archiving reports ====="
 
-                root = ET.Element("testsuites")
+            archiveArtifacts(
+                artifacts: 'reports/**/*',
+                allowEmptyArchive: true,
+                fingerprint: true
+            )
+        }
 
-                total_tests = 0
-                total_failures = 0
-                total_errors = 0
-                total_skipped = 0
-                total_time = 0.0
+        success {
+            echo "======================================="
+            echo "BUILD SUCCESS"
+            echo "======================================="
+        }
 
-                for file in files:
-                    try:
-                        tree = ET.parse(file)
-                        suite_root = tree.getroot()
+        unstable {
+            echo "======================================="
+            echo "BUILD UNSTABLE"
+            echo "Check the test report for failures."
+            echo "======================================="
+        }
 
-                        if suite_root.tag == "testsuites":
-                            suites = list(suite_root)
-                        else:
-                            suites = [suite_root]
-
-                        for suite in suites:
-                            root.append(suite)
-
-                            total_tests += int(suite.attrib.get("tests", 0))
-                            total_failures += int(suite.attrib.get("failures", 0))
-                            total_errors += int(suite.attrib.get("errors", 0))
-                            total_skipped += int(suite.attrib.get("skipped", 0))
-                            total_time += float(suite.attrib.get("time", 0))
-
-                    except Exception as e:
-                        print(f"Could not merge {file}: {e}")
-
-                root.set("tests", str(total_tests))
-                root.set("failures", str(total_failures))
-                root.set("errors", str(total_errors))
-                root.set("skipped", str(total_skipped))
-                root.set("time", str(total_time))
-
-                ET.ElementTree(root).write(
-                    "reports/superapp-junit.xml",
-                    encoding="utf-8",
-                    xml_declaration=True
-                )
-
-                print(f"Merged {len(files)} JUnit reports")
-                PY
-
-                echo "===== JUnit Report Created ====="
-                ls -lh reports/
-            '''
+        failure {
+            echo "======================================="
+            echo "BUILD FAILED"
+            echo "======================================="
         }
     }
-}
-
-post {
-    always {
-
-        echo "===== Publishing Combined Test Report ====="
-
-        junit allowEmptyResults: true,
-              testResults: 'reports/superapp-junit.xml'
-
-        archiveArtifacts artifacts: 'reports/superapp-junit.xml',
-                         allowEmptyArchive: true
-    }
-}
-
 }
