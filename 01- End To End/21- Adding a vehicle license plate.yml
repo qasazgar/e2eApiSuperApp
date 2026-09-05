@@ -21,36 +21,67 @@ runtime:
     - type: before-request
       code: |-
         const plates = [
-          "11/الف/347/21",
-          "22/ب/581/32",
-          "33/ج/764/43",
-          "44/د/219/54",
-          "55/س/638/65",
-          "66/ص/472/76",
-          "77/ط/895/87",
-          "88/ظ/326/98",
-          "99/ع/751/19",
-          "11/ف/483/20",
-          "22/ق/917/31",
-          "33/ک/245/42",
-          "44/گ/683/53",
-          "55/ل/129/64",
-          "66/م/574/75",
-          "77/ن/836/86",
-          "88/و/291/97",
-          "99/ه/645/18",
-          "11/ی/782/29",
-          "22/پ/416/30",
-          "33/ت/953/41",
-          "44/ث/287/52",
-          "55/ز/619/63",
-          "66/ژ/345/74",
-          "77/ش/728/85",
-          "88/ع/154/96",
-          "99/غ/563/17",
-          "11/ک/894/28",
-          "22/م/237/39",
-          "33/ن/681/40"
+          "12/الف/583/21",
+          "23/ب/746/32",
+          "34/ج/219/43",
+          "45/د/871/54",
+          "56/س/394/65",
+          "67/ص/628/76",
+          "78/ط/145/87",
+          "89/ظ/937/98",
+          "90/ع/462/19",
+          "12/ف/815/20",
+          "23/ق/374/31",
+          "34/ک/692/42",
+          "45/گ/158/53",
+          "56/ل/743/64",
+          "67/م/286/75",
+          "78/ن/951/86",
+          "89/و/327/97",
+          "90/ه/614/18",
+          "12/ی/438/29",
+          "23/پ/765/30",
+          "34/ت/182/41",
+          "45/ث/529/52",
+          "56/ز/846/63",
+          "67/ژ/213/74",
+          "78/ش/674/85",
+          "89/ع/395/96",
+          "90/غ/728/17",
+          "12/ک/561/28",
+          "23/م/934/39",
+          "34/ن/247/40",
+          "45/الف/693/51",
+          "56/ب/128/62",
+          "67/ج/475/73",
+          "78/د/832/84",
+          "89/س/316/95",
+          "90/ص/759/16",
+          "12/ط/284/27",
+          "23/ظ/647/38",
+          "34/ع/913/49",
+          "45/ف/356/50",
+          "56/ق/781/61",
+          "67/ک/429/72",
+          "78/گ/865/83",
+          "89/ل/137/94",
+          "90/م/592/15",
+          "12/ن/824/26",
+          "23/و/361/37",
+          "34/ه/715/48",
+          "45/ی/249/59",
+          "56/پ/638/60",
+          "67/ت/957/71",
+          "78/ث/413/82",
+          "89/ز/786/93",
+          "90/ژ/152/14",
+          "12/ش/549/25",
+          "23/ع/873/36",
+          "34/غ/264/47",
+          "45/ک/691/58",
+          "56/م/347/69",
+          "67/ن/825/70",
+          "78/الف/436/81"
         ];
 
         let index = Number(bru.getVar("plate_index") || 0);
@@ -82,51 +113,58 @@ runtime:
           }
         }
 
-        let index = Number(bru.getVar("plate_index") || 0);
+        const index = Number(bru.getVar("plate_index") || 0);
+        const selectedPlate = bru.getVar("plate_number_car");
 
-        // اگر پلاک قبلاً ثبت شده بود
+        // اگر با موفقیت اضافه شد
         if (
-          res.status === 400 &&
-          data.message === "This vehicle plate number is already registered."
+          res.status === 201 &&
+          data.data &&
+          data.data.id !== undefined
         ) {
-          console.log("⚠️ این پلاک قبلاً ثبت شده:");
-          console.log("🚗", bru.getVar("plate_number_car"));
-
-          // برو سراغ پلاک بعدی
-          bru.setVar("plate_index", String(index + 1));
-
-          console.log("➡️ پلاک بعدی در اجرای بعدی استفاده می‌شود");
-
-          return;
-        }
-
-        // اگر با موفقیت ثبت شد
-        if (res.status === 201 && data.data && data.data.id !== undefined) {
 
           test("Status code is 201", () => {
             expect(res.status).to.equal(201);
           });
 
+          // ذخیره ID پلاک
           bru.setVar(
             "id_plate_number_car",
             String(data.data.id)
           );
 
-          // این پلاک با موفقیت مصرف شد → برو سراغ بعدی
+          // فقط در صورت موفقیت، برو سراغ پلاک بعدی
           bru.setVar(
             "plate_index",
             String(index + 1)
           );
 
           console.log("✅ Vehicle added successfully");
+          console.log("🚗 Plate:", selectedPlate);
           console.log("🆔 ID:", data.data.id);
-          console.log("🚗 Plate:", bru.getVar("plate_number_car"));
+          console.log("➡️ Next plate index:", index + 1);
 
           return;
         }
 
-        console.log("❌ Unexpected response:");
-        console.log(JSON.stringify(data));
+        // اگر پلاک قبلاً ثبت شده
+        if (
+          res.status === 400 &&
+          data.message === "This vehicle plate number is already registered."
+        ) {
+
+          console.log("⚠️ این پلاک قبلاً ثبت شده است");
+          console.log("🚗 Plate:", selectedPlate);
+          console.log("🔢 Current index:", index);
+          console.log("⏸️ Index تغییر نکرد؛ پلاک بعدی انتخاب نمی‌شود");
+
+          return;
+        }
+
+        // سایر خطاها
+        console.log("❌ Vehicle was not added");
+        console.log("🚗 Plate:", selectedPlate);
+        console.log("📄 Response:", JSON.stringify(data));
 
 settings:
   encodeUrl: true

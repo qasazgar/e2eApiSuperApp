@@ -19,61 +19,82 @@ runtime:
   scripts:
     - type: before-request
       code: |-
-        const editPlates = [
-          "13/الف/418/52",
-          "24/ب/672/63",
-          "35/ج/195/74",
-          "46/د/843/85",
-          "57/س/261/96",
-          "68/ص/734/17",
-          "79/ط/526/28",
-          "81/ظ/389/49",
-          "92/ع/615/30",
-          "13/ف/927/41",
-          "24/ق/354/52",
-          "35/ک/781/63",
-          "46/گ/236/74",
-          "57/ل/594/85",
-          "68/م/817/96",
-          "79/ن/463/17",
-          "81/و/725/28",
-          "92/ه/148/39",
-          "13/ی/536/40",
-          "24/پ/892/51",
-          "35/ت/417/62",
-          "46/ث/653/73",
-          "57/ز/284/84",
-          "68/ژ/769/95",
-          "79/ش/321/16",
-          "81/ع/548/27",
-          "92/غ/876/38",
-          "13/ک/243/49",
-          "24/م/615/50",
-          "35/ن/982/61"
+        const plates = [
+          "14/ر/326/12",
+          "25/ز/714/23",
+          "36/ژ/481/34",
+          "47/ش/953/45",
+          "58/ع/267/56",
+          "69/غ/835/67",
+          "70/ف/192/78",
+          "81/ق/546/89",
+          "92/ک/378/10",
+          "14/گ/629/21",
+          "25/ل/843/32",
+          "36/م/157/43",
+          "47/ن/694/54",
+          "58/و/328/65",
+          "69/ه/751/76",
+          "70/ی/485/87",
+          "81/پ/216/98",
+          "92/ت/573/19",
+          "14/ث/849/20",
+          "25/س/361/31",
+          "36/ص/927/42",
+          "47/ط/154/53",
+          "58/ظ/682/64",
+          "69/ع/439/75",
+          "70/غ/815/86",
+          "81/الف/273/97",
+          "92/ب/658/18",
+          "14/ج/941/29",
+          "25/د/386/30",
+          "36/ف/725/41",
+          "47/ق/169/52",
+          "58/ک/834/63",
+          "69/گ/412/74",
+          "70/ل/597/85",
+          "81/م/246/96",
+          "92/ن/781/17",
+          "14/و/354/28",
+          "25/ه/926/39",
+          "36/ی/518/40",
+          "47/پ/673/51",
+          "58/ت/295/62",
+          "69/ث/847/73",
+          "70/س/136/84",
+          "81/ص/492/95",
+          "92/ط/758/16",
+          "14/ظ/315/27",
+          "25/ع/864/38",
+          "36/غ/527/49",
+          "47/الف/739/50",
+          "58/ب/184/61",
+          "69/ج/653/72",
+          "70/د/928/83",
+          "81/ف/347/94",
+          "92/ق/615/15",
+          "14/ک/872/26",
+          "25/گ/431/37",
+          "36/ل/769/48",
+          "47/م/285/59",
+          "58/ن/936/60",
+          "69/و/542/71",
+          "70/ه/817/82"
         ];
 
-        // دریافت index فعلی
-        let index = Number(bru.getVar("edit_plate_index") || 0);
+        const index = Number(bru.getVar("edit_plate_index") || 0);
 
-        // بررسی تمام شدن پلاک‌ها
-        if (index >= editPlates.length) {
-          throw new Error(
-            "❌ تمام 30 پلاک ویرایش استفاده شده‌اند. پلاک تکراری ارسال نمی‌شود."
-          );
+        if (index >= plates.length) {
+          throw new Error("❌ تمام پلاک‌ها استفاده شده‌اند.");
         }
 
-        // انتخاب پلاک
-        const selectedPlate = editPlates[index];
+        const newPlate = plates[index];
 
-        // ذخیره برای Body
-        bru.setVar("edit_plate_number_car", selectedPlate);
+        bru.setVar("edit_plate_number_car", newPlate);
 
-        console.log("🚗 Selected edit plate:", selectedPlate);
-        console.log("🔢 Current index:", index);
-        console.log(
-          "📋 Remaining plates:",
-          editPlates.length - index
-        );
+        console.log("🚗 Selected edit plate:", newPlate);
+        console.log("🔢 Index:", index);
     - type: after-response
       code: |-
         test("Status code is 200", () => {
@@ -84,22 +105,25 @@ runtime:
           expect(res.responseTime).to.be.below(200);
         });
 
-        // فقط بعد از موفقیت، index را افزایش بده
+        const index = Number(bru.getVar("edit_plate_index") || 0);
+        const plate = bru.getVar("plate_number_car");
+
         if (res.status === 200) {
-          let index = Number(bru.getVar("edit_plate_index") || 0);
 
           bru.setVar(
             "edit_plate_index",
             String(index + 1)
           );
 
-          console.log("✅ Edit successful");
-          console.log("➡️ Next edit plate index:", index + 1);
+          console.log("✅ Plate updated successfully");
+          console.log("🚗 Plate:", plate);
+          console.log("➡️ Next index:", index + 1);
+
         } else {
-          console.log("❌ Edit failed");
-          console.log(
-            "⚠️ Same plate will NOT be counted as used."
-          );
+
+          console.log("❌ Plate update failed");
+          console.log("🚗 Plate:", plate);
+          console.log("⏸️ Index unchanged:", index);
         }
 
 settings:
