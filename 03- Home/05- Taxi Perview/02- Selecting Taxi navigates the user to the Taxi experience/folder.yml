@@ -5,3 +5,13 @@ info:
 
 request:
   auth: inherit
+
+docs:
+  content: |-
+    # <span>**Selecting Taxi navigates the user to the Taxi experience**</span></span></span>
+
+    **Given** the user is viewing the Taxi service in the Super App \
+    **When** the user selects Taxi \
+    **Then** the user should be navigated to the existing Taxi experience \
+    **And** the Taxi experience should load successfully
+  type: text/markdown

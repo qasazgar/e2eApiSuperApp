@@ -1,0 +1,65 @@
+info:
+  name: 03- Get Bitbank Products
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: "{{Url_Bitbank}}"
+  headers:
+    - name: accept
+      value: "*/*"
+    - name: accept-language
+      value: en-US,en;q=0.9,fa-IR;q=0.8,fa;q=0.7
+    - name: if-none-match
+      value: W/"a72-gV9PRH0UzN9+xf4w0joTNJeWEsg"
+    - name: origin
+      value: https://landing.bitbank3.com
+    - name: priority
+      value: u=1, i
+    - name: referer
+      value: https://landing.bitbank3.com/
+    - name: sec-ch-ua
+      value: '"Not=A?Brand";v="99", "Google Chrome";v="151", "Chromium";v="151"'
+    - name: sec-ch-ua-mobile
+      value: ?0
+    - name: sec-ch-ua-platform
+      value: '"macOS"'
+    - name: sec-fetch-dest
+      value: empty
+    - name: sec-fetch-mode
+      value: cors
+    - name: sec-fetch-site
+      value: same-site
+    - name: user-agent
+      value: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 304", () => {
+          expect(res.status).to.equal(304);
+        });
+
+        test("Response time is less than 1000ms", () => {
+          expect(res.responseTime).to.be.below(1000);
+        });
+
+        if (res.status === 304) {
+          console.log(
+            "✅ کاربر با موفقیت به https://landing.bitbank3.com/fa_IR منتقل شد"
+          );
+        } else {
+          console.log(
+            "❌ کاربر به https://landing.bitbank3.com/fa_IR منتقل نشد"
+          );
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

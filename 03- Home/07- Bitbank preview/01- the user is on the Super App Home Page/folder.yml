@@ -1,0 +1,16 @@
+info:
+  name: 01- the user is on the Super App Home Page
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # <span>**the user is on the Super App Home Page**</span>
+
+    **When** the Home Page is loaded \
+    **Then** the Bitbank service should be displayed \
+    **And** Bitbank should be presented as an available service
+  type: text/markdown

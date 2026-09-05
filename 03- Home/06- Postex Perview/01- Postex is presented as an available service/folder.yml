@@ -1,0 +1,17 @@
+info:
+  name: 01- Postex is presented as an available service
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # <span>**Postex is presented as an available service**</span>
+
+    **Given** the user is viewing the Super App services \
+    **When** Postex is displayed \
+    **Then** Postex should be presented as an available service \
+    **And** it should not be displayed as unavailable
+  type: text/markdown

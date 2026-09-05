@@ -1,0 +1,17 @@
+info:
+  name: 02- Redirect User to Bitbank Experience
+  type: folder
+  seq: 2
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # <span>**Redirect User to Bitbank Experience**</span>
+
+    **Given** the Bitbank service is displayed \
+    **When** the user selects Bitbank \
+    **Then** the user should be redirected to the Bitbank experience \
+    **And** the Bitbank experience should open successfully
+  type: text/markdown

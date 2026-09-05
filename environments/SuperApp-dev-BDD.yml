@@ -78,3 +78,9 @@ variables:
   - name: Url_Taxi
     value: https://api.trip.dotone.ir/
     description: ""
+  - name: Url_Postex
+    value: https://api.postex.ir/
+    description: ""
+  - name: Url_Bitbank
+    value: https://landingapi.bitbank3.com/api/v1/faq/discovery?lang=fa&placement=landing&page=1&limit=10
+    description: ""
