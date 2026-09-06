@@ -36,7 +36,10 @@ http:
 runtime:
   scripts:
     - type: before-request
-      code: await new Promise(resolve => setTimeout(resolve, 180000));
+      code: |-
+        console.log("⏰ لطفا ۳ دقیقه صبر کنید");
+
+        await new Promise(resolve => setTimeout(resolve, 180000));
     - type: after-response
       code: |-
         test("Status code is 200", () => {
