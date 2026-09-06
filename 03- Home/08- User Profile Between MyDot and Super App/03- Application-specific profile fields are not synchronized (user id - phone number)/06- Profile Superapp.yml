@@ -1,0 +1,103 @@
+info:
+  name: 06- Profile Superapp
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: "{{Url-Dev}}account/profile/"
+  headers:
+    - name: accept
+      value: application/json
+    - name: accept-language
+      value: fa
+    - name: Cookie
+      value: access_token=eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg4NjkzMjQ2LCJpYXQiOjE3ODg2ODMxOTQsImp0aSI6IjMwZDIzYzc0MWNiODQwYjE5OWE0M2MzMDA5OGVkNDZmIiwidXNlcl9pZCI6ImY3ZTQzMTMyLTMxZDQtNDFiZC1hMTEzLTdmOWFiMTk0NTA1MCJ9.VADQGd3z7n6RD3OXO52uPAVADOl9Ab07Dv8uZ-9SJL1g5A-btCHJpZFeJmS8N7gjkBiFQ72d1SMh7kj8Ygv45g; is_logged_in=true
+    - name: origin
+      value: https://superapp-dev.dpsb.ir
+    - name: priority
+      value: u=1, i
+    - name: referer
+      value: https://superapp-dev.dpsb.ir/
+    - name: sec-ch-ua
+      value: '"Not=A?Brand";v="99", "Google Chrome";v="151", "Chromium";v="151"'
+    - name: sec-ch-ua-mobile
+      value: ?0
+    - name: sec-ch-ua-platform
+      value: '"macOS"'
+    - name: sec-fetch-dest
+      value: empty
+    - name: sec-fetch-mode
+      value: cors
+    - name: sec-fetch-site
+      value: same-site
+    - name: user-agent
+      value: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 200ms", () => {
+          expect(res.responseTime).to.be.below(200);
+        });
+
+        const data = res.body;
+
+        const userIdSuperApp = data.data?.user;
+        const phoneNumberSuperApp = data.data?.phone_number;
+
+        const userIdMyDot = bru.getVar("user_id_mydot");
+        const phoneNumberMyDot = bru.getVar("phone_number_mydot");
+
+        // تبدیل شماره به فرمت یکسان
+        const normalizePhoneNumber = (phone) => {
+          if (!phone) return null;
+
+          phone = String(phone).trim();
+
+          if (phone.startsWith("+98")) {
+            return "0" + phone.substring(3);
+          }
+
+          if (phone.startsWith("98")) {
+            return "0" + phone.substring(2);
+          }
+
+          return phone;
+        };
+
+        const normalizedPhoneSuperApp =
+          normalizePhoneNumber(phoneNumberSuperApp);
+
+        const normalizedPhoneMyDot =
+          normalizePhoneNumber(phoneNumberMyDot);
+
+        if (
+          userIdSuperApp &&
+          userIdMyDot &&
+          normalizedPhoneSuperApp &&
+          normalizedPhoneMyDot &&
+          userIdSuperApp === userIdMyDot &&
+          normalizedPhoneSuperApp === normalizedPhoneMyDot
+        ) {
+          console.log(
+            "✅ user id با phone number در مای دات و سوپراپ یکسان میباشد"
+          );
+        } else {
+          console.log(
+            "❌ user id با phone number در مای دات و سوپراپ یکسان نمیباشد"
+          );
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

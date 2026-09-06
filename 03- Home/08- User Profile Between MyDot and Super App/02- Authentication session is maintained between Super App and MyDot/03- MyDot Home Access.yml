@@ -1,0 +1,69 @@
+info:
+  name: 03- MyDot Home Access
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: "{{Url-Dev-mydot}}auth/kyc/status/"
+  headers:
+    - name: accept
+      value: application/json, text/plain, */*
+    - name: accept-language
+      value: en-US,en;q=0.9,fa-IR;q=0.8,fa;q=0.7
+    - name: Cookie
+      value: csrftoken=D9qejGUufT6MbQce3T0UY7aaowuNHsBy; access_token=eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg4NjkxMjY3LCJpYXQiOjE3ODg2ODIwMjAsImp0aSI6ImUwNDViNDM5N2RmMzQwYzViNTJiNTkxNDBjOGM3YzJjIiwidXNlcl9pZCI6ImNjNmNhYjNmLTBlZmItNDNmNy1iMjQ5LTgwZWU5ZjE1YzhkYiJ9.KHIQgEpg5Ee-Wql9v8aznhILhWy9UwPh2k0dgOJ746BmEKTr279daqmcedinSakIlaFLQrnrSZ7SQb-z6cP2rg; is_logged_in=true
+    - name: origin
+      value: https://dev1.dpsb.ir
+    - name: priority
+      value: u=1, i
+    - name: referer
+      value: https://dev1.dpsb.ir/
+    - name: sec-ch-ua
+      value: '"Not=A?Brand";v="99", "Google Chrome";v="151", "Chromium";v="151"'
+    - name: sec-ch-ua-mobile
+      value: ?0
+    - name: sec-ch-ua-platform
+      value: '"macOS"'
+    - name: sec-fetch-dest
+      value: empty
+    - name: sec-fetch-mode
+      value: cors
+    - name: sec-fetch-site
+      value: same-site
+    - name: user-agent
+      value: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 200ms", () => {
+          expect(res.responseTime).to.be.below(200);
+        });
+
+        if (res.status === 200) {
+
+          console.log(
+            "✅ شما با موفقیت به صفحه Home مای دات بدون نیاز به لاگین منتقل شدید"
+          );
+
+        } else {
+
+          console.log(
+            "❌ شما به صفحه مای دات منتقل نشدید"
+          );
+
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

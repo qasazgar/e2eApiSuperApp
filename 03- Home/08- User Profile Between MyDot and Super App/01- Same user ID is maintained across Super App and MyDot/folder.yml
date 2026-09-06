@@ -1,0 +1,17 @@
+info:
+  name: 01- Same user ID is maintained across Super App and MyDot
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # <span>**Same user ID is maintained across Super App and MyDot**</span>
+
+    **Given** the user is authenticated in the Super App \
+    **When** the user accesses MyDot \
+    **Then** the user ID in MyDot should match the user ID in the Super App \
+    **And** no duplicate user identity should be created
+  type: text/markdown

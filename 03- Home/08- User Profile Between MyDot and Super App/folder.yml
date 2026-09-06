@@ -1,0 +1,7 @@
+info:
+  name: 08- User Profile Between MyDot and Super App
+  type: folder
+  seq: 8
+
+request:
+  auth: inherit

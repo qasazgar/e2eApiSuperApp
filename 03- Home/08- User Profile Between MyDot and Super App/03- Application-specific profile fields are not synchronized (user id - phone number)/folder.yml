@@ -1,0 +1,7 @@
+info:
+  name: 03- Application-specific profile fields are not synchronized (user id - phone number)
+  type: folder
+  seq: 3
+
+request:
+  auth: inherit

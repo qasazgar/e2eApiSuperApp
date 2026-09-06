@@ -1,0 +1,18 @@
+info:
+  name: 02- Authentication session is maintained between Super App and MyDot
+  type: folder
+  seq: 2
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # <span>**Authentication session is maintained between Super App and MyDot**</span>
+
+    **Given** the user is authenticated in the Super App \
+    **And** the user's authentication session is valid \
+    **When** the user accesses MyDot \
+    **Then** MyDot should recognize the user's authenticated session \
+    **And** the user should not be prompted to authenticate again
+  type: text/markdown

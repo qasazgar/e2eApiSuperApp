@@ -83,48 +83,127 @@ runtime:
           "70/ه/817/82"
         ];
 
-        const index = Number(bru.getVar("edit_plate_index") || 0);
+        const editIndex = Number(
+          bru.getVar("edit_plate_index") || 0
+        );
 
-        if (index >= plates.length) {
+        if (editIndex >= plates.length) {
           throw new Error("❌ تمام پلاک‌ها استفاده شده‌اند.");
         }
 
-        const newPlate = plates[index];
+        const selectedPlate = plates[editIndex];
 
-        bru.setVar("edit_plate_number_car", newPlate);
+        bru.setVar(
+          "edit_plate_number_car",
+          selectedPlate
+        );
 
-        console.log("🚗 Selected edit plate:", newPlate);
-        console.log("🔢 Index:", index);
+        console.log("🚗 Selected edit plate:", selectedPlate);
+        console.log("🔢 Current index:", editIndex);
     - type: after-response
       code: |-
-        test("Status code is 200", () => {
-          expect(res.status).to.equal(200);
-        });
+        // ========================================
+        // Response Time
+        // ========================================
 
         test("Response time is less than 200ms", () => {
           expect(res.responseTime).to.be.below(200);
         });
 
-        const index = Number(bru.getVar("edit_plate_index") || 0);
-        const plate = bru.getVar("plate_number_car");
+
+        // ========================================
+        // Get Response Data
+        // ========================================
+
+        let data = res.body;
+
+        if (typeof data === "string") {
+          try {
+            data = JSON.parse(data);
+          } catch (error) {
+            console.log("❌ Response is not valid JSON");
+            return;
+          }
+        }
+
+
+        // ========================================
+        // Current Plate & Index
+        // ========================================
+
+        const editIndex = Number(
+          bru.getVar("edit_plate_index") || 0
+        );
+
+        const selectedPlate = bru.getVar(
+          "edit_plate_number_car"
+        );
+
+
+        // ========================================
+        // SUCCESS - Status 200
+        // ========================================
 
         if (res.status === 200) {
 
+          test("Status code is 200", () => {
+            expect(res.status).to.equal(200);
+          });
+
+          // Move to next plate
           bru.setVar(
             "edit_plate_index",
-            String(index + 1)
+            String(editIndex + 1)
           );
 
+          console.log("================================");
           console.log("✅ Plate updated successfully");
-          console.log("🚗 Plate:", plate);
-          console.log("➡️ Next index:", index + 1);
+          console.log("🚗 Plate:", selectedPlate);
+          console.log("🔢 Current index:", editIndex);
+          console.log("➡️ Next index:", editIndex + 1);
+          console.log("================================");
 
-        } else {
-
-          console.log("❌ Plate update failed");
-          console.log("🚗 Plate:", plate);
-          console.log("⏸️ Index unchanged:", index);
+          return;
         }
+
+
+        // ========================================
+        // DUPLICATE PLATE - Status 400
+        // ========================================
+
+        if (
+          res.status === 400 &&
+          data.message ===
+            "This vehicle plate number is already registered."
+        ) {
+
+          // Skip duplicate plate
+          bru.setVar(
+            "edit_plate_index",
+            String(editIndex + 1)
+          );
+
+          console.log("================================");
+          console.log("⚠️ Plate already registered");
+          console.log("🚗 Skipped plate:", selectedPlate);
+          console.log("🔢 Current index:", editIndex);
+          console.log("➡️ Next index:", editIndex + 1);
+          console.log("================================");
+
+          return;
+        }
+
+
+        // ========================================
+        // OTHER ERRORS
+        // ========================================
+
+        console.log("================================");
+        console.log("❌ Plate update failed");
+        console.log("🚗 Plate:", selectedPlate);
+        console.log("🔢 Current index:", editIndex);
+        console.log("📄 Response:", JSON.stringify(data));
+        console.log("================================");
 
 settings:
   encodeUrl: true
