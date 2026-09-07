@@ -119,7 +119,7 @@ pipeline {
                         ],
                         [
                             name: '03-01-05-Transaction-Trend',
-                            path: '03- Home/01- Blockchain Preview/05- User sees the blockchain transaction activity trend'
+                            path: '03- Home/01- Blockchain Preview/05- User sees the blockchain activity trend'
                         ],
                         [
                             name: '03-01-06-No-Transaction-Data',
@@ -265,22 +265,23 @@ pipeline {
                         def logFile = "test-logs/${scenario.name}.log"
 
                         def result = sh(
-                            script: """
-                                set +e
+                            script: """#!/bin/bash
+set +e
+set -o pipefail
 
-                                bru run "${scenario.path}" \\
-                                    --env "${targetEnv}" \\
-                                    --reporter-junit "${junitFile}" \\
-                                    --reporter-html "${htmlFile}" \\
-                                    2>&1 | tee "${logFile}"
+bru run "${scenario.path}" \\
+    --env "${targetEnv}" \\
+    --reporter-junit "${junitFile}" \\
+    --reporter-html "${htmlFile}" \\
+    2>&1 | tee "${logFile}"
 
-                                EXIT_CODE=\${PIPESTATUS[0]}
+EXIT_CODE=\$?
 
-                                echo ""
-                                echo "Bruno Exit Code: \$EXIT_CODE"
+echo ""
+echo "Bruno Exit Code: \$EXIT_CODE"
 
-                                exit \$EXIT_CODE
-                            """,
+exit \$EXIT_CODE
+""",
                             returnStatus: true
                         )
 
