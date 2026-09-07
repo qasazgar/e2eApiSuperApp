@@ -1,8 +1,3 @@
-برای تفکیک محیط اجرای Bruno (استفاده از `SuperApp-dev` برای سناریوی End-To-End و `SuperApp-dev-BDD` برای سایر سناریوها)، می‌توان فیلد `env` را در آرایه‌ی سناریوها مشخص کرد تا در زمان اجرای دستور `bru run` به شکل داینامیک اعمال شود.
-
-نسخه‌ی به‌روزرسانی‌شده‌ی `Jenkinsfile`:
-
-```groovy
 pipeline {
     agent any
 
@@ -55,7 +50,7 @@ pipeline {
                     def scenarios = [
 
                         // =====================================================
-                        // 01 - End To End (اجرا با محیط SuperApp-dev)
+                        // 01 - End To End (Run with SuperApp-dev)
                         // =====================================================
                         [
                             name: '01-End-To-End',
@@ -64,7 +59,7 @@ pipeline {
                         ],
 
                         // =====================================================
-                        // 02 - Login (اجرا با محیط SuperApp-dev-BDD)
+                        // 02 - Login (Run with SuperApp-dev-BDD)
                         // =====================================================
                         [
                             name: '02-01-Login-Valid-Mobile-OTP',
@@ -256,7 +251,6 @@ pipeline {
 
                     for (scenario in scenarios) {
 
-                        // تعیین محیط اجرا: اگر اختصاصی تعریف شده باشد همان، در غیر این صورت SuperApp-dev-BDD
                         def targetEnv = scenario.env ?: defaultEnv
 
                         echo ""
@@ -411,4 +405,3 @@ pipeline {
         }
     }
 }
-```
