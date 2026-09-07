@@ -1,0 +1,135 @@
+info:
+  name: 03- Bill Electricity Inquiry Detail
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{Url-Dev}}services/financial/inquiry/bill/electricity/"
+  headers:
+    - name: accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "electricity_bill_id": "{{Electricity-id}}",
+        "mobile_number": "{{Electricity_phone_number}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 3000ms", () => {
+          expect(res.responseTime).to.be.below(3000);
+        });
+
+        const data = res.body;
+        const bill = data.data;
+
+        // نتیجه استعلام
+        if (data.message === "Inquiry Electricity Bill Successful.") {
+          console.log("✅ استعلام قبض برق با موفقیت انجام شد");
+        } else {
+          console.log("❌ استعلام قبض برق انجام نشد");
+        }
+
+        // مبلغ قبض
+        if (bill && bill.total_amount !== undefined && bill.total_amount !== null) {
+          console.log(`💰 مبلغ قبض: ${bill.total_amount} ریال`);
+        } else {
+          console.log("❌ مبلغ قبض در قبض وجود ندارد");
+        }
+
+        // تبدیل تاریخ میلادی به شمسی
+        function toJalali(dateString) {
+          const [gy, gm, gd] = dateString.split("-").map(Number);
+
+          let jy = gy - 621;
+          let days = 0;
+
+          const gDaysInMonth = [
+            31, 28, 31, 30, 31, 30,
+            31, 31, 30, 31, 30, 31
+          ];
+
+          for (let i = 1; i < gm; i++) {
+            days += gDaysInMonth[i - 1];
+          }
+
+          days += gd;
+
+          if (
+            gm > 2 &&
+            ((gy % 4 === 0 && gy % 100 !== 0) || gy % 400 === 0)
+          ) {
+            days += 1;
+          }
+
+          if (days <= 79) {
+            jy -= 1;
+          }
+
+          let jm;
+          let jd;
+
+          if (days <= 186) {
+            jm = Math.ceil(days / 31);
+            jd = days - (jm - 1) * 31;
+          } else {
+            jm = Math.ceil((days - 186) / 30) + 6;
+            jd = days - 186 - (jm - 7) * 30;
+          }
+
+          return `${jy}/${String(jm).padStart(2, "0")}/${String(jd).padStart(2, "0")}`;
+        }
+
+        // تاریخ سررسید
+        if (bill && bill.payment_date) {
+          const jalaliDate = toJalali(bill.payment_date);
+          console.log(`📅 تاریخ سررسید پرداخت: ${jalaliDate}`);
+        } else {
+          console.log("❌ تاریخ سررسید در قبض وجود ندارد");
+        }
+
+        // وضعیت پرداخت
+        if (bill && bill.is_paid === true) {
+          console.log("✅ قبض پرداخت شده است");
+        } else if (bill && bill.is_paid === false) {
+          console.log("❌ قبض پرداخت نشده است");
+        }
+
+        // نام مشترک
+        if (bill && bill.full_name) {
+          console.log(`👤 نام مشترک: ${bill.full_name}`);
+        }
+
+        // آدرس
+        if (bill && bill.address) {
+          console.log(`📍 آدرس: ${bill.address}`);
+        }
+
+        // شناسه قبض
+        if (bill && bill.bill_id) {
+          console.log(`🧾 شناسه قبض: ${bill.bill_id}`);
+        }
+
+        // شناسه پرداخت
+        if (bill && bill.payment_id) {
+          console.log(`💳 شناسه پرداخت: ${bill.payment_id}`);
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

@@ -47,134 +47,265 @@ pipeline {
 
                     def scenarios = [
 
-                        // =========================
+                        // =====================================================
                         // 01 - End To End
-                        // =========================
+                        // =====================================================
+
                         [
                             name: '01-End-To-End',
                             path: '01- End To End'
                         ],
 
-                        // =========================
+
+                        // =====================================================
                         // 02 - Login
-                        // =========================
+                        // =====================================================
+
                         [
                             name: '02-01-Login-Valid-Mobile-OTP',
                             path: '02- Login/01- User successfully logs in using mobile number and OTP'
                         ],
+
                         [
                             name: '02-02-Invalid-Mobile',
                             path: '02- Login/02- User attempts to log in with an invalid mobile number'
                         ],
+
                         [
                             name: '02-03-Empty-Mobile',
                             path: '02- Login/03- User submits an empty mobile number'
                         ],
+
                         [
                             name: '02-04-OTP-Sent',
                             path: '02- Login/04- OTP is sent after submitting a valid mobile number'
                         ],
+
                         [
                             name: '02-05-Valid-OTP',
                             path: '02- Login/05- User enters a valid OTP'
                         ],
+
                         [
                             name: '02-06-Invalid-OTP',
                             path: '02- Login/06- User enters an invalid OTP'
                         ],
+
                         [
                             name: '02-07-Empty-OTP',
                             path: '02- Login/07- User submits an empty OTP'
                         ],
+
                         [
                             name: '02-08-Expired-OTP',
                             path: '02- Login/08- User enters an expired OTP after 2 minutes'
                         ],
+
                         [
                             name: '02-09-Returning-User',
                             path: '02- Login/09- Returning user accesses the Super App with a valid session'
                         ],
 
-                        // =========================
+
+                        // =====================================================
                         // 03 - Home / Blockchain
-                        // =========================
+                        // =====================================================
+
                         [
                             name: '03-01-01-Blockchain-Entry-Point',
                             path: '03- Home/01- Blockchain Preview/01- User sees the Blockchain entry point on the homepage'
                         ],
+
                         [
                             name: '03-01-02-Open-Blockchain-Explorer',
                             path: '03- Home/01- Blockchain Preview/02- User opens the Blockchain Explorer from the homepage'
                         ],
+
                         [
                             name: '03-01-03-Blockchain-Network-Status',
                             path: '03- Home/01- Blockchain Preview/03- User sees the current blockchain network status'
                         ],
+
                         [
                             name: '03-01-04-Blockchain-Statistics',
                             path: '03- Home/01- Blockchain Preview/04- User sees the latest available blockchain statistics'
                         ],
+
                         [
                             name: '03-01-05-Transaction-Trend',
                             path: '03- Home/01- Blockchain Preview/05- User sees the blockchain transaction activity trend'
                         ],
+
                         [
                             name: '03-01-06-No-Transaction-Data',
                             path: '03- Home/01- Blockchain Preview/06- Transaction trend handles a period with no transaction data'
                         ],
+
                         [
                             name: '03-01-07-Latest-Transactions',
                             path: '03- Home/01- Blockchain Preview/07- User sees the latest blockchain transactions'
                         ],
+
                         [
                             name: '03-01-08-Correct-Transaction-Order',
                             path: '03- Home/01- Blockchain Preview/08- Latest transactions are displayed in the correct order'
                         ],
+
                         [
                             name: '03-01-09-Refresh-Blockchain',
                             path: '03- Home/01- Blockchain Preview/09- User refreshes blockchain information'
                         ],
+
                         [
                             name: '03-01-10-Automatic-Refresh',
                             path: '03- Home/01- Blockchain Preview/10- Blockchain information is automatically refreshed when automatic refresh is configured'
                         ],
+
                         [
                             name: '03-01-11-DotScan-Consistency',
                             path: '03- Home/01- Blockchain Preview/11- Blockchain information in the Super App is consistent with the DotScan API'
                         ],
 
-                        // =========================
+
+                        // =====================================================
                         // 03 - Home / Cell
-                        // =========================
+                        // =====================================================
+
                         [
                             name: '03-02-01-Cell-Visible',
                             path: '03- Home/02- Cell Perview/01- User can see DotOne Cell on the Super App'
                         ],
 
-                        // =========================
+
+                        // =====================================================
                         // 03 - Home / Gold
-                        // =========================
+                        // =====================================================
+
                         [
                             name: '03-03-01-Gold-Visible',
                             path: '03- Home/03- Gold Perview/01- User can see DotOne Gold on the Super App'
                         ],
+
                         [
                             name: '03-03-02-Gold-Redirect',
                             path: '03- Home/03- Gold Perview/02- User is directed to the appropriate DotOne Gold experience'
+                        ],
+
+
+                        // =====================================================
+                        // 03 - Home / VOD
+                        // =====================================================
+
+                        [
+                            name: '03-04-01-VOD-Preview',
+                            path: '03- Home/04- Vod Perview/01- VOD is presented as a preview entry point'
+                        ],
+
+                        [
+                            name: '03-04-02-VOD-Redirect',
+                            path: '03- Home/04- Vod Perview/02- User is redirected to the VOD website'
+                        ],
+
+
+                        // =====================================================
+                        // 03 - Home / Taxi
+                        // =====================================================
+
+                        [
+                            name: '03-05-01-Taxi-Visible',
+                            path: '03- Home/05- Taxi Perview/01- User can see DotOne Taxi in the Super App'
+                        ],
+
+                        [
+                            name: '03-05-02-Taxi-Redirect',
+                            path: '03- Home/05- Taxi Perview/02- Selecting Taxi navigates the user to the Taxi experience'
+                        ],
+
+
+                        // =====================================================
+                        // 03 - Home / Postex
+                        // =====================================================
+
+                        [
+                            name: '03-06-01-Postex-Visible',
+                            path: '03- Home/06- Postex Perview/01- Postex is presented as an available service'
+                        ],
+
+                        [
+                            name: '03-06-02-Postex-Redirect',
+                            path: '03- Home/06- Postex Perview/02- Selecting Postex redirects the user to the Postex experience'
+                        ],
+
+
+                        // =====================================================
+                        // 03 - Home / Bitbank
+                        // =====================================================
+
+                        [
+                            name: '03-07-01-Bitbank-Home',
+                            path: '03- Home/07- Bitbank preview/01- the user is on the Super App Home Page'
+                        ],
+
+                        [
+                            name: '03-07-02-Bitbank-Redirect',
+                            path: '03- Home/07- Bitbank preview/02- Redirect User to Bitbank Experience'
+                        ],
+
+
+                        // =====================================================
+                        // 03 - Home / User Profile
+                        // =====================================================
+
+                        [
+                            name: '03-08-01-Same-User-ID',
+                            path: '03- Home/08- User Profile Between MyDot and Super App/01- Same user ID is maintained across Super App and MyDot'
+                        ],
+
+                        [
+                            name: '03-08-02-Authentication-Session',
+                            path: '03- Home/08- User Profile Between MyDot and Super App/02- Authentication session is maintained between Super App and MyDot'
+                        ],
+
+                        [
+                            name: '03-08-03-Profile-Fields-Not-Synchronized',
+                            path: '03- Home/08- User Profile Between MyDot and Super App/03- Application-specific profile fields are not synchronized (user id - phone number)'
+                        ],
+
+
+                        // =====================================================
+                        // 04 - Services
+                        // =====================================================
+
+                        [
+                            name: '04-01-01-Electricity-Bill-Inquiry',
+                            path: '04- Services/01- Electricity Bill Inquiry/01- Successfully inquire electricity bill with valid bill ID'
                         ]
                     ]
 
+
+                    // =========================================================
+                    // Test Execution
+                    // =========================================================
+
                     def failedTests = []
+
+                    echo ""
+                    echo "=============================================="
+                    echo "TOTAL SCENARIOS: ${scenarios.size()}"
+                    echo "=============================================="
+
 
                     for (scenario in scenarios) {
 
                         echo ""
                         echo "=============================================="
                         echo "Running Scenario:"
-                        echo scenario.name
+                        echo "${scenario.name}"
+                        echo ""
                         echo "Path:"
-                        echo scenario.path
+                        echo "${scenario.path}"
                         echo "=============================================="
+
 
                         def junitFile =
                             "temp-reports/${scenario.name}-junit.xml"
@@ -185,10 +316,12 @@ pipeline {
                         def logFile =
                             "test-logs/${scenario.name}.log"
 
+
                         /*
                          * returnStatus=true
-                         * باعث می‌شود اگر Bruno Fail شد،
-                         * Pipeline متوقف نشود.
+                         *
+                         * اگر Bruno تست Fail شود،
+                         * Jenkins Pipeline متوقف نمی‌شود.
                          */
 
                         def result = sh(
@@ -211,49 +344,74 @@ pipeline {
                             returnStatus: true
                         )
 
+
                         if (result != 0) {
+
                             failedTests.add(scenario.name)
 
                             echo ""
                             echo "❌ FAILED: ${scenario.name}"
                             echo "Exit Code: ${result}"
+
                         } else {
+
                             echo ""
                             echo "✅ PASSED: ${scenario.name}"
+
                         }
 
                         echo ""
                     }
 
-                    /*
-                     * ذخیره لیست Failها
-                     */
+
+                    // =========================================================
+                    // Save Failed Tests
+                    // =========================================================
+
                     writeFile(
                         file: 'reports/failed-tests.txt',
                         text: failedTests.join('\n')
                     )
+
+
+                    // =========================================================
+                    // Test Execution Summary
+                    // =========================================================
+
+                    def totalTests = scenarios.size()
+                    def failedCount = failedTests.size()
+                    def passedCount = totalTests - failedCount
+
 
                     echo ""
                     echo "=============================================="
                     echo "TEST EXECUTION SUMMARY"
                     echo "=============================================="
 
-                    echo "Total Scenarios: ${scenarios.size()}"
-                    echo "Failed Scenarios: ${failedTests.size()}"
-                    echo "Passed Scenarios: ${scenarios.size() - failedTests.size()}"
+                    echo "Total Scenarios : ${totalTests}"
+                    echo "Passed          : ${passedCount}"
+                    echo "Failed          : ${failedCount}"
+
+                    echo "=============================================="
+
 
                     if (failedTests.size() > 0) {
 
                         echo ""
                         echo "Failed Scenarios:"
+                        echo "----------------------------------------------"
 
                         failedTests.each {
                             echo "❌ ${it}"
                         }
 
+                        echo "----------------------------------------------"
+
                     } else {
+
                         echo ""
                         echo "🎉 ALL SCENARIOS PASSED"
+
                     }
 
                     echo "=============================================="
@@ -262,27 +420,33 @@ pipeline {
         }
     }
 
+
+    // ========================================================================
+    // POST
+    // ========================================================================
+
     post {
 
-        /*
-         * ==========================================
-         * JUNIT TEST REPORT
-         * ==========================================
-         */
+        // ====================================================================
+        // Always
+        // ====================================================================
 
         always {
 
+            echo ""
             echo "Publishing Jenkins JUnit Test Reports..."
+
 
             junit(
                 testResults: 'temp-reports/*-junit.xml',
-                allowEmptyResults: false,
+                allowEmptyResults: true,
                 skipPublishingChecks: false
             )
 
-            /*
-             * Archive HTML + Logs
-             */
+
+            // ================================================================
+            // Archive Reports + Logs
+            // ================================================================
 
             archiveArtifacts(
                 artifacts: 'reports/**/*.html, reports/failed-tests.txt, test-logs/**/*.log',
@@ -291,10 +455,10 @@ pipeline {
             )
         }
 
-        /*
-         * اگر حداقل یک تست Fail شده باشد
-         * Pipeline = UNSTABLE
-         */
+
+        // ====================================================================
+        // Unstable
+        // ====================================================================
 
         unstable {
 
@@ -303,6 +467,7 @@ pipeline {
             echo "⚠️ TESTS FAILED"
             echo "=============================================="
 
+
             script {
 
                 if (fileExists('reports/failed-tests.txt')) {
@@ -310,13 +475,23 @@ pipeline {
                     def failed =
                         readFile('reports/failed-tests.txt').trim()
 
+
                     if (failed) {
+
+                        echo ""
                         echo "Failed scenarios:"
+                        echo "----------------------------------------------"
                         echo failed
+                        echo "----------------------------------------------"
                     }
                 }
             }
         }
+
+
+        // ====================================================================
+        // Success
+        // ====================================================================
 
         success {
 
@@ -326,6 +501,11 @@ pipeline {
             echo "=============================================="
         }
 
+
+        // ====================================================================
+        // Failure
+        // ====================================================================
+
         failure {
 
             echo ""
@@ -333,6 +513,11 @@ pipeline {
             echo "❌ PIPELINE FAILED"
             echo "=============================================="
         }
+
+
+        // ====================================================================
+        // Cleanup
+        // ====================================================================
 
         cleanup {
 

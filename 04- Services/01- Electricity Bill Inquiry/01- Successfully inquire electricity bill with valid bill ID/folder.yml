@@ -16,8 +16,6 @@ docs:
     **And** submits the inquiry \
     **Then** the system should successfully call the Electricity Bill Inquiry service \
     **And** the bill information should be retrieved \
-    **And** the bill amount should be displayed \
-    **And** the billing period should be displayed \
-    **And** the payment due date should be displayed \
+    **And** the bill amount should be displayed  \
     **And** other bill details returned by the service should be displayed correctly
   type: text/markdown

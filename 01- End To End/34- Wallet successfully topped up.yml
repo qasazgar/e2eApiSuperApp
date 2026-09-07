@@ -1,0 +1,19 @@
+info:
+  name: 34- Wallet successfully topped up
+  type: http
+  seq: 34
+
+http:
+  method: GET
+  url: https://api-superapp-dev.dpsb.ir/api/v1/payment/payments/wallet-balance/f7e43132-31d4-41bd-a113-7f9ab1945050/
+  headers:
+    - name: Authorization
+      value: Bearer {{access_token}}
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
