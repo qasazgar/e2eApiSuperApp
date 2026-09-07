@@ -1,0 +1,23 @@
+info:
+  name: 01- Successfully inquire electricity bill with valid bill ID
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # <span>**Successfully inquire electricity bill with valid bill ID**</span>
+
+    **Given** the user is on the Electricity Bill Inquiry page \
+    **And** the user has a valid electricity bill ID \
+    **When** the user enters the valid bill ID \
+    **And** submits the inquiry \
+    **Then** the system should successfully call the Electricity Bill Inquiry service \
+    **And** the bill information should be retrieved \
+    **And** the bill amount should be displayed \
+    **And** the billing period should be displayed \
+    **And** the payment due date should be displayed \
+    **And** other bill details returned by the service should be displayed correctly
+  type: text/markdown

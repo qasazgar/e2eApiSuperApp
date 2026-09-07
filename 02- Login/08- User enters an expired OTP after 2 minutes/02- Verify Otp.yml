@@ -36,8 +36,8 @@ runtime:
           expect(res.status).to.equal(401);
         });
 
-        test("Response time is less than 1000ms", () => {
-          expect(res.responseTime).to.be.below(1000);
+        test("Response time is less than 500ms", () => {
+          expect(res.responseTime).to.be.below(500);
         });
 
         if (res.status === 401) {

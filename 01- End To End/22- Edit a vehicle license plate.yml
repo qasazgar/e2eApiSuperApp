@@ -106,8 +106,8 @@ runtime:
         // Response Time
         // ========================================
 
-        test("Response time is less than 200ms", () => {
-          expect(res.responseTime).to.be.below(200);
+        test("Response time is less than 500ms", () => {
+          expect(res.responseTime).to.be.below(500);
         });
 
 

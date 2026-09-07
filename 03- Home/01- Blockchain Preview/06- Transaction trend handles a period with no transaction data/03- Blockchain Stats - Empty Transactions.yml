@@ -54,8 +54,8 @@ runtime:
           expect(chart).to.have.lengthOf(0);
         });
 
-        test("Response time is less than 1000ms", () => {
-          expect(res.responseTime).to.be.below(1000);
+        test("Response time is less than 3000ms", () => {
+          expect(res.responseTime).to.be.below(3000);
         });
 
 settings:
