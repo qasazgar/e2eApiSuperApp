@@ -357,6 +357,17 @@ exit \$EXIT_CODE
                 skipPublishingChecks: false
             )
 
+            echo "Publishing HTML Test Reports..."
+            publishHTML(target: [
+                allowMissing: true,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'reports',
+                reportFiles: '*.html',
+                reportName: 'Bruno HTML Reports',
+                reportTitles: 'Scenario Reports'
+            ])
+
             archiveArtifacts(
                 artifacts: 'reports/**/*.html, reports/failed-tests.txt, test-logs/**/*.log',
                 allowEmptyArchive: true,
