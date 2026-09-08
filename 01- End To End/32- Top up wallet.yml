@@ -25,6 +25,10 @@ runtime:
   scripts:
     - type: before-request
       code: |-
+        // ========================================
+        // Wallet Top Up Amount
+        // ========================================
+
         let currentAmount = bru.getVar("wallet_topup_amount");
 
         // اگر اولین اجراست، از 10000 شروع کن
@@ -34,10 +38,31 @@ runtime:
           currentAmount = Number(currentAmount) + 10000;
         }
 
-        // ذخیره مقدار برای Call بعدی و Run بعدی
-        bru.setVar("wallet_topup_amount", currentAmount);
+        // ========================================
+        // Save Amount
+        // ========================================
 
+        // برای Request فعلی
+        bru.setVar(
+          "wallet_topup_amount",
+          String(currentAmount)
+        );
+
+        // برای مقایسه در API Balance
+        bru.setVar(
+          "topup_amount",
+          String(currentAmount)
+        );
+
+
+        // ========================================
+        // Console
+        // ========================================
+
+        console.log("================================");
         console.log("💰 Wallet Top Up Amount:", currentAmount);
+        console.log("💾 Top Up Amount Saved:", currentAmount);
+        console.log("================================");
     - type: after-response
       code: |-
         test("Status code is 201", () => {

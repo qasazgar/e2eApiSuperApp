@@ -159,35 +159,17 @@ runtime:
           expect(res.responseTime).to.be.below(500);
         });
 
-
-        // ========================================
-        // Get Response Data
-        // ========================================
-
-        let data = res.body;
-
-        if (typeof data === "string") {
-          try {
-            data = JSON.parse(data);
-          } catch (error) {
-            console.log("❌ Response is not valid JSON");
-            return;
-          }
-        }
-
-
         // ========================================
         // Current Plate & Index
         // ========================================
 
-        const editIndex = Number(
+        const currentEditIndex = Number(
           bru.getVar("edit_plate_index") || 0
         );
 
-        const selectedPlate = bru.getVar(
+        const currentPlate = bru.getVar(
           "edit_plate_number_car"
         );
-
 
         // ========================================
         // SUCCESS - Status 200
@@ -199,49 +181,57 @@ runtime:
             expect(res.status).to.equal(200);
           });
 
-          // Move to next plate
           bru.setVar(
             "edit_plate_index",
-            String(editIndex + 1)
+            String(currentEditIndex + 1)
           );
 
           console.log("================================");
           console.log("✅ Plate updated successfully");
-          console.log("🚗 Plate:", selectedPlate);
-          console.log("🔢 Current index:", editIndex);
-          console.log("➡️ Next index:", editIndex + 1);
+          console.log("🚗 Plate:", currentPlate);
+          console.log("🔢 Current index:", currentEditIndex);
+          console.log("➡️ Next index:", currentEditIndex + 1);
           console.log("================================");
 
           return;
         }
 
-
         // ========================================
-        // DUPLICATE PLATE - Status 400
+        // DUPLICATE - Status 400
         // ========================================
 
-        if (
-          res.status === 400 &&
-          data.message ===
+        if (res.status === 400) {
+
+          let data = res.body;
+
+          if (typeof data === "string") {
+            try {
+              data = JSON.parse(data);
+            } catch (error) {
+              data = {};
+            }
+          }
+
+          if (
+            data.message ===
             "This vehicle plate number is already registered."
-        ) {
+          ) {
 
-          // Skip duplicate plate
-          bru.setVar(
-            "edit_plate_index",
-            String(editIndex + 1)
-          );
+            bru.setVar(
+              "edit_plate_index",
+              String(currentEditIndex + 1)
+            );
 
-          console.log("================================");
-          console.log("⚠️ Plate already registered");
-          console.log("🚗 Skipped plate:", selectedPlate);
-          console.log("🔢 Current index:", editIndex);
-          console.log("➡️ Next index:", editIndex + 1);
-          console.log("================================");
+            console.log("================================");
+            console.log("⚠️ Plate already registered");
+            console.log("🚗 Skipped plate:", currentPlate);
+            console.log("🔢 Current index:", currentEditIndex);
+            console.log("➡️ Next index:", currentEditIndex + 1);
+            console.log("================================");
 
-          return;
+            return;
+          }
         }
-
 
         // ========================================
         // OTHER ERRORS
@@ -249,9 +239,11 @@ runtime:
 
         console.log("================================");
         console.log("❌ Plate update failed");
-        console.log("🚗 Plate:", selectedPlate);
-        console.log("🔢 Current index:", editIndex);
-        console.log("📄 Response:", JSON.stringify(data));
+        console.log("🚗 Plate:", currentPlate);
+        console.log("🔢 Current index:", currentEditIndex);
+        console.log("📊 Status:", res.status);
+        console.log("📄 Response:", res.body);
+        console.log("⏸️ Index unchanged");
         console.log("================================");
 
 settings:

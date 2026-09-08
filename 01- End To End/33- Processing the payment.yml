@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: "{{Url-Dev}}payment/payments/c612ba18-965e-4cb7-92dd-8883200f59d3/"
+  url: "{{Url-Dev}}payment/payments/{{external_payment_id}}/"
   headers:
     - name: Authorization
       value: Bearer {{access_token}}
