@@ -1,0 +1,245 @@
+info:
+  name: 22- Adding a vehicle license plate
+  type: http
+  seq: 22
+
+http:
+  method: POST
+  url: "{{Url-Dev}}services/financial/vehicles/"
+  body:
+    type: json
+    data: |-
+      {
+        "title": "پژو207",
+        "plate_number": "{{plate_number_car}}",
+        "vehicle_type": "car"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: before-request
+      code: |-
+        const plates = [
+          "11/الف/274/63",
+          "22/ب/583/74",
+          "33/ج/916/25",
+          "44/د/328/86",
+          "55/س/741/37",
+          "66/ص/195/48",
+          "77/ط/462/59",
+          "88/ظ/837/61",
+          "99/ع/153/72",
+          "10/ف/694/83",
+
+          "11/ق/385/94",
+          "22/ک/721/15",
+          "33/گ/946/26",
+          "44/ل/267/37",
+          "55/م/813/48",
+          "66/ن/459/59",
+          "77/و/682/61",
+          "88/ه/137/72",
+          "99/ی/524/83",
+          "10/پ/869/94",
+
+          "11/ت/316/25",
+          "22/ث/758/36",
+          "33/ز/421/47",
+          "44/ژ/693/58",
+          "55/ش/184/69",
+          "66/ع/572/70",
+          "77/غ/835/81",
+          "88/الف/249/92",
+          "99/ب/617/13",
+          "10/ج/483/24",
+
+          "11/د/926/35",
+          "22/س/351/46",
+          "33/ص/784/57",
+          "44/ط/162/68",
+          "55/ظ/539/79",
+          "66/ف/871/80",
+          "77/ق/246/91",
+          "88/ک/615/12",
+          "99/گ/398/23",
+          "10/ل/752/34",
+
+          "11/م/184/45",
+          "22/ن/629/56",
+          "33/و/943/67",
+          "44/ه/275/78",
+          "55/ی/816/89",
+          "66/پ/437/90",
+          "77/ت/691/11",
+          "88/ث/358/22",
+          "99/ز/724/33",
+          "10/ژ/569/44",
+
+          "11/ش/832/55",
+          "22/ع/147/66",
+          "33/غ/583/77",
+          "44/الف/916/88",
+          "55/ب/264/99",
+          "66/ج/731/10",
+          "77/د/458/21",
+          "88/س/695/32",
+          "99/ص/327/43",
+          "10/ط/864/54",
+
+          "11/ظ/219/65",
+          "22/ف/547/76",
+          "33/ق/783/87",
+          "44/ک/136/98",
+          "55/گ/492/19",
+          "66/ل/825/20",
+          "77/م/361/31",
+          "88/ن/674/42",
+          "99/و/918/53",
+          "10/ه/245/64",
+
+          "11/ی/536/75",
+          "22/پ/871/86",
+          "33/ت/294/97",
+          "44/ث/658/18",
+          "55/ز/713/29",
+          "66/ژ/482/30",
+          "77/ش/936/41",
+          "88/ع/157/52",
+          "99/غ/624/63",
+          "10/الف/389/74",
+
+          "11/ب/745/85",
+          "22/ج/218/96",
+          "33/د/563/17",
+          "44/س/897/28",
+          "55/ص/341/39",
+          "66/ط/726/40",
+          "77/ظ/154/51",
+          "88/ف/689/62",
+          "99/ق/432/73",
+          "10/ک/815/84",
+
+          "11/گ/267/95",
+          "22/ل/594/16",
+          "33/م/738/27",
+          "44/ن/182/38",
+          "55/و/649/49",
+          "66/ه/913/50",
+          "77/ی/326/61",
+          "88/پ/781/72",
+          "99/ت/458/83",
+          "10/ث/624/94"
+        ];
+
+        const index = Number(bru.getVar("plate_index") || 0);
+
+        if (index >= plates.length) {
+          throw new Error("❌ تمام ۱۰۰ پلاک بررسی شده‌اند.");
+        }
+
+        const selectedPlate = plates[index];
+
+        bru.setVar("plate_number_car", selectedPlate);
+
+        console.log("======================================");
+        console.log("🚗 Selected plate:", selectedPlate);
+        console.log("🔢 Current index:", index);
+        console.log("📊 Plate:", `${index + 1} / ${plates.length}`);
+        console.log("======================================");
+    - type: after-response
+      code: |-
+        test("Response time is less than 500ms", () => {
+          expect(res.responseTime).to.be.below(500);
+        });
+
+        let data = res.body;
+
+        if (typeof data === "string") {
+          try {
+            data = JSON.parse(data);
+          } catch (error) {
+            console.log("❌ Response is not JSON");
+            return;
+          }
+        }
+
+        const index = Number(bru.getVar("plate_index") || 0);
+        const selectedPlate = bru.getVar("plate_number_car");
+
+        // ==========================================
+        // SUCCESS - Vehicle Created
+        // ==========================================
+
+        if (
+          res.status === 201 &&
+          data.data &&
+          data.data.id !== undefined
+        ) {
+
+          test("Status code is 201", () => {
+            expect(res.status).to.equal(201);
+          });
+
+          // ذخیره ID پلاک
+          bru.setVar(
+            "id_plate_number_car",
+            String(data.data.id)
+          );
+
+          // رفتن به پلاک بعدی
+          bru.setVar(
+            "plate_index",
+            String(index + 1)
+          );
+
+          console.log("✅ Vehicle added successfully");
+          console.log("🚗 Plate:", selectedPlate);
+          console.log("🆔 ID:", data.data.id);
+          console.log("➡️ Next plate index:", index + 1);
+
+          return;
+        }
+
+
+        // ==========================================
+        // DUPLICATE - Already Registered
+        // ==========================================
+
+        if (
+          res.status === 400 &&
+          data.message === "This vehicle plate number is already registered."
+        ) {
+
+          // چون این پلاک قبلاً ثبت شده،
+          // برو سراغ پلاک بعدی
+          bru.setVar(
+            "plate_index",
+            String(index + 1)
+          );
+
+          console.log("⚠️ این پلاک قبلاً ثبت شده است");
+          console.log("🚗 Plate:", selectedPlate);
+          console.log("🔢 Current index:", index);
+          console.log("➡️ Next plate index:", index + 1);
+
+          return;
+        }
+
+
+        // ==========================================
+        // OTHER ERRORS
+        // ==========================================
+
+        console.log("❌ Vehicle was not added");
+        console.log("🚗 Plate:", selectedPlate);
+        console.log("📊 Status:", res.status);
+        console.log("📄 Response:", JSON.stringify(data));
+        console.log("⏸️ Index تغییر نکرد");
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

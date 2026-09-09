@@ -1,0 +1,355 @@
+info:
+  name: 03- KYC Verify
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{Url-Dev}}account/kyc/verify/"
+  body:
+    type: json
+    data: |-
+      {
+        "first_name": "{{first_name}}",
+        "last_name": "{{last_name}}",
+        "national_id": "{{random_national_id}}",
+        "mobile_number": "{{mobile_number}}",
+        "birth_date": "{{birth_date}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: before-request
+      code: |-
+        // ========================================
+        // Users Data - Sequential
+        // ========================================
+
+        const users = [
+          { firstName: "حسین", lastName: "هاشمی", cellphone: "9144460377", ssn: "2754268103", birthday: "1975-7-13" },
+          { firstName: "فرحناز", lastName: "شهابی زاده", cellphone: "9363854792", ssn: "5279625361", birthday: "1964-4-10" },
+          { firstName: "اکبر", lastName: "نوبخت گیگلو", cellphone: "9192019438", ssn: "83821686", birthday: "1986-12-20" },
+          { firstName: "امیرعلی", lastName: "فعال", cellphone: "9211952505", ssn: "22054162", birthday: "1999-4-28" },
+          { firstName: "جواد", lastName: "مجدپویا", cellphone: "9192345063", ssn: "47488816", birthday: "1957-6-16" },
+          { firstName: "بهروز", lastName: "مولائی", cellphone: "9194416163", ssn: "46847251", birthday: "1967-12-6" },
+          { firstName: "سیامک", lastName: "کاوسی", cellphone: "9166113015", ssn: "1841206105", birthday: "1975-1-28" },
+          { firstName: "سیده مریم", lastName: "فاطمی قمی", cellphone: "9123064418", ssn: "51619067", birthday: "1965-11-15" },
+          { firstName: "سکینه", lastName: "طحان پور", cellphone: "9196214415", ssn: "2001902212", birthday: "1942-8-19" },
+          { firstName: "ناهیدسادات", lastName: "اسحاقی مقدم", cellphone: "9154981217", ssn: "880275510", birthday: "1998-6-1" },
+          { firstName: "الهام", lastName: "کلاته عربی", cellphone: "9153722859", ssn: "790414236", birthday: "1975-8-23" },
+          { firstName: "ابوالفضل", lastName: "نوروزی", cellphone: "9154854779", ssn: "924950463", birthday: "1999-9-4" },
+          { firstName: "میثم", lastName: "یوسفیان قطب آبادی", cellphone: "9386083286", ssn: "5220177877", birthday: "1997-4-10" },
+          { firstName: "امیررضا", lastName: "قادری", cellphone: "9917210835", ssn: "23202904", birthday: "2000-5-18" },
+          { firstName: "نرگس", lastName: "اقبالی", cellphone: "9171586814", ssn: "5549901366", birthday: "1973-9-16" },
+          { firstName: "احمدرضا", lastName: "شامحمدی", cellphone: "9183060408", ssn: "3330450541", birthday: "2001-8-8" },
+          { firstName: "نیما", lastName: "تقی زاده", cellphone: "9210260882", ssn: "2081149214", birthday: "2003-11-5" },
+          { firstName: "ابوالفضل", lastName: "دهنوی", cellphone: "9151535343", ssn: "6449073829", birthday: "1975-9-11" },
+          { firstName: "ابوالفضل", lastName: "محمدی", cellphone: "9309832298", ssn: "2260299539", birthday: "2001-7-2" },
+          { firstName: "مهدی", lastName: "امراللهی بیوکی", cellphone: "9222602808", ssn: "4420706562", birthday: "1997-12-16" },
+          { firstName: "علی", lastName: "نادری", cellphone: "9125821523", ssn: "5098734916", birthday: "1967-8-23" },
+          { firstName: "رضا", lastName: "نخعی جوزم", cellphone: "9136709521", ssn: "3140067615", birthday: "1992-10-14" },
+          { firstName: "مهدی", lastName: "مسیبی", cellphone: "9906355479", ssn: "1490575073", birthday: "2002-1-20" },
+          { firstName: "اعظم", lastName: "ربیعی", cellphone: "9126610796", ssn: "46968938", birthday: "1969-3-21" },
+          { firstName: "مسعود", lastName: "شاه قلی قهفرخی", cellphone: "9134429643", ssn: "1273104226", birthday: "2000-2-13" },
+          { firstName: "جواد", lastName: "آدینه زاده شهرکهنه", cellphone: "9905599436", ssn: "860430901", birthday: "1995-12-18" },
+          { firstName: "محمد مهدی", lastName: "عزیزی", cellphone: "9122420924", ssn: "6159756559", birthday: "1985-3-7" },
+          { firstName: "مرتضی", lastName: "دهقان مهرجردی", cellphone: "9385883685", ssn: "4480167900", birthday: "2003-5-27" },
+          { firstName: "محمدتقی", lastName: "قربانی", cellphone: "9365470962", ssn: "2031516736", birthday: "1968-3-21" },
+          { firstName: "حسین", lastName: "رحمتیان پناه", cellphone: "9044730977", ssn: "4260346180", birthday: "2002-1-4" },
+          { firstName: "محسن", lastName: "منصورسمایی", cellphone: "9121582123", ssn: "2200461186", birthday: "1977-8-21" },
+          { firstName: "سعید", lastName: "عارفی بخشایش", cellphone: "9027167095", ssn: "1730156290", birthday: "1995-11-29" },
+          { firstName: "خلیل", lastName: "فرحناک", cellphone: "9302096348", ssn: "1620370001", birthday: "1975-6-25" },
+          { firstName: "مهدی", lastName: "محمدابراهیمی", cellphone: "9054721540", ssn: "1292761784", birthday: "1986-5-20" },
+          { firstName: "مریم", lastName: "بزرگ زاده جهرمی", cellphone: "9016827718", ssn: "2471679013", birthday: "1986-8-6" },
+          { firstName: "علیرضا", lastName: "شیری", cellphone: "9134263214", ssn: "1250473543", birthday: "1997-9-8" },
+          { firstName: "وجیهه", lastName: "اسماعیل زاده گنج آبادی", cellphone: "9139055183", ssn: "5649946213", birthday: "1987-11-29" },
+          { firstName: "پرستو", lastName: "پورسلیمان", cellphone: "9142490098", ssn: "1490022848", birthday: "1989-4-27" },
+          { firstName: "دانیال", lastName: "سیاهکاری", cellphone: "9120501645", ssn: "1250553105", birthday: "1999-7-14" },
+          { firstName: "فائزه", lastName: "هاشمی زنوز", cellphone: "9128111496", ssn: "49410113", birthday: "1955-10-18" },
+          { firstName: "سیده یاسمن", lastName: "ابراهیم زاده گنجی", cellphone: "9391576976", ssn: "79720201", birthday: "1987-4-6" },
+          { firstName: "زهره", lastName: "جعفری", cellphone: "9155064952", ssn: "943307872", birthday: "1975-12-22" },
+          { firstName: "پریناز", lastName: "فرشیان عباسی", cellphone: "9134327882", ssn: "66078083", birthday: "1975-1-14" },
+          { firstName: "آرمین", lastName: "فاتحی", cellphone: "9101187882", ssn: "1274757215", birthday: "2006-3-7" },
+          { firstName: "روزبه", lastName: "یزدان فر", cellphone: "9100625034", ssn: "2219683222", birthday: "1981-7-8" },
+          { firstName: "ناصر", lastName: "کمیجانی", cellphone: "9123501653", ssn: "72485736", birthday: "1973-11-3" },
+          { firstName: "سعید", lastName: "جعفری", cellphone: "9357656525", ssn: "1170685404", birthday: "1980-8-21" },
+          { firstName: "احسان اله", lastName: "عطائی", cellphone: "9112699183", ssn: "4869859531", birthday: "1986-7-23" },
+          { firstName: "محمدرضا", lastName: "مددیان صفا", cellphone: "9189137728", ssn: "3873900319", birthday: "1971-6-22" },
+          { firstName: "سیدعلی رضا", lastName: "صادقی", cellphone: "9909239274", ssn: "4560317526", birthday: "2003-12-8" },
+          { firstName: "ارسلان", lastName: "کریمی", cellphone: "9175415079", ssn: "4231989850", birthday: "1986-2-20" },
+          { firstName: "عارف", lastName: "محمدپور شیخ سرمست", cellphone: "9144456129", ssn: "2740372477", birthday: "1991-2-12" },
+          { firstName: "محمد", lastName: "علیزاده وقاصلو", cellphone: "9126504268", ssn: "77919130", birthday: "1986-7-1" },
+          { firstName: "خداکرم", lastName: "فاتحی دهاقانی", cellphone: "9131047468", ssn: "5129568648", birthday: "1944-10-12" },
+          { firstName: "مهناز", lastName: "بیرجندی", cellphone: "9125713624", ssn: "52425053", birthday: "1963-4-21" },
+          { firstName: "محسن", lastName: "حدادی لایقی", cellphone: "9197488677", ssn: "4270328861", birthday: "1990-12-26" },
+          { firstName: "سید محمد مهدی", lastName: "شبیری", cellphone: "9109609141", ssn: "4271482242", birthday: "2001-10-11" },
+          { firstName: "سیدمحمد", lastName: "موسوی", cellphone: "9161419226", ssn: "1987933958", birthday: "1961-4-30" },
+          { firstName: "کورش", lastName: "فقانی", cellphone: "9125060340", ssn: "56396759", birthday: "1971-7-30" },
+          { firstName: "علی", lastName: "محمودآبادی", cellphone: "9372916236", ssn: "927204002", birthday: "2004-8-29" },
+          { firstName: "فائزه", lastName: "محمودی اولامچی", cellphone: "9029240282", ssn: "371763355", birthday: "1998-12-8" },
+          { firstName: "حامد", lastName: "شیرخانپور سردهائی", cellphone: "9106892632", ssn: "84079691", birthday: "1987-12-13" },
+          { firstName: "لیلا", lastName: "برزگری گمش اباد", cellphone: "9332487823", ssn: "1490590412", birthday: "2002-7-31" },
+          { firstName: "رضا", lastName: "عباسی", cellphone: "9144017099", ssn: "1361739401", birthday: "1995-8-17" },
+          { firstName: "امین", lastName: "جاویدمهر", cellphone: "9143086435", ssn: "1361298261", birthday: "1993-12-2" },
+          { firstName: "خدیجه", lastName: "مختاری قوشچی", cellphone: "9149455927", ssn: "6379946934", birthday: "1985-4-19" },
+          { firstName: "اکبر", lastName: "سمیعی راد", cellphone: "9109220436", ssn: "69229619", birthday: "1978-9-9" },
+          { firstName: "فرامرز", lastName: "کوهی میرزانق", cellphone: "9147485192", ssn: "1450343449", birthday: "1990-5-23" },
+          { firstName: "علیرضا", lastName: "باباپور", cellphone: "9044652374", ssn: "1590383702", birthday: "2002-5-2" },
+          { firstName: "مهدی", lastName: "برزگری گمش آباد", cellphone: "9147861360", ssn: "1364795175", birthday: "2008-9-20" },
+          { firstName: "صفر", lastName: "برزگری گمش آباد", cellphone: "9147861360", ssn: "1501263919", birthday: "1976-6-25" },
+          { firstName: "سعید", lastName: "دهقانی پیرانفر", cellphone: "9103695083", ssn: "17641608", birthday: "1994-12-24" },
+          { firstName: "ارشیا", lastName: "محمدی عبده وند", cellphone: "9938041299", ssn: "1130730271", birthday: "2006-6-9" },
+          { firstName: "علی", lastName: "مهدوی یگانه", cellphone: "9189027577", ssn: "4010113189", birthday: "1977-9-21" },
+          { firstName: "اله یار", lastName: "بهرامی دهدار", cellphone: "9177345576", ssn: "2292962985", birthday: "1966-12-27" },
+          { firstName: "علی اکبر", lastName: "اسلام زاده", cellphone: "9306008891", ssn: "10761561", birthday: "1989-8-9" },
+          { firstName: "صدیقه", lastName: "محمودی", cellphone: "9361349061", ssn: "820016527", birthday: "1989-7-20" },
+          { firstName: "مجتبی", lastName: "خزائی", cellphone: "9153072655", ssn: "942851889", birthday: "1979-1-12" },
+          { firstName: "سعید", lastName: "رجبی نیازابادی", cellphone: "9017350346", ssn: "944975161", birthday: "1988-3-18" },
+          { firstName: "سحر", lastName: "حاجی زاده", cellphone: "9909796455", ssn: "1900459418", birthday: "2000-12-15" },
+          { firstName: "فاطمه", lastName: "بدلی", cellphone: "9359981012", ssn: "57745218", birthday: "1975-2-12" },
+          { firstName: "محیا", lastName: "براتی", cellphone: "9024988202", ssn: "13397044", birthday: "1991-4-6" },
+          { firstName: "علی", lastName: "حسین حصار", cellphone: "9159962431", ssn: "923094891", birthday: "1995-4-5" },
+          { firstName: "سجاد", lastName: "خدادادی ساداتی", cellphone: "9909040292", ssn: "2980173703", birthday: "1990-6-21" },
+          { firstName: "جواد", lastName: "ایزدی", cellphone: "9183381675", ssn: "3358134873", birthday: "1968-8-28" },
+          { firstName: "یاسمن", lastName: "رضانژاد", cellphone: "9930543080", ssn: "2284277802", birthday: "2006-5-4" },
+          { firstName: "هومن", lastName: "پوردان", cellphone: "9380595759", ssn: "78262161", birthday: "1987-6-13" },
+          { firstName: "مجتبی", lastName: "محمودخانی", cellphone: "9121641365", ssn: "4911669764", birthday: "1985-8-17" },
+          { firstName: "فاطمه", lastName: "مکاری", cellphone: "9361769910", ssn: "922783543", birthday: "1994-8-2" },
+          { firstName: "مصطفی", lastName: "بهادری عظیم ابادی", cellphone: "9366764098", ssn: "3421852375", birthday: "1983-5-25" },
+          { firstName: "حسین", lastName: "زاددولتی ماسوله", cellphone: "9118056645", ssn: "2669801374", birthday: "1965-9-11" },
+          { firstName: "سیدیاسر", lastName: "موسوی ندوشن", cellphone: "9036391822", ssn: "4431727930", birthday: "1978-8-20" },
+          { firstName: "غلامحسین", lastName: "اسدی", cellphone: "9154179978", ssn: "933853459", birthday: "1965-5-5" },
+          { firstName: "محمد علی", lastName: "زکائی نسب", cellphone: "9136758144", ssn: "4660039544", birthday: "1989-11-5" },
+          { firstName: "اراد", lastName: "ابگون", cellphone: "9213473396", ssn: "3862057925", birthday: "2011-1-2" },
+          { firstName: "حمیدرضا", lastName: "ناظری تیله نوئی", cellphone: "9300779331", ssn: "5799883721", birthday: "1980-8-25" },
+          { firstName: "حسین", lastName: "صلاحی", cellphone: "9397007672", ssn: "922830002", birthday: "1993-7-6" },
+          { firstName: "حسین", lastName: "رضازاده خواجه دیزج", cellphone: "9369495535", ssn: "1378260120", birthday: "1980-11-28" },
+          { firstName: "علی", lastName: "رضائی", cellphone: "9153315218", ssn: "6509623609", birthday: "1973-4-24" },
+          { firstName: "رسول", lastName: "کریمی مانگ هلاتی", cellphone: "9199189013", ssn: "3240266261", birthday: "1990-2-8" }
+        ];
+
+
+        // ========================================
+        // Get Current Row
+        // ========================================
+
+        const index = Number(
+          bru.getVar("user_data_index") || 0
+        );
+
+        if (index >= users.length) {
+          throw new Error("❌ تمام Row ها استفاده شده‌اند.");
+        }
+
+        const user = users[index];
+
+
+        // ========================================
+        // Mobile Number
+        // ========================================
+
+        let mobileNumber = String(user.cellphone);
+
+        if (!mobileNumber.startsWith("0")) {
+          mobileNumber = "0" + mobileNumber;
+        }
+
+
+        // ========================================
+        // Gregorian Birth Date
+        // ========================================
+
+        const birthdayParts = String(user.birthday).split("-");
+
+        const year = birthdayParts[0];
+        const month = birthdayParts[1].padStart(2, "0");
+        const day = birthdayParts[2].padStart(2, "0");
+
+        const birthDate = `${year}-${month}-${day}`;
+
+
+        // ========================================
+        // National ID - Always 10 Digits
+        // ========================================
+
+        const correctNationalId = String(user.ssn)
+          .replace(/\D/g, "")
+          .padStart(10, "0");
+
+        let finalNationalId = correctNationalId;
+
+
+        // ========================================
+        // Every 3rd Request → Wrong National ID
+        // ========================================
+
+        if ((index + 1) % 3 === 0) {
+
+          const lastDigit = Number(
+            correctNationalId.charAt(9)
+          );
+
+          const wrongLastDigit = (lastDigit + 1) % 10;
+
+          finalNationalId =
+            correctNationalId.substring(0, 9) +
+            String(wrongLastDigit);
+
+        }
+
+
+        // ========================================
+        // Set Variables
+        // ========================================
+
+        bru.setVar("first_name", user.firstName);
+        bru.setVar("last_name", user.lastName);
+
+        bru.setVar(
+          "random_national_id",
+          finalNationalId
+        );
+
+        bru.setVar("mobile_number", mobileNumber);
+        bru.setVar("birth_date", birthDate);
+
+
+        // ========================================
+        // Console
+        // ========================================
+
+        console.log("========================================");
+        console.log("👤 Current Row:", index + 1);
+        console.log("👤 First Name:", user.firstName);
+        console.log("👤 Last Name:", user.lastName);
+
+        if ((index + 1) % 3 === 0) {
+          console.log("❌ Wrong National ID");
+        } else {
+          console.log("✅ Correct National ID");
+        }
+
+        console.log("🆔 National ID:", finalNationalId);
+        console.log("📱 Mobile:", mobileNumber);
+        console.log("🎂 Birth Date:", birthDate);
+        console.log("========================================");
+    - type: after-response
+      code: |-
+        // ========================================
+        // Response Time
+        // ========================================
+
+        test("Response time is less than 3000ms", () => {
+          expect(res.responseTime).to.be.below(3000);
+        });
+
+
+        // ========================================
+        // Current Row
+        // ========================================
+
+        const currentIndex = Number(
+          bru.getVar("user_data_index") || 0
+        );
+
+        const currentRow = currentIndex + 1;
+
+
+        // ========================================
+        // Parse Response
+        // ========================================
+
+        let responseData = res.body;
+
+        if (typeof responseData === "string") {
+          try {
+            responseData = JSON.parse(responseData);
+          } catch (error) {
+            responseData = {};
+          }
+        }
+
+
+        // ========================================
+        // KYC SUCCESS
+        // ========================================
+
+        if (
+          responseData.success === true &&
+          responseData.data &&
+          responseData.data.status === "success"
+        ) {
+
+          console.log("========================================");
+          console.log("✅ KYC با موفقیت انجام شد");
+          console.log("👤 Row:", currentRow);
+          console.log("👤 First Name:", bru.getVar("first_name"));
+          console.log("👤 Last Name:", bru.getVar("last_name"));
+          console.log("🆔 National ID:", bru.getVar("random_national_id"));
+          console.log("📱 Mobile:", bru.getVar("mobile_number"));
+          console.log("🎂 Birth Date:", bru.getVar("birth_date"));
+          console.log("========================================");
+
+        }
+
+
+        // ========================================
+        // KYC FAILED
+        // ========================================
+
+        else if (
+          responseData.success === false
+        ) {
+
+          console.log("========================================");
+          console.log("❌ KYC با موفقیت انجام نشد");
+          console.log("👤 Row:", currentRow);
+          console.log("👤 First Name:", bru.getVar("first_name"));
+          console.log("👤 Last Name:", bru.getVar("last_name"));
+          console.log("🆔 National ID:", bru.getVar("random_national_id"));
+          console.log("📱 Mobile:", bru.getVar("mobile_number"));
+          console.log("🎂 Birth Date:", bru.getVar("birth_date"));
+          console.log("📊 HTTP Status:", res.status);
+          console.log("📄 Message:", responseData.message);
+          console.log("========================================");
+
+        }
+
+
+        // ========================================
+        // UNKNOWN RESPONSE
+        // ========================================
+
+        else {
+
+          console.log("========================================");
+          console.log("⚠️ پاسخ KYC قابل تشخیص نیست");
+          console.log("👤 Row:", currentRow);
+          console.log("📊 HTTP Status:", res.status);
+          console.log("📄 Response:", res.body);
+          console.log("========================================");
+
+        }
+
+
+        // ========================================
+        // MOVE TO NEXT ROW
+        // همیشه بعد از هر Response برو Row بعدی
+        // ========================================
+
+        bru.setVar(
+          "user_data_index",
+          String(currentIndex + 1)
+        );
+
+        console.log(
+          `➡️ Row ${currentRow} processed. Moving to Row ${currentRow + 1}`
+        );
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
