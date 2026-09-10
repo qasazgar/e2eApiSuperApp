@@ -170,33 +170,12 @@ runtime:
 
 
         // ========================================
-        // National ID - Always 10 Digits
+        // National ID - Correct 10 Digits
         // ========================================
 
-        const correctNationalId = String(user.ssn)
+        const nationalId = String(user.ssn)
           .replace(/\D/g, "")
           .padStart(10, "0");
-
-        let finalNationalId = correctNationalId;
-
-
-        // ========================================
-        // Every 3rd Request → Wrong National ID
-        // ========================================
-
-        if ((index + 1) % 3 === 0) {
-
-          const lastDigit = Number(
-            correctNationalId.charAt(9)
-          );
-
-          const wrongLastDigit = (lastDigit + 1) % 10;
-
-          finalNationalId =
-            correctNationalId.substring(0, 9) +
-            String(wrongLastDigit);
-
-        }
 
 
         // ========================================
@@ -205,12 +184,7 @@ runtime:
 
         bru.setVar("first_name", user.firstName);
         bru.setVar("last_name", user.lastName);
-
-        bru.setVar(
-          "random_national_id",
-          finalNationalId
-        );
-
+        bru.setVar("random_national_id", nationalId);
         bru.setVar("mobile_number", mobileNumber);
         bru.setVar("birth_date", birthDate);
 
@@ -223,14 +197,7 @@ runtime:
         console.log("👤 Current Row:", index + 1);
         console.log("👤 First Name:", user.firstName);
         console.log("👤 Last Name:", user.lastName);
-
-        if ((index + 1) % 3 === 0) {
-          console.log("❌ Wrong National ID");
-        } else {
-          console.log("✅ Correct National ID");
-        }
-
-        console.log("🆔 National ID:", finalNationalId);
+        console.log("🆔 National ID:", nationalId);
         console.log("📱 Mobile:", mobileNumber);
         console.log("🎂 Birth Date:", birthDate);
         console.log("========================================");
@@ -335,16 +302,11 @@ runtime:
 
         // ========================================
         // MOVE TO NEXT ROW
-        // همیشه بعد از هر Response برو Row بعدی
         // ========================================
 
         bru.setVar(
           "user_data_index",
           String(currentIndex + 1)
-        );
-
-        console.log(
-          `➡️ Row ${currentRow} processed. Moving to Row ${currentRow + 1}`
         );
 
 settings:
