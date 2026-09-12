@@ -1,0 +1,7 @@
+info:
+  name: 01- Successfully inquire gas bill using ParticipateCode
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit

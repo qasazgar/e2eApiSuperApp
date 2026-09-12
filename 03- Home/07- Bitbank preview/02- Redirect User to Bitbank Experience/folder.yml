@@ -8,7 +8,7 @@ request:
 
 docs:
   content: |-
-    # <span>**Redirect User to Bitbank Experience**</span>
+    # <span>**SA-T373** **Redirect User to Bitbank Experience**</span>
 
     **Given** the Bitbank service is displayed \
     **When** the user selects Bitbank \

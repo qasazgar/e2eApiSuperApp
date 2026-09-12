@@ -8,7 +8,7 @@ request:
 
 docs:
   content: |-
-    # **Returning user accesses the Super App with a valid session**
+    # **SA-T9** **Returning user accesses the Super App with a valid session**
 
     **Given** the user has previously authenticated \
     **And** the user's session is valid \

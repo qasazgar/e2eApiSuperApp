@@ -8,7 +8,7 @@ request:
 
 docs:
   content: |-
-    # <span>**User opens the Blockchain Explorer from the homepage**</span>
+    # **SA-T191** **User opens the Blockchain Explorer from the homepage**</span>
 
     **Given** the user is on the Super App homepage \
     **And** the Blockchain entry point is displayed \

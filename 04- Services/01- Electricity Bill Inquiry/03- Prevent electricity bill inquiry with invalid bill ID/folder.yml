@@ -1,0 +1,19 @@
+info:
+  name: 03- Prevent electricity bill inquiry with invalid bill ID
+  type: folder
+  seq: 3
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # **SA-T42** **Prevent electricity bill inquiry when required input is empty**
+
+    **Given** the user is on the Electricity Bill Inquiry page \
+    **When** the user enters an invalid electricity bill ID \
+    **And** submits the inquiry \
+    **Then** the system should validate the entered information \
+    **And** the inquiry should not be processed \
+    **And** an appropriate validation error message should be displayed
+  type: text/markdown

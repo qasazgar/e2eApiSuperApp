@@ -1,0 +1,69 @@
+info:
+  name: 03- Bill Electricity Inquiry Detail
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{Url-Dev}}services/financial/inquiry/bill/electricity/"
+  headers:
+    - name: accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "electricity_bill_id": "",
+        "mobile_number": "{{Electricity_phone_number}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 400", () => {
+          expect(res.status).to.equal(400);
+        });
+
+        test("Response time is less than 3000ms", () => {
+          expect(res.responseTime).to.be.below(3000);
+        });
+
+        // ========================================
+        // Parse Response
+        // ========================================
+
+        let responseData = res.body;
+
+        if (typeof responseData === "string") {
+          try {
+            responseData = JSON.parse(responseData);
+          } catch (error) {
+            responseData = {};
+          }
+        }
+
+        // ========================================
+        // Empty Electricity Bill ID
+        // ========================================
+
+        if (
+          responseData.success === false &&
+          responseData.data &&
+          Array.isArray(responseData.data.electricity_bill_id) &&
+          responseData.data.electricity_bill_id.includes(
+            "This field may not be blank."
+          )
+        ) {
+          console.log("❌ شناسه قبض برق خالی می‌باشد");
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

@@ -8,7 +8,7 @@ request:
 
 docs:
   content: |-
-    # <span>**Transaction details display the available blockchain information**</span>
+    # <span>**SA-T206** **Transaction details display the available blockchain information**</span>
 
     **Given** the user has selected a transaction \
     **And** transaction details are available from the API \

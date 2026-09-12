@@ -8,7 +8,7 @@ request:
 
 docs:
   content: |-
-    # <span>**Selecting Postex redirects the user to the Postex experience**</span>
+    # <span>**SA-T322** **Selecting Postex redirects the user to the Postex experience**</span>
 
     **Given** the user is viewing Postex in the Super App \
     **When** the user selects Postex \

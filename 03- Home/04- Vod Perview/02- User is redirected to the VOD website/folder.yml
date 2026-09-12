@@ -8,7 +8,7 @@ request:
 
 docs:
   content: |-
-    # <span>**User is redirected to the VOD website**</span>
+    # <span>**SA-T278** **User is redirected to the VOD website**</span>
 
     **Given** the VOD entry point is displayed in the Super App \
     **When** the user selects VOD \

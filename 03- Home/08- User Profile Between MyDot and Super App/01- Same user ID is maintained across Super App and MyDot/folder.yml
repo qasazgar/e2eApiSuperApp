@@ -8,7 +8,7 @@ request:
 
 docs:
   content: |-
-    # <span>**Same user ID is maintained across Super App and MyDot**</span>
+    # <span>**SA-T342** **Same user ID is maintained across Super App and MyDot**</span>
 
     **Given** the user is authenticated in the Super App \
     **When** the user accesses MyDot \

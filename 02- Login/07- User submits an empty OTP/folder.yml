@@ -8,7 +8,7 @@ request:
 
 docs:
   content: |-
-    # **User submits an empty OTP**
+    # **SA-T7** **User submits an empty OTP**
 
     **Given** the user is on the OTP verification step \
     **When** the user submits the OTP without entering a code \

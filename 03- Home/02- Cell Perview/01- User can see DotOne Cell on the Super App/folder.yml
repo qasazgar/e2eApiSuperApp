@@ -8,7 +8,7 @@ request:
 
 docs:
   content: |-
-    # <span>**User can see DotOne Cell on the Super App**</span>
+    # <span>**SA-T282** **User can see DotOne Cell on the Super App**</span>
 
     **Given** the user is on the Super App Home Page \
     **When** the Home Page is loaded \

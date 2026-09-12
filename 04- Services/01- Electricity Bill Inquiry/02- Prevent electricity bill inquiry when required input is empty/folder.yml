@@ -1,0 +1,18 @@
+info:
+  name: 02- Prevent electricity bill inquiry when required input is empty
+  type: folder
+  seq: 2
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # **SA-T383** **Prevent electricity bill inquiry when required input is empty**
+
+    **Given** the user is on the Electricity Bill Inquiry page \
+    **When** the user leaves the required bill information empty \
+    **And** submits the inquiry \
+    **Then** the system should prevent the inquiry \
+    **And** an appropriate required-field validation message should be displayed
+  type: text/markdown

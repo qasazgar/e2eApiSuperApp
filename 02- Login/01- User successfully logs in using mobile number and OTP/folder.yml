@@ -8,7 +8,7 @@ request:
 
 docs:
   content: |-
-    # **User successfully logs in using mobile number and OTP**
+    # **SA-T1** **User successfully logs in using mobile number and OTP**
 
     **Given** the user is on the Login page\
     **When** the user enters a valid mobile number \

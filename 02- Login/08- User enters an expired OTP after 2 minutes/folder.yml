@@ -8,7 +8,7 @@ request:
 
 docs:
   content: |-
-    # **User enters an expired OTP after 2 minutes**
+    # **SA-T8** **User enters an expired OTP after 2 minutes**
 
     **Given** the user has requested an OTP \
     **And** the OTP is valid for 2 minutes \

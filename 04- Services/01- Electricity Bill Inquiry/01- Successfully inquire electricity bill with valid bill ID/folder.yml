@@ -8,7 +8,7 @@ request:
 
 docs:
   content: |-
-    # <span>**Successfully inquire electricity bill with valid bill ID**</span>
+    # <span>**SA-T42** **Successfully inquire electricity bill with valid bill ID**</span>
 
     **Given** the user is on the Electricity Bill Inquiry page \
     **And** the user has a valid electricity bill ID \
@@ -16,6 +16,6 @@ docs:
     **And** submits the inquiry \
     **Then** the system should successfully call the Electricity Bill Inquiry service \
     **And** the bill information should be retrieved \
-    **And** the bill amount should be displayed  \
+    **And** the bill amount should be displayed \
     **And** other bill details returned by the service should be displayed correctly
   type: text/markdown

@@ -8,7 +8,7 @@ request:
 
 docs:
   content: |-
-    # **User submits an empty mobile number**
+    # **SA-T3** **User submits an empty mobile number**
 
     **Given** the user is on the Login page \
     **When** the user submits the login form without entering a mobile number \

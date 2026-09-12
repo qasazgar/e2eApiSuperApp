@@ -8,7 +8,7 @@ request:
 
 docs:
   content: |-
-    # **OTP is sent after submitting a valid mobile number**
+    # **SA-T4** **OTP is sent after submitting a valid mobile number**
 
     **Given** the user is on the Login page \
     **And** the user has entered a valid mobile number \

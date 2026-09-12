@@ -8,7 +8,7 @@ request:
 
 docs:
   content: |-
-    # <span>**Authentication session is maintained between Super App and MyDot**</span>
+    # <span>**SA-T344** **Authentication session is maintained between Super App and MyDot**</span>
 
     **Given** the user is authenticated in the Super App \
     **And** the user's authentication session is valid \

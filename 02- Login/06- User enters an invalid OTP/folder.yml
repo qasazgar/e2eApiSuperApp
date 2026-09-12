@@ -8,7 +8,7 @@ request:
 
 docs:
   content: |-
-    # **User enters an invalid OTP**
+    # **SA-T6** **User enters an invalid OTP**
 
     **Given** the user has requested an OTP \
     **And** the user is on the OTP verification step \

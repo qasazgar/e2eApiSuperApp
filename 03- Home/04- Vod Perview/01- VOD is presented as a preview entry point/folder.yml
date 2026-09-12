@@ -8,7 +8,7 @@ request:
 
 docs:
   content: |-
-    # <span>**VOD is presented as a preview entry point**</span></span></span>
+    # <span>**SA-T275** **VOD is presented as a preview entry point**</span></span></span>
 
     **Given** the VOD entry point is displayed in the Super App \
     **Then** VOD should be presented as a Preview/Entry Point \

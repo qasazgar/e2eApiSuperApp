@@ -8,7 +8,7 @@ request:
 
 docs:
   content: |-
-    # <span>**User is directed to the appropriate DotOne Gold experience**</span>
+    # <span>**SA-T295** **User is directed to the appropriate DotOne Gold experience**</span>
 
     **Given** DotOne Gold is displayed in the Super App \
     **When** the user selects DotOne Gold \

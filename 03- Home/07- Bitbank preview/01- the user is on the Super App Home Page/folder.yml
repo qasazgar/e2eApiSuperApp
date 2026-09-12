@@ -8,7 +8,7 @@ request:
 
 docs:
   content: |-
-    # <span>**the user is on the Super App Home Page**</span>
+    # <span>**SA-T370** **the user is on the Super App Home Page**</span>
 
     **When** the Home Page is loaded \
     **Then** the Bitbank service should be displayed \

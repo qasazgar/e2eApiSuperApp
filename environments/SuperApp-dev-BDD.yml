@@ -87,6 +87,6 @@ variables:
   - name: Electricity_phone_number
     value: "09122315357"
     description: ""
-  - name: User_id_wallet
-    value: f7e43132-31d4-41bd-a113-7f9ab1945050
+  - name: Invalid_electricity_bill_ID
+    value: "12345678910111213"
     description: ""
