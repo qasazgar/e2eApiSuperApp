@@ -1,5 +1,17 @@
+```groovy
 pipeline {
     agent any
+
+    options {
+        disableConcurrentBuilds()
+
+        buildDiscarder(
+            logRotator(
+                numToKeepStr: '20',
+                artifactNumToKeepStr: '10'
+            )
+        )
+    }
 
     stages {
 
@@ -12,9 +24,20 @@ pipeline {
         stage('Check Environment') {
             steps {
                 sh '''
+                    echo "======================================"
+                    echo " Environment Check"
+                    echo "======================================"
+
+                    echo "Node version:"
                     node --version
+
+                    echo "NPM version:"
                     npm --version
+
+                    echo "Bruno version:"
                     bru --version
+
+                    echo "======================================"
                 '''
             }
         }
@@ -28,72 +51,79 @@ pipeline {
             }
         }
 
-        stage('Run Bruno') {
+        stage('Run Login') {
             steps {
                 script {
-                    def testFailed = false
-
-                    sh '''
-                        echo "======================================"
-                        echo "Running End To End"
-                        echo "Environment: SuperApp-dev"
-                        echo "======================================"
-                    '''
-
-                    try {
+                    catchError(
+                        buildResult: 'FAILURE',
+                        stageResult: 'FAILURE'
+                    ) {
                         sh '''
-                            bru run "01- End To End" \
-                                --env SuperApp-dev \
-                                --reporter-junit reports/e2e-junit.xml \
-                                --reporter-html reports/e2e-report.html
+                            echo "======================================"
+                            echo " Running: 02- Login"
+                            echo "======================================"
+
+                            bru run "02- Login" \
+                                --env Stage \
+                                --reporter-junit reports/02-login-junit.xml \
+                                --reporter-html reports/02-login-report.html
+
+                            echo "======================================"
+                            echo " Completed: 02- Login"
+                            echo "======================================"
                         '''
-                    } catch (Exception e) {
-                        echo "End To End tests failed."
-                        testFailed = true
                     }
+                }
+            }
+        }
 
-                    sh '''
-                        echo "======================================"
-                        echo "Running BDD Scenarios"
-                        echo "Environment: SuperApp-dev-BDD"
-                        echo "======================================"
-                    '''
+        stage('Run Home') {
+            steps {
+                script {
+                    catchError(
+                        buildResult: 'FAILURE',
+                        stageResult: 'FAILURE'
+                    ) {
+                        sh '''
+                            echo "======================================"
+                            echo " Running: 03- Home"
+                            echo "======================================"
 
-                    for (folder in sh(
-                        script: "find . -mindepth 1 -maxdepth 1 -type d ! -name '.git' ! -name 'environments' -print | sort",
-                        returnStdout: true
-                    ).trim().split('\n')) {
+                            bru run "03- Home" \
+                                --env Stage \
+                                --reporter-junit reports/03-home-junit.xml \
+                                --reporter-html reports/03-home-report.html
 
-                        def folderName = folder.replace('./', '')
-
-                        if (folderName != '01- End To End') {
-
-                            echo "--------------------------------------"
-                            echo "Running: ${folderName}"
-                            echo "Environment: SuperApp-dev-BDD"
-                            echo "--------------------------------------"
-
-                            def result = sh(
-                                script: """
-                                    bru run "${folderName}" \
-                                        --env SuperApp-dev-BDD \
-                                        --reporter-junit "reports/${folderName}-junit.xml" \
-                                        --reporter-html "reports/${folderName}-report.html"
-                                """,
-                                returnStatus: true
-                            )
-
-                            if (result != 0) {
-                                echo "FAILED: ${folderName}"
-                                testFailed = true
-                            } else {
-                                echo "PASSED: ${folderName}"
-                            }
-                        }
+                            echo "======================================"
+                            echo " Completed: 03- Home"
+                            echo "======================================"
+                        '''
                     }
+                }
+            }
+        }
 
-                    if (testFailed) {
-                        error("One or more Bruno test suites failed.")
+        stage('Run Services') {
+            steps {
+                script {
+                    catchError(
+                        buildResult: 'FAILURE',
+                        stageResult: 'FAILURE'
+                    ) {
+                        sh '''
+                            echo "======================================"
+                            echo " Running: 04- Services"
+                            echo "======================================"
+
+                            bru run "04- Services" \
+                                --env Stage \
+                                --reporter-junit reports/04-services-junit.xml \
+                                --reporter-html reports/04-services-report.html
+
+                            echo "======================================"
+                            echo " Completed: 04- Services"
+                            echo "======================================"
+                        '''
                     }
                 }
             }
@@ -104,15 +134,38 @@ pipeline {
 
         always {
 
+            echo "======================================"
+            echo " Publishing Test Results"
+            echo "======================================"
+
             junit(
-                testResults: 'reports/*-junit.xml',
-                allowEmptyResults: true
+                allowEmptyResults: true,
+                testResults: 'reports/*-junit.xml'
             )
 
             archiveArtifacts(
-                artifacts: 'reports/*-report.html',
+                artifacts: 'reports/*.html',
                 allowEmptyArchive: true
             )
+
+            echo "======================================"
+            echo " All Reports Published"
+            echo "======================================"
+        }
+
+        success {
+
+            echo "======================================"
+            echo " ALL TESTS PASSED"
+            echo "======================================"
+        }
+
+        failure {
+
+            echo "======================================"
+            echo " SOME TESTS FAILED"
+            echo "======================================"
         }
     }
 }
+```
