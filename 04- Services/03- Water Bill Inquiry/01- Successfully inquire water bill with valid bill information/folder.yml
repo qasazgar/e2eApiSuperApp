@@ -1,0 +1,20 @@
+info:
+  name: 01- Successfully inquire water bill with valid bill information
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # **SA-T46** <span><span><span><span><span><span><span>**Successfully inquire water bill with valid bill information**</span></span></span></span></span></span></span></span>
+
+    **Given** the user is on the Water Bill Inquiry page \
+    **And** the user has valid water bill information \
+    **When** the user enters the required bill information \
+    **And** submits the inquiry \
+    **Then** the system should successfully call the Water Bill Inquiry service \
+    **And** the water bill information should be retrieved \
+    **And** the bill details should be displayed to the user
+  type: text/markdown
