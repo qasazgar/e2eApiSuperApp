@@ -1,0 +1,20 @@
+info:
+  name: 01- Successfully inquire gas bill using GasBillID
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # **SA-T44** <span>**Successfully inquire gas bill using GasBillID**</span></span>
+
+    **Given** the user is on the Gas Bill Inquiry page \
+    **And** the user has a valid GasBillID \
+    **And** the ParticipateCode field is empty \
+    **When** the user enters the GasBillID \
+    **And** submits the inquiry \
+    **Then** the system should successfully call the Gas Bill Inquiry service \
+    **And** the gas bill information should be retrieved and displayed
+  type: text/markdown

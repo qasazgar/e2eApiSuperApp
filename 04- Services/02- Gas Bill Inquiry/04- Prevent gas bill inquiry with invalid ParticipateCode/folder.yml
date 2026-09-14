@@ -1,0 +1,20 @@
+info:
+  name: 04- Prevent gas bill inquiry with invalid ParticipateCode
+  type: folder
+  seq: 4
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # **SA-T387** <span><span><span><span>**Prevent gas bill inquiry with invalid ParticipateCode**</span></span></span></span></span>
+
+    **Given** the user is on the Gas Bill Inquiry page \
+    **And** the GasBillID field is empty \
+    **When** the user enters an invalid ParticipateCode \
+    **And** submits the inquiry \
+    **Then** the system should validate the ParticipateCode \
+    **And** the inquiry should be prevented \
+    **And** an appropriate validation error message should be displayed
+  type: text/markdown

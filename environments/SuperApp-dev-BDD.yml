@@ -90,3 +90,12 @@ variables:
   - name: Invalid_electricity_bill_ID
     value: "12345678910111213"
     description: ""
+  - name: Invalid_gaz_bill_ID
+    value: "13121110987654321"
+    description: ""
+  - name: Invalid_participate_code
+    value: "123321234567"
+    description: ""
+  - name: participate_code
+    value: "003260527690"
+    description: ""

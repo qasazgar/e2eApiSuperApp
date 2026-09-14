@@ -1,0 +1,20 @@
+info:
+  name: 02- Prevent gas bill inquiry when both ParticipateCode and GasBillID are empty
+  type: folder
+  seq: 2
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # **SA-T386** <span><span>**Prevent gas bill inquiry when both ParticipateCode and GasBillID are empty**</span></span></span>
+
+    **Given** the user is on the Gas Bill Inquiry page \
+    **And** the ParticipateCode field is empty \
+    **And** the GasBillID field is empty \
+    **When** the user submits the inquiry \
+    **Then** the system should prevent the inquiry \
+    **And** the Gas Bill Inquiry service should not be called \
+    **And** an appropriate validation error message should be displayed
+  type: text/markdown

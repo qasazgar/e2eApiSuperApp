@@ -1,0 +1,20 @@
+info:
+  name: 06- Prevent gas bill inquiry when both ParticipateCode and GasBillID are provided
+  type: folder
+  seq: 6
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # **SA-T45** <span><span><span><span><span><span>**Prevent gas bill inquiry when both ParticipateCode and GasBillID are provided**</span></span></span></span></span></span></span>
+
+    **Given** the user is on the Gas Bill Inquiry page \
+    **When** the user enters a valid ParticipateCode \
+    **And** the user enters a valid GasBillID \
+    **And** submits the inquiry \
+    **Then** the system should prevent the inquiry \
+    **And** the Gas Bill Inquiry service should not be called \
+    **And** an appropriate validation error message should be displayed
+  type: text/markdown
