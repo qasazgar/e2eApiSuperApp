@@ -30,43 +30,72 @@ pipeline {
 
         stage('Run Bruno') {
             steps {
-                sh '''
-                    echo "======================================"
-                    echo "Running End To End"
-                    echo "Environment: SuperApp-dev"
-                    echo "======================================"
+                script {
+                    def testFailed = false
 
-                    bru run "01- End To End" \
-                        --env SuperApp-dev \
-                        --reporter-junit reports/e2e-junit.xml \
-                        --reporter-html reports/e2e-report.html
+                    sh '''
+                        echo "======================================"
+                        echo "Running End To End"
+                        echo "Environment: SuperApp-dev"
+                        echo "======================================"
+                    '''
 
+                    try {
+                        sh '''
+                            bru run "01- End To End" \
+                                --env SuperApp-dev \
+                                --reporter-junit reports/e2e-junit.xml \
+                                --reporter-html reports/e2e-report.html
+                        '''
+                    } catch (Exception e) {
+                        echo "End To End tests failed."
+                        testFailed = true
+                    }
 
-                    echo "======================================"
-                    echo "Running BDD Scenarios"
-                    echo "Environment: SuperApp-dev-BDD"
-                    echo "======================================"
+                    sh '''
+                        echo "======================================"
+                        echo "Running BDD Scenarios"
+                        echo "Environment: SuperApp-dev-BDD"
+                        echo "======================================"
+                    '''
 
-                    for folder in */; do
+                    for (folder in sh(
+                        script: "find . -mindepth 1 -maxdepth 1 -type d ! -name '.git' ! -name 'environments' -print | sort",
+                        returnStdout: true
+                    ).trim().split('\n')) {
 
-                        if [ "$folder" != "01- End To End/" ] && [ "$folder" != "environments/" ]; then
+                        def folderName = folder.replace('./', '')
 
-                            folder_name="${folder%/}"
+                        if (folderName != '01- End To End') {
 
                             echo "--------------------------------------"
-                            echo "Running: $folder_name"
+                            echo "Running: ${folderName}"
                             echo "Environment: SuperApp-dev-BDD"
                             echo "--------------------------------------"
 
-                            bru run "$folder_name" \
-                                --env SuperApp-dev-BDD \
-                                --reporter-junit "reports/${folder_name}-junit.xml" \
-                                --reporter-html "reports/${folder_name}-report.html"
+                            def result = sh(
+                                script: """
+                                    bru run "${folderName}" \
+                                        --env SuperApp-dev-BDD \
+                                        --reporter-junit "reports/${folderName}-junit.xml" \
+                                        --reporter-html "reports/${folderName}-report.html"
+                                """,
+                                returnStatus: true
+                            )
 
-                        fi
+                            if (result != 0) {
+                                echo "FAILED: ${folderName}"
+                                testFailed = true
+                            } else {
+                                echo "PASSED: ${folderName}"
+                            }
+                        }
+                    }
 
-                    done
-                '''
+                    if (testFailed) {
+                        error("One or more Bruno test suites failed.")
+                    }
+                }
             }
         }
     }
@@ -84,7 +113,6 @@ pipeline {
                 artifacts: 'reports/*-report.html',
                 allowEmptyArchive: true
             )
-
         }
     }
 }
