@@ -1,7 +1,6 @@
 pipeline {
 agent any
 
-```
 options {
     disableConcurrentBuilds()
 
@@ -437,6 +436,6 @@ post {
         echo "======================================"
     }
 }
-```
+
 
 }
