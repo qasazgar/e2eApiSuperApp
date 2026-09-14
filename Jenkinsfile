@@ -64,7 +64,7 @@ pipeline {
                             echo "======================================"
 
                             bru run "02- Login" \
-                                --env Stage \
+                                --env SuperApp-dev-BDD \
                                 --reporter-junit reports/02-login-junit.xml \
                                 --reporter-html reports/02-login-report.html
 
@@ -90,7 +90,7 @@ pipeline {
                             echo "======================================"
 
                             bru run "03- Home" \
-                                --env Stage \
+                                --env SuperApp-dev-BDD \
                                 --reporter-junit reports/03-home-junit.xml \
                                 --reporter-html reports/03-home-report.html
 
@@ -116,7 +116,7 @@ pipeline {
                             echo "======================================"
 
                             bru run "04- Services" \
-                                --env Stage \
+                                --env SuperApp-dev-BDD  \
                                 --reporter-junit reports/04-services-junit.xml \
                                 --reporter-html reports/04-services-report.html
 
