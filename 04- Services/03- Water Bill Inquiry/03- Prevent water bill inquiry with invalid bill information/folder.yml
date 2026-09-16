@@ -1,0 +1,19 @@
+info:
+  name: 03- Prevent water bill inquiry with invalid bill information
+  type: folder
+  seq: 3
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # **SA-T48** <span><span><span><span><span><span><span>**Prevent water bill inquiry with invalid bill information**</span></span></span></span></span></span></span></span>
+
+    **Given** the user is on the Water Bill Inquiry page \
+    **When** the user enters invalid water bill information \
+    **And** submits the inquiry \
+    **Then** the system should validate the entered information \
+    **And** the inquiry should be prevented \
+    **And** an appropriate validation error message should be displayed
+  type: text/markdown

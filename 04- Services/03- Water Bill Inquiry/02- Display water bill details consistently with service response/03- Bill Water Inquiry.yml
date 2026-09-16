@@ -1,0 +1,85 @@
+info:
+  name: 03- Bill Water Inquiry
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{Url-Dev}}services/financial/inquiry/bill/water/"
+  headers:
+    - name: accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "water_bill_id": "{{Water-id}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 3000ms", () => {
+          expect(res.responseTime).to.be.below(3000);
+        });
+
+        let responseData = res.body;
+
+        if (typeof responseData === "string") {
+          try {
+            responseData = JSON.parse(responseData);
+          } catch (error) {
+            responseData = {};
+          }
+        }
+
+        const data = responseData.data || {};
+
+        // ==============================
+        // وضعیت نمایش اطلاعات
+        // ==============================
+
+        if (data.total_amount) {
+          console.log("✅ مبلغ قبض آب با موفقیت نمایش داده شد");
+        } else {
+          console.log("❌ مبلغ قبض آب نمایش داده نشد");
+        }
+
+        if (data.current_date && data.previous_date) {
+          console.log("✅ دوره صورتحساب قبض آب با موفقیت نمایش داده شد");
+        } else {
+          console.log("❌ دوره صورتحساب قبض آب نمایش داده نشد");
+        }
+
+        if (data.payment_date) {
+          console.log("✅ تاریخ سررسید پرداخت قبض آب با موفقیت نمایش داده شد");
+        } else {
+          console.log("❌ تاریخ سررسید پرداخت قبض آب نمایش داده نشد");
+        }
+
+        // ==============================
+        // مقادیر
+        // ==============================
+
+        console.log("💰 مبلغ قبض آب:", data.total_amount || "موجود نیست");
+
+        console.log("📅 تاریخ قرائت فعلی:", data.current_date || "موجود نیست");
+
+        console.log("📅 تاریخ قرائت قبلی:", data.previous_date || "موجود نیست");
+
+        console.log("📆 تاریخ سررسید پرداخت:", data.payment_date || "موجود نیست");
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

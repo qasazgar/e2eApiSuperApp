@@ -1,0 +1,19 @@
+info:
+  name: 04- Prevent water bill inquiry when required information is empty
+  type: folder
+  seq: 4
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # **SA-T49** <span><span><span><span><span><span><span><span>**Prevent water bill inquiry when required information is empty**</span></span></span></span></span></span></span></span></span>
+
+    Given the user is on the Water Bill Inquiry page \
+    When the user leaves the required bill information empty \
+    And submits the inquiry \
+    Then the system should prevent the inquiry \
+    And an appropriate required-field validation message should be displayed \
+    And the Water Bill Inquiry service should not be called
+  type: text/markdown

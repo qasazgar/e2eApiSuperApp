@@ -99,3 +99,6 @@ variables:
   - name: participate_code
     value: "003260527690"
     description: ""
+  - name: Invalid_water_bill_id
+    value: "1234567891111"
+    description: ""
