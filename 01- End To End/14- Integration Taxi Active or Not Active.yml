@@ -1,29 +1,16 @@
 info:
-  name: 28- Confirm Detail Car Traffic-fines
+  name: 14- Integration Taxi Active or Not Active
   type: http
-  seq: 28
+  seq: 14
 
 http:
   method: POST
-  url: "{{Url-Dev}}services/financial/inquiry/vehicle/traffic-fines/detail/confirm/"
+  url: "{{Url-Dev}}integration/active/"
   headers:
     - name: accept
       value: application/json
     - name: Authorization
       value: Bearer {{access_token}}
-      disabled: true
-    - name: Content-Type
-      value: application/json
-    - name: X-CSRFTOKEN
-      value: 7nyFcD5IIsdHmMN6uL8oSTWnxvxaTuN6
-  body:
-    type: json
-    data: |-
-      {
-        "inquiry_fee": "{{inquiry_fee}}",
-        "trace_number": "{{trace_number}}",
-        "payment_method": "string"
-      }
   auth: inherit
 
 runtime:

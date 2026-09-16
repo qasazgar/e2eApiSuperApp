@@ -1,17 +1,11 @@
 info:
-  name: 11- Notification Read
+  name: 25- Vehicles list
   type: http
-  seq: 11
+  seq: 25
 
 http:
-  method: POST
-  url: "{{Url-Dev}}notifications/inapp/{{latest_notification_id}}/read/"
-  headers:
-    - name: accept
-      value: application/json
-    - name: Authorization
-      value: Bearer {{access_token}}
-      disabled: true
+  method: GET
+  url: "{{Url-Dev}}services/financial/vehicles/list/"
   auth: inherit
 
 runtime:
@@ -31,4 +25,4 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
-  forwardAuthorizationHeader: true
+  forwardAuthorizationHeader: false

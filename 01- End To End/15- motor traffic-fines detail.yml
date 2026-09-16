@@ -1,7 +1,7 @@
 info:
-  name: 14- motor traffic-fines detail
+  name: 15- motor traffic-fines detail
   type: http
-  seq: 14
+  seq: 15
 
 http:
   method: GET

@@ -1,11 +1,11 @@
 info:
-  name: 32- Confirm Car Traffic-fines
+  name: 29- Confirm Detail Car Traffic-fines
   type: http
-  seq: 32
+  seq: 29
 
 http:
   method: POST
-  url: "{{Url-Dev}}services/financial/inquiry/vehicle/traffic-fines/confirm/"
+  url: "{{Url-Dev}}services/financial/inquiry/vehicle/traffic-fines/detail/confirm/"
   headers:
     - name: accept
       value: application/json

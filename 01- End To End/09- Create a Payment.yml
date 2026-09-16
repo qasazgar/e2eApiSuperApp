@@ -1,0 +1,31 @@
+info:
+  name: 09- Create a Payment
+  type: http
+  seq: 9
+
+http:
+  method: POST
+  url: "{{Url-Dev}}payment/payments/"
+  headers:
+    - name: accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "payment_purpose": "SERVICE_PAYMENT",
+        "origin_service": "financial-service",
+        "amount": {{total_amount}},
+        "client_reference": "{{trace_number}}",
+        "payment_method": "GATEWAY"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

@@ -1,7 +1,7 @@
 info:
-  name: 27- Financial Inquiry OTP Verify Vehicle traffic-fines
+  name: 21- Financial Inquiry OTP Verify Motor traffic-fines Detail
   type: http
-  seq: 27
+  seq: 21
 
 http:
   method: POST

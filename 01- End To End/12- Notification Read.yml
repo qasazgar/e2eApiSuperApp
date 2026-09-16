@@ -1,14 +1,17 @@
 info:
-  name: 34- Processing the payment
+  name: 12- Notification Read
   type: http
-  seq: 34
+  seq: 12
 
 http:
-  method: GET
-  url: "{{Url-Dev}}payment/payments/{{external_payment_id}}/"
+  method: POST
+  url: "{{Url-Dev}}notifications/inapp/{{latest_notification_id}}/read/"
   headers:
+    - name: accept
+      value: application/json
     - name: Authorization
       value: Bearer {{access_token}}
+      disabled: true
   auth: inherit
 
 runtime:
@@ -19,8 +22,8 @@ runtime:
           expect(res.status).to.equal(200);
         });
 
-        test("Response time is less than 3000ms", () => {
-          expect(res.responseTime).to.be.below(3000);
+        test("Response time is less than 500ms", () => {
+          expect(res.responseTime).to.be.below(500);
         });
 
 settings:
@@ -28,4 +31,4 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
-  forwardAuthorizationHeader: false
+  forwardAuthorizationHeader: true

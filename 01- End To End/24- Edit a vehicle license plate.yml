@@ -1,7 +1,7 @@
 info:
-  name: 23- Edit a vehicle license plate
+  name: 24- Edit a vehicle license plate
   type: http
-  seq: 23
+  seq: 24
 
 http:
   method: PATCH

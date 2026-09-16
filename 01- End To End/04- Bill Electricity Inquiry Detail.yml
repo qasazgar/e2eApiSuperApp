@@ -34,6 +34,41 @@ runtime:
           expect(res.responseTime).to.be.below(3000);
         });
 
+        let responseData = res.body;
+
+        if (typeof responseData === "string") {
+          try {
+            responseData = JSON.parse(responseData);
+          } catch (error) {
+            responseData = {};
+          }
+        }
+
+        if (
+          responseData.success === true &&
+          responseData.data
+        ) {
+          bru.setVar(
+            "trace_number",
+            responseData.data.trace_number
+          );
+
+          bru.setVar(
+            "total_amount",
+            responseData.data.total_amount
+          );
+
+          console.log(
+            "🔖 Trace Number:",
+            responseData.data.trace_number
+          );
+
+          console.log(
+            "💰 Total Amount:",
+            responseData.data.total_amount
+          );
+        }
+
 settings:
   encodeUrl: true
   timeout: 0

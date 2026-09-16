@@ -1,7 +1,7 @@
 info:
-  name: 09- Bills History
+  name: 10- Bills History
   type: http
-  seq: 9
+  seq: 10
 
 http:
   method: GET

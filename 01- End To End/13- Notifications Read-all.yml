@@ -1,7 +1,7 @@
 info:
-  name: 12- Notifications Read-all
+  name: 13- Notifications Read-all
   type: http
-  seq: 12
+  seq: 13
 
 http:
   method: POST
