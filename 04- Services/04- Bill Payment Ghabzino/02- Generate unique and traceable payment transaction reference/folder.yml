@@ -1,0 +1,18 @@
+info:
+  name: 02- Generate unique and traceable payment transaction reference
+  type: folder
+  seq: 2
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # **SA-T393** <span><span><span><span><span><span><span><span>**Generate unique and traceable payment transaction reference**</span>
+
+    **Given** the user confirms a valid bill payment \
+    **When** the payment transaction is created \
+    **Then** the system should generate a unique transaction or reference ID \
+    **And** the identifier should be stored with the payment transaction \
+    **And** the transaction should be traceable using the stored identifier
+  type: text/markdown

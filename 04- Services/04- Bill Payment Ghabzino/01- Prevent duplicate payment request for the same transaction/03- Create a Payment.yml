@@ -1,0 +1,70 @@
+info:
+  name: 03- Create a Payment
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{Url-Dev}}payment/payments/"
+  headers:
+    - name: accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "payment_purpose": "SERVICE_PAYMENT",
+        "origin_service": "financial-service",
+        "amount": 2213000,
+        "client_reference": "69i7pc6t",
+        "payment_method": "GATEWAY"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 400", () => {
+          expect(res.status).to.equal(400);
+        });
+
+        test("Response time is less than 3000ms", () => {
+          expect(res.responseTime).to.be.below(3000);
+        });
+
+        // ========================================
+        // Parse Response
+        // ========================================
+
+        let responseData = res.body;
+
+        if (typeof responseData === "string") {
+          try {
+            responseData = JSON.parse(responseData);
+          } catch (error) {
+            responseData = {};
+          }
+        }
+
+        // ========================================
+        // Water Bill Already Paid
+        // ========================================
+
+        if (
+          responseData.message &&
+          responseData.message.includes("has already been paid.")
+        ) {
+          console.log(
+            "✅ قبض قبلاً پرداخت شده و امکان پرداخت مجدد وجود ندارد"
+          );
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

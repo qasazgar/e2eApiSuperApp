@@ -1,0 +1,18 @@
+info:
+  name: 01- Prevent duplicate payment request for the same transaction
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # **SA-T392** <span><span><span><span><span><span><span><span>**Prevent duplicate payment request for the same transaction**</span>
+
+    **Given** a bill payment transaction has already been initiated \
+    **When** the user attempts to submit the same payment again \
+    **Then** the system should prevent the duplicate payment request \
+    **And** the bill payment provider should not receive a duplicate request \
+    **And** the user should be informed that the payment has already been processed or is in progress
+  type: text/markdown

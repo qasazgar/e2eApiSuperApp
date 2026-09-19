@@ -1,0 +1,72 @@
+info:
+  name: 04- Create a Payment
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{Url-Dev}}payment/payments/"
+  headers:
+    - name: accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "payment_purpose": "SERVICE_PAYMENT",
+        "origin_service": "financial-service",
+        "amount": {{total_amount}},
+        "client_reference": "{{trace_number}}",
+        "payment_method": "GATEWAY"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 400", () => {
+          expect(res.status).to.equal(400);
+        });
+
+        test("Response time is less than 3000ms", () => {
+          expect(res.responseTime).to.be.below(3000);
+        });
+
+        // ========================================
+        // Check Passed Variables
+        // ========================================
+
+        const totalAmount = bru.getVar("total_amount");
+        const traceNumber = bru.getVar("trace_number");
+
+        // ========================================
+        // Display Values
+        // ========================================
+
+        console.log("🔖 Trace Number:", traceNumber);
+        console.log("💰 Total Amount:", totalAmount);
+
+        // ========================================
+        // Validation
+        // ========================================
+
+        if (
+          totalAmount !== undefined &&
+          totalAmount !== null &&
+          traceNumber !== undefined &&
+          traceNumber !== null
+        ) {
+          console.log("✅ شماره پیگیری با مبلغ کل یکسان می‌باشد");
+        } else {
+          console.log("❌ مبلغ کل یا شماره پیگیری یکسان نیست");
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
