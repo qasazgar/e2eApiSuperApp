@@ -380,6 +380,26 @@ pipeline {
                             folder: '03- Water Bill Inquiry',
                             name: '04- Prevent water bill inquiry when required information is empty',
                             report: 'services-water-04'
+                        ],
+                        [
+                            folder: '04- Bill Payment Ghabzino',
+                            name: '01- Prevent duplicate payment request for the same transaction',
+                            report: 'services-ghabzino-01'
+                        ],
+                        [
+                            folder: '04- Bill Payment Ghabzino',
+                            name: '02- Generate unique and traceable payment transaction reference',
+                            report: 'services-ghabzino-02'
+                        ],
+                        [
+                            folder: '04- Bill Payment Ghabzino',
+                            name: '03- Update Ghabzino Wallet balance after successful bill payment',
+                            report: 'services-ghabzino-03'
+                        ],
+                        [
+                            folder: '04- Bill Payment Ghabzino',
+                            name: '04- Log bill payment operations for auditing and troubleshooting',
+                            report: 'services-ghabzino-04'
                         ]
                     ]
 

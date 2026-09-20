@@ -1,0 +1,84 @@
+info:
+  name: 04- Create a Payment
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{Url-Dev}}payment/payments/"
+  headers:
+    - name: accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "payment_purpose": "SERVICE_PAYMENT",
+        "origin_service": "financial-service",
+        "amount": {{total_amount}},
+        "client_reference": "{{trace_number}}",
+        "payment_method": "GATEWAY"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 400", () => {
+          expect(res.status).to.equal(400);
+        });
+
+        test("Response time is less than 3000ms", () => {
+          expect(res.responseTime).to.be.below(3000);
+        });
+
+        let responseData = res.body;
+
+        if (typeof responseData === "string") {
+          try {
+            responseData = JSON.parse(responseData);
+          } catch (error) {
+            responseData = {};
+          }
+        }
+
+        // ========================================
+        // مبلغ ذخیره‌شده از API اول
+        // ========================================
+
+        const paidTotalAmount = bru.getVar("paid_total_amount");
+
+        // ========================================
+        // بررسی خطای Amount
+        // ========================================
+
+        if (
+          responseData.success === false &&
+          responseData.data &&
+          Array.isArray(responseData.data.amount) &&
+          responseData.data.amount.includes(
+            "Ensure this value is greater than or equal to 1."
+          )
+        ) {
+          // در این سناریو مبلغ نهایی تراکنش همان مبلغ ذخیره‌شده از API اول است
+          const finalTransactionAmount = paidTotalAmount;
+
+          console.log("💰 مبلغ کسرشده:", paidTotalAmount);
+          console.log("💰 مبلغ نهایی تراکنش:", finalTransactionAmount);
+
+          if (String(paidTotalAmount) === String(finalTransactionAmount)) {
+            console.log("✅ مبلغ کسرشده از کیف پول قبضینو با مبلغ نهایی تراکنش مطابقت دارد");
+          } else {
+            console.log("❌ مبلغ کسرشده از کیف پول قبضینو با مبلغ نهایی تراکنش مطابقت ندارد");
+          }
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

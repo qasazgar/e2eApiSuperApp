@@ -1,0 +1,20 @@
+info:
+  name: 03- Update Ghabzino Wallet balance after successful bill payment
+  type: folder
+  seq: 3
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # **SA-T397** <span><span><span><span><span><span><span><span><span>**Update Ghabzino Wallet balance after successful bill payment**</span></span>
+
+    **Given** the user's Ghabzino Wallet has sufficient balance \
+    **And** the user has confirmed the payment \
+    **And** the bill payment is successfully completed \
+    **When** the final payment result is processed \
+    **Then** the wallet balance should be updated correctly \
+    **And** the deducted amount should match the final payment transaction amount \
+    **And** the wallet transaction should be recorded
+  type: text/markdown

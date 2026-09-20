@@ -1,7 +1,7 @@
 info:
   name: 09- Create a Payment
   type: http
-  seq: 9
+  seq: 8
 
 http:
   method: POST

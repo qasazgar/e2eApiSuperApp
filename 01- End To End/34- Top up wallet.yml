@@ -1,7 +1,7 @@
 info:
   name: 34- Top up wallet
   type: http
-  seq: 34
+  seq: 33
 
 http:
   method: POST

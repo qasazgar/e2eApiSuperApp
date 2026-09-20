@@ -1,7 +1,7 @@
 info:
   name: 12- Notification Read
   type: http
-  seq: 12
+  seq: 11
 
 http:
   method: POST

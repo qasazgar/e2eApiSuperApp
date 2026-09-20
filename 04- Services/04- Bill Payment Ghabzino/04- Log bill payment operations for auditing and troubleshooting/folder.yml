@@ -1,0 +1,18 @@
+info:
+  name: 04- Log bill payment operations for auditing and troubleshooting
+  type: folder
+  seq: 4
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # **SA-T399** <span><span><span><span><span><span><span><span><span><span>**Log bill payment operations for auditing and troubleshooting**</span></span></span>
+
+    **Given** the user initiates a bill payment \
+    **When** the payment process is executed \
+    **Then** the relevant payment operations should be logged \
+    **And** the logs should contain sufficient information for transaction tracking \
+    **And** the logs should support auditing and troubleshooting
+  type: text/markdown

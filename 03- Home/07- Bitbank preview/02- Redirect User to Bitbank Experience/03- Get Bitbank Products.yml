@@ -39,8 +39,8 @@ runtime:
   scripts:
     - type: after-response
       code: |-
-        test("Status code is 304", () => {
-          expect(res.status).to.equal(304);
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
         });
 
         test("Response time is less than 3000ms", () => {
@@ -49,11 +49,11 @@ runtime:
 
         if (res.status === 304) {
           console.log(
-            "✅ کاربر با موفقیت به https://landing.bitbank3.com/fa_IR منتقل شد"
+            "✅ کاربر با موفقیت به https://landing.bit3.ir/fa_IR منتقل شد"
           );
         } else {
           console.log(
-            "❌ کاربر به https://landing.bitbank3.com/fa_IR منتقل نشد"
+            "❌ کاربر به https://landing.bit3.ir/fa_IRتقل نشد"
           );
         }
 

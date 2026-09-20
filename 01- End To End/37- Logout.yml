@@ -1,0 +1,21 @@
+info:
+  name: 37- Logout
+  type: http
+  seq: 36
+
+http:
+  method: POST
+  url: https://api-superapp-dev.dpsb.ir/api/v1/account/auth/superapp-logout/
+  headers:
+    - name: accept
+      value: application/json
+    - name: X-CSRFTOKEN
+      value: wKmJcClDml7cfr50n8reyM59Jt28gWM0
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

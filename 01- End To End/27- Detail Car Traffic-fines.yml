@@ -1,7 +1,7 @@
 info:
   name: 27- Detail Car Traffic-fines
   type: http
-  seq: 27
+  seq: 26
 
 http:
   method: POST

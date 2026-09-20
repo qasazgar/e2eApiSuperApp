@@ -1,28 +1,25 @@
 info:
-  name: 33- Confirm Car Traffic-fines
+  name: 02- Verify Otp
   type: http
-  seq: 32
+  seq: 2
 
 http:
   method: POST
-  url: "{{Url-Dev}}services/financial/inquiry/vehicle/traffic-fines/confirm/"
+  url: "{{Url-Dev-mydot}}auth/superapp/login/"
   headers:
     - name: accept
       value: application/json
-    - name: Authorization
-      value: Bearer {{access_token}}
-      disabled: true
     - name: Content-Type
       value: application/json
-    - name: X-CSRFTOKEN
-      value: 7nyFcD5IIsdHmMN6uL8oSTWnxvxaTuN6
   body:
     type: json
     data: |-
       {
-        "inquiry_fee": "{{inquiry_fee}}",
-        "trace_number": "{{trace_number}}",
-        "payment_method": "string"
+
+        "phone_number": "{{phone_number}}",
+        "pre_auth_token": "{{pre_auth_token}}",
+        "mfa_method": "sms",
+        "otp": "{{otp}}"
       }
   auth: inherit
 
@@ -32,10 +29,14 @@ runtime:
       code: |-
         test("Status code is 200", () => {
           expect(res.status).to.equal(200);
+
+          if (res.status === 200) {
+            console.log("✅ ورود با موفقیت انجام شد");
+          }
         });
 
-        test("Response time is less than 3000ms", () => {
-          expect(res.responseTime).to.be.below(3000);
+        test("Response time is less than 500ms", () => {
+          expect(res.responseTime).to.be.below(500);
         });
 
 settings:

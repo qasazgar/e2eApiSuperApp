@@ -82,7 +82,7 @@ variables:
     value: https://api.postex.ir/
     description: ""
   - name: Url_Bitbank
-    value: https://landingapi.bitbank3.com/api/v1/faq/discovery?lang=fa&placement=landing&page=1&limit=10
+    value: https://landing.bit3.ir/fa_IR
     description: ""
   - name: Electricity_phone_number
     value: "09122315357"
@@ -101,4 +101,7 @@ variables:
     description: ""
   - name: Invalid_water_bill_id
     value: "1234567891111"
+    description: ""
+  - name: User_id_wallet
+    value: f7e43132-31d4-41bd-a113-7f9ab1945050
     description: ""

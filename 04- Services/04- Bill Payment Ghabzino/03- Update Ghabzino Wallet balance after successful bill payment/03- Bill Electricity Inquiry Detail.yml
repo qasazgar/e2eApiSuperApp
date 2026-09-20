@@ -1,23 +1,22 @@
 info:
-  name: 06- Bill Water Inquiry
+  name: 03- Bill Electricity Inquiry Detail
   type: http
-  seq: 5
+  seq: 3
 
 http:
   method: POST
-  url: "{{Url-Dev}}services/financial/inquiry/bill/water/"
+  url: "{{Url-Dev}}services/financial/inquiry/bill/electricity/"
   headers:
     - name: accept
       value: application/json
     - name: Content-Type
       value: application/json
-    - name: Authorization
-      value: Bearer {{access_token}}
   body:
     type: json
     data: |-
       {
-        "water_bill_id": "{{Water-id}}"
+        "electricity_bill_id": "{{Electricity-id}}",
+        "mobile_number": "{{Electricity_phone_number}}"
       }
   auth: inherit
 
@@ -45,27 +44,15 @@ runtime:
 
         if (
           responseData.success === true &&
-          responseData.data
+          responseData.data &&
+          responseData.data.is_paid === true
         ) {
-          bru.setVar(
-            "trace_number",
-            responseData.data.trace_number
-          );
+          const totalAmount = responseData.data.total_amount;
 
-          bru.setVar(
-            "total_amount",
-            responseData.data.total_amount
-          );
+          bru.setVar("paid_total_amount", totalAmount);
 
-          console.log(
-            "🔖 Trace Number:",
-            responseData.data.trace_number
-          );
-
-          console.log(
-            "💰 Total Amount:",
-            responseData.data.total_amount
-          );
+          console.log("💰 مبلغ قبض:", totalAmount);
+          console.log("✅ قبض قبلاً پرداخت شده است");
         }
 
 settings:
