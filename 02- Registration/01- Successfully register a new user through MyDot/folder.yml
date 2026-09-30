@@ -1,0 +1,20 @@
+info:
+  name: 01- Successfully register a new user through MyDot
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # **SA-T457** <span>**Successfully register a new user through MyDot**</span>
+
+    **Given** the user does not have a MyDot account \
+    **And** the MyDot registration flow has been initiated \
+    **When** the user completes the registration with valid information \
+    **Then** the MyDot account should be created successfully \
+    **And** the user should be authenticated \
+    **And** the user should be redirected back to the Super App \
+    **And** the user should be able to access the Super App
+  type: text/markdown

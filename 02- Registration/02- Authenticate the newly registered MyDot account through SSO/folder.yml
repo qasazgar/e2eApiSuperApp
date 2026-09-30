@@ -1,0 +1,7 @@
+info:
+  name: 02- Authenticate the newly registered MyDot account through SSO
+  type: folder
+  seq: 2
+
+request:
+  auth: inherit

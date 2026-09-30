@@ -105,3 +105,6 @@ variables:
   - name: User_id_wallet
     value: f7e43132-31d4-41bd-a113-7f9ab1945050
     description: ""
+  - name: Url-Dev-mydot
+    value: https://api.dev1.dpsb.ir/mydot/api/v1/
+    description: ""

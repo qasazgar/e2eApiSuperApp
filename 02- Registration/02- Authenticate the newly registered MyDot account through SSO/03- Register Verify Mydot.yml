@@ -1,11 +1,11 @@
 info:
-  name: 03- Register Verify
+  name: 03- Register Verify Mydot
   type: http
   seq: 3
 
 http:
   method: POST
-  url: "{{Url-Dev}}account/register/verify-otp/"
+  url: "{{Url-Dev-mydot}}auth/register/verify-otp/"
   body:
     type: json
     data: |-
@@ -19,14 +19,6 @@ runtime:
   scripts:
     - type: after-response
       code: |-
-        test("Status code is 201", () => {
-          expect(res.status).to.equal(201);
-        });
-
-        test("Response time is less than 3000ms", () => {
-          expect(res.responseTime).to.be.below(3000);
-        });
-
         let responseData = res.body;
 
         if (typeof responseData === "string") {
@@ -37,8 +29,16 @@ runtime:
           }
         }
 
-        if (responseData.status === 201) {
-          console.log("✅ کاربر با موفقیت رجیستر شد");
+        test("Status code is 201", () => {
+          expect(res.status).to.equal(201);
+        });
+
+        test("Response time is less than 3000ms", () => {
+          expect(res.responseTime).to.be.below(3000);
+        });
+
+        if (responseData.user && responseData.user.id) {
+          console.log("✅ کاربر با موفقیت در مادی دات رجیستر شد");
         } else {
           console.log("❌ رجیستر کاربر ناموفق بود");
         }
