@@ -5,3 +5,14 @@ info:
 
 request:
   auth: inherit
+
+docs:
+  content: |-
+    # **SA-T461** <span><span>**Authenticate the newly registered MyDot account through SSO**</span></span>
+
+    **Given** the user has successfully completed MyDot registration \
+    **When** the registration flow returns the user to the Super App \
+    **Then** the newly created MyDot identity should be recognized by the Super App \
+    **And** a valid authenticated session should be created \
+    **And** the user should be able to access the Super App using the same MyDot identity
+  type: text/markdown

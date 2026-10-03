@@ -1,0 +1,156 @@
+info:
+  name: 02- Register Mydot copy
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{Url-Dev-mydot}}auth/register/complete/"
+  body:
+    type: json
+    data: |-
+      {
+        "eligibility_token": "{{eligibility_token}}",
+        "phone_number": "{{Generated_phone_number}}",
+        "username": "{{Generated_username}}",
+        "email": "{{Generated_email}}",
+        "password": "{{Generated_password}}",
+        "confirm_password": "{{Generated_password}}",
+        "display_name": "{{Generated_username}}",
+        "referrer_username": "{{Generated_username}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: before-request
+      code: |-
+        function generateUniqueUsername() {
+          const names = [
+            "Ahmad",
+            "Reza",
+            "Ali",
+            "Sara",
+            "Mina",
+            "Omid",
+            "Hamed",
+            "Nima",
+            "Amir",
+            "Sina"
+          ];
+
+          const usedUsernames =
+            JSON.parse(bru.getVar("used_usernames") || "[]");
+
+          let username;
+
+          do {
+            const name = names[Math.floor(Math.random() * names.length)];
+            const number = Math.floor(1000 + Math.random() * 9000);
+
+            username = `${name.toLowerCase()}${number}`;
+          } while (usedUsernames.includes(username));
+
+          usedUsernames.push(username);
+
+          bru.setVar("used_usernames", JSON.stringify(usedUsernames));
+          bru.setVar("Generated_username", username);
+
+          console.log("✅ Username:", username);
+        }
+
+        generateUniqueUsername();
+
+        function generateUniqueEmail() {
+          const usedEmails =
+            JSON.parse(bru.getVar("used_emails") || "[]");
+
+          let email;
+
+          do {
+            const randomNumber = Math.floor(10000 + Math.random() * 90000);
+            email = `newmember${randomNumber}@example.com`;
+          } while (usedEmails.includes(email));
+
+          usedEmails.push(email);
+
+          bru.setVar("used_emails", JSON.stringify(usedEmails));
+          bru.setVar("Generated_email", email);
+
+          console.log("✅ Email:", email);
+        }
+
+        generateUniqueEmail();
+
+        function generatePassword() {
+          const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+          const lowercase = "abcdefghijklmnopqrstuvwxyz";
+          const numbers = "0123456789";
+          const special = "!@#$%^&*";
+
+          const allChars = uppercase + lowercase + numbers + special;
+
+          const randomChar = (chars) =>
+            chars[Math.floor(Math.random() * chars.length)];
+
+          // طول تصادفی بین 10 تا 20
+          const length = Math.floor(Math.random() * 11) + 10;
+
+          // حداقل یک مورد از هر نوع
+          let password =
+            randomChar(uppercase) +
+            randomChar(lowercase) +
+            randomChar(numbers) +
+            randomChar(special);
+
+          // تکمیل باقی کاراکترها
+          while (password.length < length) {
+            password += randomChar(allChars);
+          }
+
+          // Shuffle
+          password = password
+            .split("")
+            .sort(() => Math.random() - 0.5)
+            .join("");
+
+          bru.setVar("Generated_password", password);
+
+          console.log("✅ Password:", password);
+        }
+
+        generatePassword();
+    - type: after-response
+      code: |-
+        test("Status code is 202", () => {
+          expect(res.status).to.equal(202);
+        });
+
+        test("Response time is less than 3000ms", () => {
+          expect(res.responseTime).to.be.below(3000);
+        });
+
+        let responseData = res.body;
+
+        if (typeof responseData === "string") {
+          try {
+            responseData = JSON.parse(responseData);
+          } catch (error) {
+            responseData = {};
+          }
+        }
+
+        if (responseData.otp) {
+          bru.setVar("Register_OTP", responseData.otp);
+
+          console.log("✅ Register OTP با موفقیت ذخیره شد:", responseData.otp);
+        } else {
+          console.log("❌ Register OTP در Response پیدا نشد");
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

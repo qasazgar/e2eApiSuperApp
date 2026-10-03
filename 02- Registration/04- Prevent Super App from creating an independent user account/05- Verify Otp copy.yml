@@ -1,0 +1,242 @@
+info:
+  name: 05- Verify Otp copy
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{Url-Dev-mydot}}auth/superapp/login/"
+  headers:
+    - name: accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+
+        "phone_number": "{{Generated_phone_number}}",
+        "pre_auth_token": "{{pre_auth_token}}",
+        "mfa_method": "sms",
+        "otp": "{{otp}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        // ==============================
+        // Parse Response
+        // ==============================
+
+        let responseData = res.body;
+
+        if (typeof responseData === "string") {
+          try {
+            responseData = JSON.parse(responseData);
+          } catch (error) {
+            responseData = {};
+          }
+        }
+
+
+        // ==============================
+        // Status & Response Time
+        // ==============================
+
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 500ms", () => {
+          expect(res.responseTime).to.be.below(500);
+        });
+
+
+        // ==============================
+        // Get Cookies
+        // ==============================
+
+        const headers = res.headers;
+        const setCookies = headers["set-cookie"];
+
+        if (!setCookies) {
+          console.log(
+            "❌ کاربر نتوانست با اکانت رجیستر شده در مای دات، در سوپراپ لاگین شود"
+          );
+          throw new Error("Set-Cookie header not found");
+        }
+
+
+        // ==============================
+        // Find Access Token
+        // ==============================
+
+        const accessCookie = setCookies.find(cookie =>
+          cookie.startsWith("access_token=")
+        );
+
+
+        // ==============================
+        // Find Refresh Token
+        // ==============================
+
+        const refreshCookie = setCookies.find(cookie =>
+          cookie.startsWith("refresh_token=")
+        );
+
+
+        // ==============================
+        // Validate Tokens
+        // ==============================
+
+        if (!accessCookie) {
+          console.log(
+            "❌ کاربر نتوانست با اکانت رجیستر شده در مای دات، در سوپراپ لاگین شود"
+          );
+          throw new Error("access_token not found");
+        }
+
+        if (!refreshCookie) {
+          console.log(
+            "❌ کاربر نتوانست با اکانت رجیستر شده در مای دات، در سوپراپ لاگین شود"
+          );
+          throw new Error("refresh_token not found");
+        }
+
+
+        // ==============================
+        // Extract Tokens
+        // ==============================
+
+        const accessToken = accessCookie
+          .split(";")[0]
+          .split("=")[1];
+
+        const refreshToken = refreshCookie
+          .split(";")[0]
+          .split("=")[1];
+
+
+        // ==============================
+        // Save Tokens
+        // ==============================
+
+        bru.setVar("access_token", accessToken);
+        bru.setVar("refresh_token", refreshToken);
+
+
+        // ==============================
+        // Login Success
+        // ==============================
+
+        console.log(
+          "✅ کاربر با موفقیت با اکانت رجیستر شده در مای دات وارد سوپراپ شد"
+        );
+
+
+        // ==============================
+        // Get Saved MyDot Values
+        // ==============================
+
+        const mydotUserId = bru.getVar("user_id");
+        const mydotUsername = bru.getVar("username");
+        const mydotIsActive = bru.getVar("is_active");
+        const mydotAccountType = bru.getVar("account_type");
+        const mydotIsDotoneStaff = bru.getVar("is_dotone_staff");
+        const mydotIsBanned = bru.getVar("is_banned");
+
+
+        // ==============================
+        // Get Super App Values
+        // ==============================
+
+        const superAppUserId = responseData.id;
+        const superAppUsername = responseData.username;
+        const superAppIsActive = responseData.is_active;
+        const superAppAccountType = responseData.account_type;
+        const superAppIsDotoneStaff = responseData.is_dotone_staff;
+        const superAppIsBanned = responseData.is_banned;
+
+
+        // ==============================
+        // Show MyDot Profile
+        // ==============================
+
+        console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        console.log("📌 اطلاعات پروفایل MyDot:");
+        console.log("ID:", mydotUserId);
+        console.log("Username:", mydotUsername);
+        console.log("Is Active:", mydotIsActive);
+        console.log("Account Type:", mydotAccountType);
+        console.log("Is DotOne Staff:", mydotIsDotoneStaff);
+        console.log("Is Banned:", mydotIsBanned);
+
+
+        // ==============================
+        // Show Super App Profile
+        // ==============================
+
+        console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        console.log("📌 اطلاعات پروفایل Super App:");
+        console.log("ID:", superAppUserId);
+        console.log("Username:", superAppUsername);
+        console.log("Is Active:", superAppIsActive);
+        console.log("Account Type:", superAppAccountType);
+        console.log("Is DotOne Staff:", superAppIsDotoneStaff);
+        console.log("Is Banned:", superAppIsBanned);
+
+
+        // ==============================
+        // Compare Profiles
+        // ==============================
+
+        const profilesMatch =
+          superAppUserId === mydotUserId &&
+          superAppUsername === mydotUsername &&
+          superAppIsActive === mydotIsActive &&
+          superAppAccountType === mydotAccountType &&
+          superAppIsDotoneStaff === mydotIsDotoneStaff &&
+          superAppIsBanned === mydotIsBanned;
+
+
+        // ==============================
+        // Test Profile Match
+        // ==============================
+
+        test("MyDot and Super App profile information matches", () => {
+          expect(superAppUserId).to.equal(mydotUserId);
+          expect(superAppUsername).to.equal(mydotUsername);
+          expect(superAppIsActive).to.equal(mydotIsActive);
+          expect(superAppAccountType).to.equal(mydotAccountType);
+          expect(superAppIsDotoneStaff).to.equal(mydotIsDotoneStaff);
+          expect(superAppIsBanned).to.equal(mydotIsBanned);
+        });
+
+
+        // ==============================
+        // Final Result
+        // ==============================
+
+        console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+        if (profilesMatch) {
+          console.log(
+            "✅ اطلاعات پروفایل در مای دات و سوپراپ یکسان است"
+          );
+        } else {
+          console.log(
+            "❌ اطلاعات پروفایل در مای دات و سوپراپ یکسان نیست"
+          );
+        }
+
+        console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

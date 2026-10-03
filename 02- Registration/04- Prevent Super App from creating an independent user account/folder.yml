@@ -1,0 +1,17 @@
+info:
+  name: 04- Prevent Super App from creating an independent user account
+  type: folder
+  seq: 4
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # **SA-T463** <span>**Prevent Super App from creating an independent user account**</span></span></span></span>
+
+    **Given** the user has a valid MyDot identity \
+    **When** the user completes authentication or registration \
+    **Then** the Super App should associate the user with the existing MyDot identity \
+    **And** the Super App should not create an independent user account
+  type: text/markdown

@@ -1,0 +1,90 @@
+info:
+  name: 05- Verify Otp
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{Url-Dev-mydot}}auth/superapp/login/"
+  headers:
+    - name: accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+
+        "phone_number": "{{Generated_phone_number}}",
+        "pre_auth_token": "{{pre_auth_token}}",
+        "mfa_method": "sms",
+        "otp": "{{otp}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 500ms", () => {
+          expect(res.responseTime).to.be.below(500);
+        });
+
+        const headers = res.headers;
+
+        // گرفتن Set-Cookie
+        const setCookies = headers["set-cookie"];
+
+        if (!setCookies) {
+          console.log("❌ کاربر نتوانست با اکانت رجیستر شده در مای دات، در سوپراپ لاگین شود");
+          throw new Error("Set-Cookie header not found");
+        }
+
+        // پیدا کردن Access Token
+        const accessCookie = setCookies.find(cookie =>
+          cookie.startsWith("access_token=")
+        );
+
+        // پیدا کردن Refresh Token
+        const refreshCookie = setCookies.find(cookie =>
+          cookie.startsWith("refresh_token=")
+        );
+
+        // بررسی Access Token
+        if (!accessCookie) {
+          console.log("❌ کاربر نتوانست با اکانت رجیستر شده در مای دات، در سوپراپ لاگین شود");
+          throw new Error("access_token not found");
+        }
+
+        // بررسی Refresh Token
+        if (!refreshCookie) {
+          console.log("❌ کاربر نتوانست با اکانت رجیستر شده در مای دات، در سوپراپ لاگین شود");
+          throw new Error("refresh_token not found");
+        }
+
+        // استخراج Access Token
+        const accessToken = accessCookie.split(";")[0].split("=")[1];
+
+        // استخراج Refresh Token
+        const refreshToken = refreshCookie.split(";")[0].split("=")[1];
+
+        // ذخیره Tokenها
+        bru.setVar("access_token", accessToken);
+        bru.setVar("refresh_token", refreshToken);
+
+        // پیام موفقیت
+        console.log("✅ کاربر با موفقیت با اکانت رجیستر شده در مای دات وارد سوپراپ شد");
+        console.log("Access Token saved");
+        console.log("Refresh Token saved");
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

@@ -1,0 +1,56 @@
+info:
+  name: 06- Eligibilty Check Mydot Again
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{Url-Dev-mydot}}auth/register/eligibilty-check/"
+  body:
+    type: json
+    data: |-
+      {    
+       "phone_number" : "{{Generated_phone_number}}" 
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 409", () => {
+          expect(res.status).to.equal(409);
+        });
+
+        test("Response time is less than 3000ms", () => {
+          expect(res.responseTime).to.be.below(3000);
+        });
+
+        let responseData = res.body;
+
+        if (typeof responseData === "string") {
+          try {
+            responseData = JSON.parse(responseData);
+          } catch (error) {
+            responseData = {};
+          }
+        }
+
+        if (
+          responseData.error === 4402 &&
+          responseData.message === "phone number is already in use." &&
+          responseData.status_code === 409
+        ) {
+          console.log(
+            `❌ شماره تلفن ${bru.getVar("Generated_phone_number")} قبلاً رجیستر شده است`
+          );
+        } else {
+          console.log("❌ شماره تلفن قبلاً رجیستر نشده است");
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

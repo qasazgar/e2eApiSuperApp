@@ -1,0 +1,76 @@
+info:
+  name: 03- Register Verify Mydot copy
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{Url-Dev-mydot}}auth/register/verify-otp/"
+  body:
+    type: json
+    data: |-
+      {
+        "phone_number": "{{Generated_phone_number}}",
+        "otp": "{{Register_OTP}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        let responseData = res.body;
+
+        if (typeof responseData === "string") {
+          try {
+            responseData = JSON.parse(responseData);
+          } catch (error) {
+            responseData = {};
+          }
+        }
+
+        // بررسی Status Code
+        test("Status code is 201", () => {
+          expect(res.status).to.equal(201);
+        });
+
+        // بررسی Response Time
+        test("Response time is less than 3000ms", () => {
+          expect(res.responseTime).to.be.below(3000);
+        });
+
+        // بررسی موفقیت رجیستر و ذخیره اطلاعات کاربر
+        if (responseData.user && responseData.user.id) {
+
+          const user = responseData.user;
+
+          // ذخیره اطلاعات کاربر
+          bru.setVar("user_id", user.id);
+          bru.setVar("username", user.username);
+          bru.setVar("is_active", user.is_active);
+          bru.setVar("account_type", user.account_type);
+          bru.setVar("is_dotone_staff", user.is_dotone_staff);
+          bru.setVar("is_banned", user.is_banned);
+
+          console.log("✅ کاربر با موفقیت در مای دات رجیستر شد");
+          console.log("✅ اطلاعات کاربر با موفقیت ذخیره شد");
+
+          console.log("ID:", user.id);
+          console.log("Username:", user.username);
+          console.log("Is Active:", user.is_active);
+          console.log("Account Type:", user.account_type);
+          console.log("Is DotOne Staff:", user.is_dotone_staff);
+          console.log("Is Banned:", user.is_banned);
+
+        } else {
+
+          console.log("❌ رجیستر کاربر ناموفق بود");
+
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

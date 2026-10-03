@@ -1,0 +1,19 @@
+info:
+  name: 03- Prevent duplicate account creation for an existing MyDot identity
+  type: folder
+  seq: 3
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    # **SA-T462** <span><span><span>**Prevent duplicate account creation for an existing MyDot identity**</span></span></span>
+
+    **Given** the user already has a MyDot account \
+    **And** the user has an existing identity recognized by the Super App \
+    **When** the user authenticates through the MyDot authentication flow \
+    **Then** the existing Super App identity should be used \
+    **And** no duplicate Super App account should be created \
+    **And** no duplicate MyDot account should be created
+  type: text/markdown

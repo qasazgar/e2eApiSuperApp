@@ -1,0 +1,80 @@
+info:
+  name: 01- Eligibilty Check Mydot copy
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{Url-Dev-mydot}}auth/register/eligibilty-check/"
+  body:
+    type: json
+    data: |-
+      {    
+       "phone_number" : "{{Generated_phone_number}}" 
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: before-request
+      code: |-
+        function generateValidPhoneNumber() {
+          const prefixes = [
+            "0910", "0911", "0912", "0913",
+            "0914", "0915", "0916", "0917",
+            "0918", "0919"
+          ];
+
+          const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+
+          let number = "";
+
+          for (let i = 0; i < 7; i++) {
+            number += Math.floor(Math.random() * 10);
+          }
+
+          return prefix + number;
+        }
+
+        const phoneNumber = generateValidPhoneNumber();
+
+        bru.setVar("Generated_phone_number", phoneNumber);
+
+        console.log("📱 شماره موبایل تولیدشده:", phoneNumber);
+    - type: after-response
+      code: |-
+        let responseData = res.body;
+
+        if (typeof responseData === "string") {
+          try {
+            responseData = JSON.parse(responseData);
+          } catch (error) {
+            responseData = {};
+          }
+        }
+
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 3000ms", () => {
+          expect(res.responseTime).to.be.below(3000);
+        });
+
+        if (responseData.eligibility_token) {
+          bru.setVar(
+            "eligibility_token",
+            responseData.eligibility_token
+          );
+
+          console.log("✅ eligibility_token با موفقیت ذخیره شد");
+        } else {
+          console.log("❌ eligibility_token در Response پیدا نشد");
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
