@@ -1,0 +1,7 @@
+info:
+  name: 06- End To End (Stage)
+  type: folder
+  seq: 6
+
+request:
+  auth: inherit

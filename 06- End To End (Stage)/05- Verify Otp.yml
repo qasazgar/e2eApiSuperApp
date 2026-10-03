@@ -1,0 +1,156 @@
+info:
+  name: 05- Verify Otp
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{Url-Stage-mydot}}auth/superapp/login/"
+  headers:
+    - name: accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+
+        "phone_number": "{{phone_number}}",
+        "pre_auth_token": "{{pre_auth_token}}",
+        "mfa_method": "sms",
+        "otp": "{{otp}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        // ==============================
+        // Status Code
+        // ==============================
+
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+
+        // ==============================
+        // Response Time
+        // ==============================
+
+        test("Response time is less than 500ms", () => {
+          expect(res.responseTime).to.be.below(500);
+        });
+
+
+        // ==============================
+        // Parse Response
+        // ==============================
+
+        let responseData = res.body;
+
+        if (typeof responseData === "string") {
+          try {
+            responseData = JSON.parse(responseData);
+          } catch (error) {
+            throw new Error("Invalid JSON response");
+          }
+        }
+
+
+        // ==============================
+        // Save User ID
+        // ==============================
+
+        if (responseData.id) {
+
+          bru.setVar("User_id_wallet", responseData.id);
+
+          console.log("✅ User_id_wallet با موفقیت ذخیره شد");
+          console.log("User_id_wallet:", responseData.id);
+
+        } else {
+
+          throw new Error("User ID not found");
+        }
+
+
+        // ==============================
+        // Get Cookies
+        // ==============================
+
+        const headers = res.headers;
+
+        // گرفتن Set-Cookie
+        const setCookies = headers["set-cookie"];
+
+        if (!setCookies) {
+          throw new Error("Set-Cookie header not found");
+        }
+
+
+        // ==============================
+        // Find Access Token
+        // ==============================
+
+        const accessCookie = setCookies.find(cookie =>
+          cookie.startsWith("access_token=")
+        );
+
+
+        // ==============================
+        // Find Refresh Token
+        // ==============================
+
+        const refreshCookie = setCookies.find(cookie =>
+          cookie.startsWith("refresh_token=")
+        );
+
+
+        // ==============================
+        // Save Access Token
+        // ==============================
+
+        if (accessCookie) {
+
+          const accessToken = accessCookie
+            .split(";")[0]
+            .split("=")[1];
+
+          bru.setVar("access_token", accessToken);
+
+          console.log("✅ Access Token saved");
+
+        } else {
+
+          throw new Error("access_token not found");
+        }
+
+
+        // ==============================
+        // Save Refresh Token
+        // ==============================
+
+        if (refreshCookie) {
+
+          const refreshToken = refreshCookie
+            .split(";")[0]
+            .split("=")[1];
+
+          bru.setVar("refresh_token", refreshToken);
+
+          console.log("✅ Refresh Token saved");
+
+        } else {
+
+          throw new Error("refresh_token not found");
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

@@ -1,0 +1,53 @@
+info:
+  name: 38- Balance Wallet
+  type: http
+  seq: 38
+
+http:
+  method: GET
+  url: "{{Url-Stage}}payment/payments/wallet-balance/{{User_id_wallet}}/"
+  headers:
+    - name: Authorization
+      value: Bearer {{access_token}}
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 3000ms", () => {
+          expect(res.responseTime).to.be.below(3000);
+        });
+
+        let data = res.body;
+
+        if (typeof data === "string") {
+          data = JSON.parse(data);
+        }
+
+        const balance = Number(data.data?.balance);
+
+        if (isNaN(balance)) {
+          throw new Error("Balance not found");
+        }
+
+        bru.setVar(
+          "balance_before_topup",
+          String(balance)
+        );
+
+        console.log("================================");
+        console.log("✅ موجودی قبل از شارژ ذخیره شد");
+        console.log("💰 موجودی فعلی کیف پول:", balance);
+        console.log("================================");
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

@@ -1,0 +1,137 @@
+info:
+  name: 39- Top up wallet
+  type: http
+  seq: 39
+
+http:
+  method: POST
+  url: "{{Url-Stage}}payment/payments/"
+  headers:
+    - name: Authorization
+      value: Bearer {{access_token}}
+  body:
+    type: json
+    data: |-
+      {
+        "payment_purpose": "WALLET_TOPUP",
+        "origin_service": "wallet",
+        "amount": {{wallet_topup_amount}},
+        "client_reference": "",
+        "payment_method": "GATEWAY"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: before-request
+      code: |-
+        // ========================================
+        // Wallet Top Up Amount
+        // ========================================
+
+        let currentAmount = bru.getVar("wallet_topup_amount");
+
+        // اگر اولین اجراست، از 10000 شروع کن
+        if (!currentAmount) {
+          currentAmount = 10000;
+        } else {
+          currentAmount = Number(currentAmount) + 10000;
+        }
+
+
+        // ========================================
+        // Save Amount
+        // ========================================
+
+        bru.setVar(
+          "wallet_topup_amount",
+          String(currentAmount)
+        );
+
+        bru.setVar(
+          "topup_amount",
+          String(currentAmount)
+        );
+
+
+        // ========================================
+        // Console
+        // ========================================
+
+        console.log("================================");
+        console.log("💰 Wallet Top Up Amount:", currentAmount);
+        console.log("💾 Top Up Amount Saved:", currentAmount);
+        console.log("================================");
+    - type: after-response
+      code: |-
+        // ========================================
+        // Validate Response
+        // ========================================
+
+        test("Status code is 201", () => {
+          expect(res.status).to.equal(201);
+        });
+
+        test("Response time is less than 3000ms", () => {
+          expect(res.responseTime).to.be.below(3000);
+        });
+
+
+        // ========================================
+        // Get Response Data
+        // ========================================
+
+        let data = res.body;
+
+        if (typeof data === "string") {
+          try {
+            data = JSON.parse(data);
+          } catch (error) {
+            console.log("❌ Response is not valid JSON");
+            throw new Error("Invalid JSON response");
+          }
+        }
+
+
+        // ========================================
+        // Get Payment Data
+        // ========================================
+
+        const payment = data.data;
+
+
+        // ========================================
+        // Save External Payment ID
+        // ========================================
+
+        if (payment && payment.external_payment_id) {
+
+          bru.setVar(
+            "external_payment_id",
+            payment.external_payment_id
+          );
+
+          console.log(
+            "✅ external payment id با موفقیت ذخیره شد"
+          );
+
+          console.log(
+            "💳 external payment id:",
+            payment.external_payment_id
+          );
+
+        } else {
+
+          console.log(
+            "❌ external payment id در پاسخ وجود ندارد"
+          );
+
+          throw new Error("external_payment_id not found");
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

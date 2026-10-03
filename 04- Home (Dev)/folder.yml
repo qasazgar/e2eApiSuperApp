@@ -1,7 +1,7 @@
 info:
-  name: 05- Services
+  name: 04- Home (Dev)
   type: folder
-  seq: 5
+  seq: 4
 
 request:
   auth: inherit

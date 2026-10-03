@@ -1,7 +1,7 @@
 info:
-  name: 04- Home
+  name: 02- Registration (Dev)
   type: folder
-  seq: 4
+  seq: 2
 
 request:
   auth: inherit
