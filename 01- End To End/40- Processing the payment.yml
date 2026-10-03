@@ -1,7 +1,7 @@
 info:
-  name: 39- Processing the payment
+  name: 40- Processing the payment
   type: http
-  seq: 39
+  seq: 40
 
 http:
   method: GET

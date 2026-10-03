@@ -1,7 +1,7 @@
 info:
-  name: 38- Top up wallet
+  name: 39- Top up wallet
   type: http
-  seq: 38
+  seq: 39
 
 http:
   method: POST
@@ -38,17 +38,16 @@ runtime:
           currentAmount = Number(currentAmount) + 10000;
         }
 
+
         // ========================================
         // Save Amount
         // ========================================
 
-        // برای Request فعلی
         bru.setVar(
           "wallet_topup_amount",
           String(currentAmount)
         );
 
-        // برای مقایسه در API Balance
         bru.setVar(
           "topup_amount",
           String(currentAmount)
@@ -65,6 +64,10 @@ runtime:
         console.log("================================");
     - type: after-response
       code: |-
+        // ========================================
+        // Validate Response
+        // ========================================
+
         test("Status code is 201", () => {
           expect(res.status).to.equal(201);
         });
@@ -73,16 +76,57 @@ runtime:
           expect(res.responseTime).to.be.below(3000);
         });
 
-        const data = res.body;
+
+        // ========================================
+        // Get Response Data
+        // ========================================
+
+        let data = res.body;
+
+        if (typeof data === "string") {
+          try {
+            data = JSON.parse(data);
+          } catch (error) {
+            console.log("❌ Response is not valid JSON");
+            throw new Error("Invalid JSON response");
+          }
+        }
+
+
+        // ========================================
+        // Get Payment Data
+        // ========================================
+
         const payment = data.data;
 
-        if (payment && payment.external_payment_id) {
-          bru.setVar("external_payment_id", payment.external_payment_id);
 
-          console.log("✅ external payment id با موفقیت ذخیره شد");
-          console.log("💳 external payment id:", payment.external_payment_id);
+        // ========================================
+        // Save External Payment ID
+        // ========================================
+
+        if (payment && payment.external_payment_id) {
+
+          bru.setVar(
+            "external_payment_id",
+            payment.external_payment_id
+          );
+
+          console.log(
+            "✅ external payment id با موفقیت ذخیره شد"
+          );
+
+          console.log(
+            "💳 external payment id:",
+            payment.external_payment_id
+          );
+
         } else {
-          console.log("❌ external payment id در پاسخ وجود ندارد");
+
+          console.log(
+            "❌ external payment id در پاسخ وجود ندارد"
+          );
+
+          throw new Error("external_payment_id not found");
         }
 
 settings:
