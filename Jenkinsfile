@@ -14,11 +14,23 @@ pipeline {
 
     stages {
 
+        /*
+         * ==========================================================
+         * CHECKOUT
+         * ==========================================================
+         */
+
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
+
+        /*
+         * ==========================================================
+         * ENVIRONMENT CHECK
+         * ==========================================================
+         */
 
         stage('Check Environment') {
             steps {
@@ -41,6 +53,12 @@ pipeline {
             }
         }
 
+        /*
+         * ==========================================================
+         * PREPARE REPORTS
+         * ==========================================================
+         */
+
         stage('Prepare Reports') {
             steps {
                 sh '''
@@ -50,13 +68,22 @@ pipeline {
             }
         }
 
+        /*
+         * ==========================================================
+         * END TO END
+         * One report for the whole collection
+         * ==========================================================
+         */
+
         stage('Run End To End') {
             steps {
                 script {
+
                     catchError(
                         buildResult: 'FAILURE',
                         stageResult: 'FAILURE'
                     ) {
+
                         sh '''
                             echo "======================================"
                             echo " Running End To End"
@@ -75,6 +102,73 @@ pipeline {
                 }
             }
         }
+
+        /*
+         * ==========================================================
+         * REGISTRATION
+         * One report per scenario
+         * ==========================================================
+         */
+
+        stage('Run Registration Scenarios') {
+            steps {
+                script {
+
+                    def scenarios = [
+                        [
+                            name: '01- Successfully register a new user through MyDot',
+                            report: 'registration-01'
+                        ],
+                        [
+                            name: '02- Authenticate the newly registered MyDot account through SSO',
+                            report: 'registration-02'
+                        ],
+                        [
+                            name: '03- Prevent duplicate account creation for an existing MyDot identity',
+                            report: 'registration-03'
+                        ],
+                        [
+                            name: '04- Prevent Super App from creating an independent user account',
+                            report: 'registration-04'
+                        ]
+                    ]
+
+                    for (scenario in scenarios) {
+
+                        stage("Run ${scenario.report.toUpperCase()}") {
+
+                            catchError(
+                                buildResult: 'FAILURE',
+                                stageResult: 'FAILURE'
+                            ) {
+
+                                sh """
+                                    echo "======================================"
+                                    echo " Running: ${scenario.name}"
+                                    echo "======================================"
+
+                                    bru run "02- Registration/${scenario.name}" \
+                                        --env SuperApp-dev-BDD \
+                                        --reporter-junit reports/${scenario.report}-junit.xml \
+                                        --reporter-html reports/${scenario.report}-report.html
+
+                                    echo "======================================"
+                                    echo " Completed: ${scenario.name}"
+                                    echo "======================================"
+                                """
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /*
+         * ==========================================================
+         * LOGIN
+         * One report per scenario
+         * ==========================================================
+         */
 
         stage('Run Login Scenarios') {
             steps {
@@ -133,7 +227,7 @@ pipeline {
                                     echo " Running: ${scenario.name}"
                                     echo "======================================"
 
-                                    bru run "02- Login/${scenario.name}" \
+                                    bru run "03- Login/${scenario.name}" \
                                         --env SuperApp-dev-BDD \
                                         --reporter-junit reports/${scenario.report}-junit.xml \
                                         --reporter-html reports/${scenario.report}-report.html
@@ -149,11 +243,21 @@ pipeline {
             }
         }
 
+        /*
+         * ==========================================================
+         * HOME
+         * One report per scenario
+         * ==========================================================
+         */
+
         stage('Run Home Scenarios') {
             steps {
                 script {
 
                     def scenarios = [
+
+                        // Blockchain Preview
+
                         [
                             folder: '01- Blockchain Preview',
                             name: '01- User sees the Blockchain entry point on the homepage',
@@ -209,11 +313,17 @@ pipeline {
                             name: '11- Blockchain information in the Super App is consistent with the DotScan API',
                             report: 'home-blockchain-11'
                         ],
+
+                        // Cell Preview
+
                         [
                             folder: '02- Cell Perview',
                             name: '01- User can see DotOne Cell on the Super App',
                             report: 'home-cell-01'
                         ],
+
+                        // Gold Preview
+
                         [
                             folder: '03- Gold Perview',
                             name: '01- User can see DotOne Gold on the Super App',
@@ -224,6 +334,9 @@ pipeline {
                             name: '02- User is directed to the appropriate DotOne Gold experience',
                             report: 'home-gold-02'
                         ],
+
+                        // VOD Preview
+
                         [
                             folder: '04- Vod Perview',
                             name: '01- VOD is presented as a preview entry point',
@@ -234,6 +347,9 @@ pipeline {
                             name: '02- User is redirected to the VOD website',
                             report: 'home-vod-02'
                         ],
+
+                        // Taxi Preview
+
                         [
                             folder: '05- Taxi Perview',
                             name: '01- User can see DotOne Taxi in the Super App',
@@ -244,6 +360,9 @@ pipeline {
                             name: '02- Selecting Taxi navigates the user to the Taxi experience',
                             report: 'home-taxi-02'
                         ],
+
+                        // Postex Preview
+
                         [
                             folder: '06- Postex Perview',
                             name: '01- Postex is presented as an available service',
@@ -254,6 +373,9 @@ pipeline {
                             name: '02- Selecting Postex redirects the user to the Postex experience',
                             report: 'home-postex-02'
                         ],
+
+                        // Bitbank Preview
+
                         [
                             folder: '07- Bitbank preview',
                             name: '01- the user is on the Super App Home Page',
@@ -264,6 +386,9 @@ pipeline {
                             name: '02- Redirect User to Bitbank Experience',
                             report: 'home-bitbank-02'
                         ],
+
+                        // User Profile
+
                         [
                             folder: '08- User Profile Between MyDot and Super App',
                             name: '01- Same user ID is maintained across Super App and MyDot',
@@ -295,7 +420,7 @@ pipeline {
                                     echo " Running: ${scenario.name}"
                                     echo "======================================"
 
-                                    bru run "03- Home/${scenario.folder}/${scenario.name}" \
+                                    bru run "04- Home/${scenario.folder}/${scenario.name}" \
                                         --env SuperApp-dev-BDD \
                                         --reporter-junit reports/${scenario.report}-junit.xml \
                                         --reporter-html reports/${scenario.report}-report.html
@@ -311,11 +436,21 @@ pipeline {
             }
         }
 
+        /*
+         * ==========================================================
+         * SERVICES
+         * One report per scenario
+         * ==========================================================
+         */
+
         stage('Run Services Scenarios') {
             steps {
                 script {
 
                     def scenarios = [
+
+                        // Electricity
+
                         [
                             folder: '01- Electricity Bill Inquiry',
                             name: '01- Successfully inquire electricity bill with valid bill ID',
@@ -331,6 +466,9 @@ pipeline {
                             name: '03- Prevent electricity bill inquiry with invalid bill ID',
                             report: 'services-electricity-03'
                         ],
+
+                        // Gas
+
                         [
                             folder: '02- Gas Bill Inquiry',
                             name: '01- Successfully inquire gas bill using GasBillID',
@@ -361,6 +499,9 @@ pipeline {
                             name: '06- Prevent gas bill inquiry when both ParticipateCode and GasBillID are provided',
                             report: 'services-gas-06'
                         ],
+
+                        // Water
+
                         [
                             folder: '03- Water Bill Inquiry',
                             name: '01- Successfully inquire water bill with valid bill information',
@@ -381,6 +522,9 @@ pipeline {
                             name: '04- Prevent water bill inquiry when required information is empty',
                             report: 'services-water-04'
                         ],
+
+                        // Ghabzino
+
                         [
                             folder: '04- Bill Payment Ghabzino',
                             name: '01- Prevent duplicate payment request for the same transaction',
@@ -417,7 +561,7 @@ pipeline {
                                     echo " Running: ${scenario.name}"
                                     echo "======================================"
 
-                                    bru run "04- Services/${scenario.folder}/${scenario.name}" \
+                                    bru run "05- Services/${scenario.folder}/${scenario.name}" \
                                         --env SuperApp-dev-BDD \
                                         --reporter-junit reports/${scenario.report}-junit.xml \
                                         --reporter-html reports/${scenario.report}-report.html
@@ -432,7 +576,48 @@ pipeline {
                 }
             }
         }
+
+        /*
+         * ==========================================================
+         * END TO END - STAGE
+         * One report for the whole collection
+         * ==========================================================
+         */
+
+        stage('Run End To End Stage') {
+            steps {
+                script {
+
+                    catchError(
+                        buildResult: 'FAILURE',
+                        stageResult: 'FAILURE'
+                    ) {
+
+                        sh '''
+                            echo "======================================"
+                            echo " Running End To End - Stage"
+                            echo "======================================"
+
+                            bru run "06- End To End (Stage)" \
+                                --env SuperApp-stage \
+                                --reporter-junit reports/end-to-end-stage-junit.xml \
+                                --reporter-html reports/end-to-end-stage-report.html
+
+                            echo "======================================"
+                            echo " End To End Stage Completed"
+                            echo "======================================"
+                        '''
+                    }
+                }
+            }
+        }
     }
+
+    /*
+     * ==========================================================
+     * POST ACTIONS
+     * ==========================================================
+     */
 
     post {
 
