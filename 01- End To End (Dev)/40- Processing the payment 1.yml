@@ -1,0 +1,99 @@
+info:
+  name: 40- Processing the payment
+  type: http
+  seq: 40
+
+http:
+  method: GET
+  url: "{{SandBox}}{{callback_payment_id}}"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        const html = res.getBody();
+        let payUrl = null;
+
+        // ---- تلاش برای استفاده از cheerio (Developer Mode) ----
+        try {
+          const cheerio = require('cheerio');
+          const $ = cheerio.load(html);
+
+          const payLink = $('a').filter((i, el) => {
+            return $(el).text().trim().includes('پرداخت');
+          }).first();
+
+          if (payLink.length > 0) {
+            payUrl = payLink.attr('href');
+            console.log('✅ لینک پرداخت با cheerio پیدا شد');
+          }
+        } catch (e) {
+          // اگر cheerio در دسترس نبود (Safe Mode) → می‌رویم سراغ روش regex
+          console.log('⚠️ cheerio در دسترس نیست → استفاده از روش Safe Mode');
+        }
+
+        // ---- روش جایگزین بدون cheerio (Safe Mode) ----
+        if (!payUrl) {
+          const linkRegex = /<a\b[^>]*\bhref\s*=\s*(["'])(.*?)\1[^>]*>([\s\S]*?)<\/a>/gi;
+          let match;
+
+          while ((match = linkRegex.exec(html)) !== null) {
+            const href = match[2].trim();
+            const innerText = match[3]
+              .replace(/<[^>]+>/g, ' ')
+              .replace(/\s+/g, ' ')
+              .trim();
+
+            if (innerText.includes('پرداخت')) {
+              payUrl = href;
+              console.log('✅ لینک پرداخت با regex پیدا شد');
+              break;
+            }
+          }
+        }
+
+        // ---- نتیجه ----
+        if (!payUrl) {
+          console.log('❌ لینک پرداخت پیدا نشد');
+          return;
+        }
+
+        console.log('لینک پرداخت:', payUrl);
+
+        // اگر لینک نسبی بود، آن را کامل کن (اختیاری)
+        if (payUrl.startsWith('/')) {
+          try {
+            const baseUrl = new URL(res.getUrl()).origin;
+            payUrl = baseUrl + payUrl;
+            console.log('لینک کامل شد:', payUrl);
+          } catch (e) {}
+        }
+
+        // ---- ارسال درخواست (کلیک روی پرداخت) ----
+        const response = await bru.sendRequest({
+          method: 'GET',
+          url: payUrl,
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Referer': res.getUrl(),
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'fa-IR,fa;q=0.9,en-US;q=0.8,en;q=0.7'
+          }
+        });
+
+        console.log('✅ دکمه پرداخت کلیک شد');
+        console.log('Status:', response.status);
+        console.log('Final URL:', response.url || payUrl);
+
+        // ذخیره نتایج (اختیاری)
+        bru.setVar('paymentUrl', payUrl);
+        bru.setVar('paymentStatus', response.status);
+        bru.setVar('paymentFinalUrl', response.url || payUrl);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

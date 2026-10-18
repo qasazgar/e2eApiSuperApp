@@ -76,9 +76,8 @@ runtime:
           expect(res.responseTime).to.be.below(3000);
         });
 
-
         // ========================================
-        // Get Response Data
+        // Parse Response Body
         // ========================================
 
         let data = res.body;
@@ -92,42 +91,59 @@ runtime:
           }
         }
 
-
         // ========================================
         // Get Payment Data
         // ========================================
 
         const payment = data.data;
 
+        if (!payment) {
+          throw new Error("❌ Payment data not found");
+        }
 
         // ========================================
         // Save External Payment ID
         // ========================================
 
-        if (payment && payment.external_payment_id) {
+        if (payment.external_payment_id) {
+          bru.setVar("external_payment_id", payment.external_payment_id);
 
-          bru.setVar(
-            "external_payment_id",
-            payment.external_payment_id
-          );
-
-          console.log(
-            "✅ external payment id با موفقیت ذخیره شد"
-          );
-
-          console.log(
-            "💳 external payment id:",
-            payment.external_payment_id
-          );
-
+          console.log("✅ external_payment_id saved successfully");
+          console.log("💳 External Payment ID:", payment.external_payment_id);
         } else {
-
-          console.log(
-            "❌ external payment id در پاسخ وجود ندارد"
-          );
-
-          throw new Error("external_payment_id not found");
+          throw new Error("❌ external_payment_id not found");
         }
+
+        // ========================================
+        // Extract and Save Callback Payment ID
+        // ========================================
+
+        if (payment.callback_url) {
+          const match = payment.callback_url.match(/\/checkout\/([^/?#]+)/);
+
+          if (match && match[1]) {
+            const callbackPaymentId = match[1];
+
+            bru.setVar("callback_payment_id", callbackPaymentId);
+
+            console.log("✅ callback payment ID saved successfully");
+            console.log("🔗 Callback Payment ID:", callbackPaymentId);
+          } else {
+            throw new Error("❌ Payment ID not found in callback_url");
+          }
+        } else {
+          throw new Error("❌ callback_url not found");
+        }
+
+        // ========================================
+        // Summary
+        // ========================================
+
+        console.log("========================================");
+        console.log("✅ Payment variables saved");
+        console.log("External Payment ID:", bru.getVar("external_payment_id"));
+        console.log("Callback Payment ID:", bru.getVar("callback_payment_id"));
+        console.log("========================================");
 
 settings:
   encodeUrl: true
