@@ -288,7 +288,7 @@ pipeline {
                         echo "======================================"
 
                         bru run "06- End To End (Stage)" \
-                            --env VOD-stage \
+                            --env SuperApp-stage \
                             --reporter-junit reports/end-to-end-stage-junit.xml \
                             --reporter-html reports/end-to-end-stage-report.html
                     '''
