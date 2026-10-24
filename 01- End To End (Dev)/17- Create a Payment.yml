@@ -1,0 +1,55 @@
+info:
+  name: 17- Create a Payment
+  type: http
+  seq: 17
+
+http:
+  method: POST
+  url: "{{Url-Dev}}payment/payments/"
+  headers:
+    - name: accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |
+      {
+        "payment_purpose": "SERVICE_PAYMENT",
+        "origin_service": "financial-service",
+        "amount": {{total_amount}},
+        "client_reference": "{{idempotency_key}}",
+        "payment_method": "WALLET"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        // تست‌ها
+        test("Status code is 201", () => {
+          expect(res.status).to.equal(201);
+        });
+
+        test("Response time is less than 3000ms", () => {
+          expect(res.responseTime).to.be.below(3000);
+        });
+
+        // پیام موفقیت یا شکست
+        const body = res.getBody();
+        const data = typeof body === 'string' ? JSON.parse(body) : body;
+        const status = data?.status || res.status;
+
+        if (status === 201) {
+          console.log('✅ پرداخت قبض با موفقیت انجام شد');
+        } else {
+          console.log('❌ پرداخت قبض انجام نشد');
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

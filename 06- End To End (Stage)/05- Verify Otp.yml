@@ -16,7 +16,7 @@ http:
     data: |-
       {
 
-        "phone_number": "{{phone_number}}",
+        "phone_number": "{{Generated_phone_number}}",
         "pre_auth_token": "{{pre_auth_token}}",
         "mfa_method": "sms",
         "otp": "{{otp}}"

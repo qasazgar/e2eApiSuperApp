@@ -1,0 +1,68 @@
+info:
+  name: 42- Operators list
+  type: http
+  seq: 42
+
+http:
+  method: GET
+  url: "{{Url-Dev}}services/financial/topup/operators/"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+        test("Response time is less than 3000ms", () => {
+          expect(res.responseTime).to.be.below(3000);
+        });
+
+        // ========================================
+        // Operators List Validation
+        // ========================================
+
+        let responseData = res.body;
+
+        if (typeof responseData === "string") {
+          try {
+            responseData = JSON.parse(responseData);
+          } catch (error) {
+            responseData = {};
+          }
+        }
+
+        if (
+          res.status === 200 &&
+          responseData.success === true &&
+          responseData.data
+        ) {
+          console.log("✅ لیست اپراتورها با موفقیت نمایش داده شد");
+
+          const chargeOperators = responseData.data.charge || [];
+          const internetOperators = responseData.data.internet || [];
+
+          console.log("📱 اپراتورهای شارژ:");
+
+          chargeOperators.forEach(operator => {
+            console.log("   • " + operator.name);
+          });
+
+          console.log("🌐 اپراتورهای اینترنت:");
+
+          internetOperators.forEach(operator => {
+            console.log("   • " + operator.name);
+          });
+
+        } else {
+          console.log("❌ لیست اپراتورها نمایش داده نشد");
+          console.log("📡 HTTP Status:", res.status);
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

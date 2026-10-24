@@ -1,0 +1,61 @@
+info:
+  name: 43- Logout
+  type: http
+  seq: 43
+
+http:
+  method: POST
+  url: "{{Url-Dev}}account/auth/superapp-logout/"
+  headers:
+    - name: accept
+      value: application/json
+    - name: X-CSRFTOKEN
+      value: wKmJcClDml7cfr50n8reyM59Jt28gWM0
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        // ========================================
+        // Response Validation
+        // ========================================
+
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 3000ms", () => {
+          expect(res.responseTime).to.be.below(3000);
+        });
+
+        // ========================================
+        // Parse Response Body
+        // ========================================
+
+        let data = res.body;
+
+        if (typeof data === "string") {
+          data = JSON.parse(data);
+        }
+
+        // ========================================
+        // Verify Logout
+        // ========================================
+
+        if (
+          res.status === 200 &&
+          data.success === true &&
+          data.message === "Successfully logged out."
+        ) {
+          console.log("✅ کاربر با موفقیت از سوپراپ خارج شد");
+        } else {
+          console.log("❌ خروج کاربر از سوپراپ ناموفق بود");
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

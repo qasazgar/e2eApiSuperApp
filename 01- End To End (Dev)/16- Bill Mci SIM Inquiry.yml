@@ -1,0 +1,64 @@
+info:
+  name: 16- Bill Mci SIM Inquiry
+  type: http
+  seq: 16
+
+http:
+  method: POST
+  url: "{{Url-Dev}}services/financial/inquiry/bill/mci/"
+  headers:
+    - name: accept
+      value: application/json
+    - name: Content-Type
+      value: application/json
+    - name: Authorization
+      value: Bearer {{access_token}}
+  body:
+    type: json
+    data: |-
+      {
+        "mobile_number": "{{Mci-sim}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("Status code is 200", () => {
+          expect(res.status).to.equal(200);
+        });
+
+        test("Response time is less than 3000ms", () => {
+          expect(res.responseTime).to.be.below(3000);
+        });
+
+        const body = res.getBody();
+
+        // اگر response به صورت object باشه
+        const data = typeof body === 'string' ? JSON.parse(body) : body;
+
+        if (data && data.success && data.data && data.data.mid_term) {
+          const midTerm = data.data.mid_term;
+
+          // ذخیره idempotency_key
+          if (midTerm.idempotency_key) {
+            bru.setVar('idempotency_key', midTerm.idempotency_key);
+            console.log('✅ idempotency_key ذخیره شد:', midTerm.idempotency_key);
+          }
+
+          // ذخیره amount داخل total_amount
+          if (midTerm.amount) {
+            bru.setVar('total_amount', midTerm.amount);
+            console.log('✅ total_amount ذخیره شد:', midTerm.amount);
+          }
+        } else {
+          console.log('❌ ساختار response نامعتبر است');
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

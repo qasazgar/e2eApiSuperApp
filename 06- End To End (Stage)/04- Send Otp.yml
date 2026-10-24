@@ -10,7 +10,7 @@ http:
     type: json
     data: |-
       {
-        "phone_number": "{{phone_number}}"
+        "phone_number": "{{Generated_phone_number}}"
       }
   auth: inherit
 

@@ -65,3 +65,7 @@ variables:
     description: ""
   - name: Url-Stage-mydot
     value: https://api-stage.dpsb.ir/mydot/api/v1/
+    description: ""
+  - name: SandBox
+    value: https://psp.dpsb.ir/mock-gateway/
+    description: ""
